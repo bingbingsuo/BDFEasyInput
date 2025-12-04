@@ -1,0 +1,76 @@
+# BDF 基组映射表
+# 
+# 说明：
+# 1. 此文件包含常用基组的手动映射
+# 2. 完整基组列表请参考 bdf_basis_list.yaml（从 BDF 基组名文件自动生成）
+# 3. 使用 research/tools/generate_basis_list.py 生成完整列表
+#
+# 基组属性：
+#   - bdf_name: BDF 中的基组名称
+#   - relativistic: 是否为相对论优化基组
+#   - ecp: 是否包含有效核势 (ECP)
+
+# 常用基组映射（手动维护）
+basis_sets:
+  # Pople 基组
+  "6-31g":
+    bdf_name: "6-31G"
+    library_path: ""  # 待填写
+    description: "6-31G basis set"
+  
+  "6-31g*":
+    bdf_name: "6-31G*"
+    library_path: ""  # 待填写
+    description: "6-31G* basis set with polarization"
+  
+  "6-31g**":
+    bdf_name: "6-31G**"
+    library_path: ""  # 待填写
+    description: "6-31G** basis set with polarization and diffuse"
+  
+  "6-311g*":
+    bdf_name: "6-311G*"
+    library_path: ""  # 待填写
+    description: "6-311G* basis set"
+  
+  # Dunning 相关一致基组
+  "cc-pvdz":
+    bdf_name: "cc-pVDZ"
+    library_path: ""  # 待填写
+    description: "Correlation-consistent polarized valence double-zeta"
+  
+  "cc-pvtz":
+    bdf_name: "cc-pVTZ"
+    library_path: ""  # 待填写
+    description: "Correlation-consistent polarized valence triple-zeta"
+  
+  "cc-pvqz":
+    bdf_name: "cc-pVQZ"
+    library_path: ""  # 待填写
+    description: "Correlation-consistent polarized valence quadruple-zeta"
+  
+  # Ahlrichs 基组
+  "def2-svp":
+    bdf_name: "def2-SVP"
+    library_path: ""  # 待填写
+    description: "def2-SVP basis set"
+  
+  "def2-tzvp":
+    bdf_name: "def2-TZVP"
+    library_path: ""  # 待填写
+    description: "def2-TZVP basis set"
+  
+  # 待补充：根据实际 BDF 支持的基组添加
+
+# 完整基组列表
+# 使用 research/tools/generate_basis_list.py 从 BDF 基组名文件自动生成
+# 参考文件: research/mapping_tables/bdf_basis_list.yaml
+
+# 注意事项
+notes:
+  - "基组名称可能需要根据 BDF 版本调整"
+  - "某些基组可能需要指定库文件路径"
+  - "不同元素可能需要不同的基组文件"
+  - "基组名称大小写可能不敏感（CC-PVDZ 和 cc-pvdz 都出现）"
+  - "基组名称直接写在 Basis 关键词下一行"
+

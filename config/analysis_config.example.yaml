@@ -1,0 +1,77 @@
+# 结果分析配置文件示例
+# 复制此文件为 analysis_config.yaml 并根据需要修改
+
+analysis:
+  # AI 配置
+  ai:
+    # 使用的 AI 提供商
+    provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
+    
+    # 模型名称
+    model: "llama3"
+    
+    # 温度参数（控制随机性）
+    temperature: 0.7
+  
+  # 输出配置
+  output:
+    # 报告格式
+    format: "markdown"  # 选项: "markdown", "html", "text"
+    
+    # 是否包含原始数据
+    include_raw_data: true
+    
+    # 是否包含建议
+    include_recommendations: true
+    
+    # 是否包含专家见解
+    include_expert_insights: true
+  
+  # 专家模式配置
+  expert_mode:
+    # 是否启用专家模式
+    enabled: true
+    
+    # 分析深度
+    depth: "detailed"  # 选项: "brief", "standard", "detailed"
+    
+    # 分析重点
+    focus_areas:
+      - energy_analysis      # 能量分析
+      - geometry_analysis   # 几何结构分析
+      - convergence_analysis # 收敛性分析
+      - method_evaluation    # 方法评估
+      - recommendations     # 建议
+  
+  # 解析配置
+  parsing:
+    # 是否提取所有数据
+    extract_all: true
+    
+    # 提取的数据类型
+    extract:
+      energy: true           # 能量
+      geometry: true         # 几何结构
+      frequencies: true      # 频率
+      properties: true       # 其他性质
+      warnings: true         # 警告
+      errors: true           # 错误
+  
+  # 报告模板配置
+  report:
+    # 使用自定义模板
+    custom_template: null  # 模板文件路径，null 使用默认模板
+    
+    # 报告标题
+    title: "BDF 计算结果分析报告"
+    
+    # 包含章节
+    sections:
+      - summary              # 总结
+      - energy_analysis      # 能量分析
+      - geometry_analysis    # 几何分析
+      - convergence_analysis # 收敛性分析
+      - method_evaluation    # 方法评估
+      - recommendations     # 建议
+      - expert_insights     # 专家见解
+

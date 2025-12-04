@@ -1,0 +1,34 @@
+# 简单的 H2O 分子 DFT 计算示例
+# 单点能计算
+
+task:
+  type: energy
+  description: "H2O single point energy calculation"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    # 格式: ATOM X Y Z (单位: angstrom)
+    - O 0.0000 0.0000 0.1173
+    - H 0.0000 0.7572 -0.4692
+    - H 0.0000 -0.7572 -0.4692
+  units: angstrom  # 可选: angstrom 或 bohr，默认为 angstrom
+
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+    # occupied: [3, 0, 1, 0]  # 可选：指定不可约表示的双占据轨道数（D2h及其子群）
+    # 如果不指定，BDF 会自动计算
+
+output:
+  file: h2o_output.inp
+  verbose: false
+

@@ -1,0 +1,57 @@
+# AI 配置文件示例
+# 复制此文件为 ai_config.yaml 并根据需要修改
+
+ai:
+  # 默认使用的 AI 提供商
+  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
+  
+  # 是否启用 AI 功能
+  enabled: true
+  
+  providers:
+    # Ollama 本地模型配置
+    ollama:
+      enabled: true
+      base_url: "http://localhost:11434"
+      model: "llama3"  # 可用的模型: llama3, llama2, mistral 等
+      timeout: 60  # 请求超时时间（秒）
+    
+    # OpenAI API 配置
+    openai:
+      enabled: false  # 设置为 true 以启用
+      api_key_env: "OPENAI_API_KEY"  # 环境变量名
+      model: "gpt-4"  # 或 "gpt-3.5-turbo"
+      base_url: "https://api.openai.com/v1"  # 可自定义 API 端点
+      timeout: 60
+    
+    # Anthropic Claude API 配置
+    anthropic:
+      enabled: false  # 设置为 true 以启用
+      api_key_env: "ANTHROPIC_API_KEY"  # 环境变量名
+      model: "claude-3-sonnet-20240229"  # 或其他 Claude 模型
+      timeout: 60
+  
+  # 默认 AI 参数
+  defaults:
+    temperature: 0.7  # 控制输出的随机性 (0.0-1.0)
+    max_tokens: 2000  # 最大生成 token 数
+    use_streaming: false  # 是否使用流式输出
+  
+  # 任务规划设置
+  planning:
+    # 是否自动补充缺失参数
+    auto_fill: true
+    # 是否提供方法推荐
+    suggest_methods: true
+    # 是否提供优化建议
+    suggest_optimization: true
+  
+  # 提示词设置
+  prompts:
+    # 系统提示词文件路径
+    system_prompt_file: "prompts/system.txt"
+    # 示例文件路径
+    examples_file: "prompts/examples.yaml"
+    # 是否包含专业知识库
+    include_knowledge_base: true
+

@@ -1,0 +1,2810 @@
+# BDF 关键词映射表
+# 记录 YAML 配置项到 BDF 格式的映射关系
+
+# 任务类型映射
+# BDF 使用模块组合来表示不同的计算类型
+task_types:
+  energy:
+    bdf_modules: ["COMPASS", "XUANYUAN", "SCF"]
+    description: "单点能计算"
+    required_fields: ["molecule", "method"]
+  
+  optimize:
+    bdf_modules: ["COMPASS", "BDFOPT", "XUANYUAN", "SCF", "RESP"]
+    description: "几何优化"
+    required_fields: ["molecule", "method"]
+    note: "使用 RESP 模块计算梯度（GRAD 模块仅支持 HF 和 MCSCF）"
+  
+  frequency:
+    bdf_modules: ["COMPASS", "XUANYUAN", "SCF", "GRAD", "RESP"]  # 待确认
+    description: "频率计算"
+    required_fields: ["molecule", "method"]
+  
+  tddft:
+    bdf_modules: ["COMPASS", "XUANYUAN", "SCF", "TDDFT"]
+    description: "时间相关 DFT（激发态）"
+    required_fields: ["molecule", "method"]
+
+# COMPASS 模块关键词映射
+compass:
+  # 1. 基本说明 / 标题 ----------------------------------------------------------
+  title:
+    bdf_keyword: "TITL"
+    format: "单行文本（下一行作为标题）"
+    location: "COMPASS 模块"
+    yaml_mapping: "molecule.title"
+    note: "在 $COMPASS 中写 TITL，下一行整行作为标题"
+
+  go_detail:
+    bdf_keyword: "GODETAIL"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.print_group_orbital_detail"
+    note: "printGOdetail = .true.，输出 Group Orbital 详细信息"
+
+  # 2. 几何与坐标输入 -----------------------------------------------------------
+  geometry:
+    bdf_keyword: "GEOM"
+    format: "多行坐标块，格式：ATOM X Y Z，或 FILE/XYZ/ZMAT 等子关键字"
+    location: "COMPASS 模块"
+    end_marker: "END GEOM"
+    yaml_mapping: "molecule.coordinates"
+    rules:
+      - "默认：直接在 GEOM/END GEOM 中给出笛卡尔坐标，单位由 UNIT 控制"
+      - "如果首行以 FILE 开头：file=filename.xyz，从指定 xyz 文件读取"
+      - "如果首行为 XYZ：从 task.xyz 读取"
+      - "如果首行为 ZMAT：按 Z 矩阵格式读取"
+
+  punched_geometry:
+    bdf_keywords: ["PUNGEOM", "RESTART"]
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.geometry.from_optgeom"
+    note: "logic_geom_punched = .true.，几何从 .optgeom 等打孔文件读取"
+
+  no_rotate:
+    bdf_keyword: "NOROTATE"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.geometry.no_rotate"
+    note: "禁止将分子旋转到标准取向（logic_rotate = .false.）"
+
+  split_so3:
+    bdf_keyword: "SPLITSO3"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.geometry.split_so3"
+    note: "dosplitso3 = .true.，控制 SO(3) 相关的分裂处理"
+
+  unit:
+    bdf_keyword: "UNIT"
+    format: "单行文本（BOHR 或 ANGSTROM）"
+    location: "COMPASS 模块"
+    default: "ANGSTROM（逻辑上 logic_bohr=.false.）"
+    yaml_mapping: "molecule.units"
+    note: "YAML 中默认 Angstrom；如果为 Bohr，则写 UNIT 后子行 BOHR"
+
+  group:
+    bdf_keyword: "GROU"
+    format: "下一行给出点群名（如 C(2v)、D(2h) 等）"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.symmetry.group"
+    note: "设置分子点群；逻辑上 logic_group=.true., logic_nosym=.false."
+
+  no_symmetry:
+    bdf_keyword: "NOSY"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.symmetry.no_symmetry"
+    note: "强制不使用对称性，Grpname 设为 C(1)"
+
+  # 3. 基组与 RI / DF 相关 ------------------------------------------------------
+  basis:
+    bdf_keyword: "BASI"
+    format: "多行：基组名或基组文件；支持多基组、多块（-BLOCK/-MULTI）"
+    location: "COMPASS 模块"
+    yaml_mapping: "method.basis"
+    note: "内部通过 process_basis 处理；支持 6D/5D 选择与多基组逻辑"
+
+  end_basis:
+    bdf_keyword: "END BASI"
+    format: "结束 BASIS 块（多基组时使用）"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.end_marker"
+    note: "通常自动生成；手工写多基组时需要"
+
+  cd_ri:
+    bdf_keyword: "CD-RI"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.ri.cd_ri"
+    note: "无基组 RI（density fitting）计算，默认 aC-CD，thresh=1.d-4"
+
+  ri_j:
+    bdf_keyword: "RI-J"
+    format: "下一行给出 RI 基组名 / 文件"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.ri.ri_j_basis"
+    note: "logic_df=.true., toptask%task(9)=11，riname='RI-J'"
+
+  ri_k:
+    bdf_keyword: "RI-K"
+    format: "下一行给出 RI 基组名 / 文件"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.ri.ri_k_basis"
+    note: "logic_df=.true., toptask%task(9)=12，riname='RI-K'"
+
+  ri_c:
+    bdf_keyword: "RI-C"
+    format: "下一行给出 RI 基组名 / 文件"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.ri.ri_c_basis"
+    note: "logic_df=.true., toptask%task(9)=13，riname='RI-C'"
+
+  mpec_cosx:
+    bdf_keyword: "MPEC+COSX"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.scf.cosx.mpec_cosx"
+    note: "toptask%task(73)=1，控制 SCF 阶段的 MPEC+COSX 选项"
+
+  poisson:
+    bdf_keyword: "POIS"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.poisson_solver"
+    note: "logic_poisson=.true.，需要设置 RI 基组，否则报错"
+
+  uncontracted_basis:
+    bdf_keyword: "UNCONT"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.uncontracted"
+    note: "logic_uncontracted=.true.；结束时调用 basis_uncontract()"
+
+  segmented_contraction:
+    bdf_keyword: "SEGCONT"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.segmented_contraction"
+    note: "toptask%task(32)=1，控制分段收缩"
+
+  primitive_input:
+    bdf_keyword: "PRIM"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.primitive_input"
+    note: "logic_prim=.true.，仅输入 primitive GTO"
+
+  # 4. 任务 / 运行模式 / 阈值 ---------------------------------------------------
+  check_run:
+    bdf_keyword: "CHEC"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.check_only"
+    note: "toptask%task(8)=1，触发数据检查模式"
+
+  task:
+    bdf_keyword: "TASK"
+    format: "下一行 ENERGY/OPT 等任务类型"
+    location: "COMPASS 模块"
+    yaml_mapping: "task.type"
+    rules:
+      - "ENERGY → toptask%task(1)=0"
+      - "OPT → toptask%task(1)=1"
+    note: "在 BDFEasyInput 中通常由顶层 task_types 控制，这里作为底层映射记录"
+
+  thresh_symmetry:
+    bdf_keyword: "THRE"
+    format: "下一行给出 STICK/STRICT/TIGHT/MEDIUM/COARSE/LOOSE 等文字"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.symmetry.threshold_level"
+    note: "控制 thrdm1/thrdm2/threps，影响对称性判定严格程度"
+
+  print_level:
+    bdf_keyword: "PRINT"
+    format: "下一行整数 iprt"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.print_level"
+    note: "1~5 不同详细程度；全局也会写入 toptask%task(256)"
+
+  basis_print_format:
+    bdf_keyword: "EXPBAS"
+    format: "下一行整数 iprbs（0~5）"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.print_format"
+    note: "控制基组输出格式：Molpro/Molcas/Gaussian/Orca/CFour 等"
+
+  # 5. 相对论 / Skeleton / 轨道构造 -------------------------------------------
+  relativistic:
+    bdf_keyword: "RELA"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "method.relativity"
+    note: "logic_spinor=.true., toptask%task(3)=6，选择相对论自旋轨道基组"
+
+  skeleton_method:
+    bdf_keyword: "SKEL"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.skeleton_method"
+    note: "toptask%task(2)=2，Skeleton 矩阵方法（默认）"
+
+  saorb:
+    bdf_keyword: "SAORB"
+    format: "无值关键词"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.symmetry_adapted_orbitals"
+    note: "toptask%task(2)=0，使用对称适应积分/轨道"
+
+  # 6. 片段 / Kratzer 势 / 外加电荷 -------------------------------------------
+  nfrag:
+    bdf_keyword: "NFRAG"
+    format: "下一行整数 nfragment"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.fragments.count"
+    note: "toptask%task(35)=nfragment，用于 fragment-to-molecule 计算"
+
+  kratzer:
+    bdf_keyword: "KRATZ"
+    format: "下一行 5 个参数：maxnu, maxj, ngausslag, re, de"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.kratzer"
+    note: "设置 Kratzer 势参数，toptask%task(46)=1 并初始化相关控制"
+
+  external_charge:
+    bdf_keyword: "EXTCHARGE"
+    format: "下一行字符串，指定 POINT 或 GAUSSIAN"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.external_charge.type"
+    rules:
+      - "POINT → toptask%task(52)=1，点电荷"
+      - "GAUSSIAN → toptask%task(52)=2，高斯分布电荷"
+
+  atommass:
+    bdf_keyword: "ATOMMASS"
+    format: "下一行整数 Nmass，之后 Nmass 行：iatom mass"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.atomic_masses"
+    note: "覆盖默认同位素质量，用于同位素替换等"
+
+  # 7. 外电场 / 实时 TDDFT 相关 ------------------------------------------------
+  realtdfield:
+    bdf_keyword: "REALTDFIELD"
+    format: "下一行字符串（如 X/Y/Z 方向信息）"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.rt_tddft.external_field_axis"
+    note: "为实时 TDDFT 设置外场方向（external_field_axis）"
+
+  efield:
+    bdf_keywords: ["EFIELD", "ExternalEField"]
+    format: "下一行给出算符名和外场强度，如：XDIPLEN 0.001"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.external_e_field"
+    rules:
+      - "XDIPLEN → X 方向偶极算符，toptask%task(74)=1"
+      - "YDIPLEN → Y 方向偶极算符，toptask%task(74)=2"
+      - "ZDIPLEN → Z 方向偶极算符，toptask%task(74)=3"
+    note: "oneeoper 相关设置在控制模块中完成；这里只记录输入关键字"
+
+  # 8. 其他与 SCF/分子有关但在其他模块中实现的量 ------------------------------
+  charge:
+    bdf_keyword: "CHARGE"  # 在 SCF 模块中
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "molecule.charge"
+    note: "电荷在 SCF 模块中生效，这里仅作为整体映射记录"
+
+  multiplicity:
+    bdf_keyword: "SPIN"  # 在 SCF 模块中
+    format: "整数（2S+1）"
+    location: "SCF 模块"
+    yaml_mapping: "molecule.multiplicity"
+    note: "自旋多重度在 SCF 模块中生效，这里仅作为整体映射记录"
+
+# SCF 模块关键词映射
+scf:
+  # 1. SCF 类型 / 接口 ---------------------------------------------------------
+  method_type:
+    bdf_keywords: ["RHF", "UHF", "ROHF", "RKS", "UKS", "ROKS"]
+    format: "无值关键词"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.type + method.type + molecule.multiplicity + settings.tddft.spin_adapted"
+    rules:
+      - "如果 settings.scf.type 显式给出，则优先使用：rhf/uhf/rohf/rks/uks/roks"
+      - "如果 settings.tddft.spin_adapted == true（用于 spin-adapted TDDFT）："
+      - "  - method.type == 'hf' → ROHF（限制性开壳层 Hartree-Fock）"
+      - "  - method.type == 'dft' → ROKS（限制性开壳层 Kohn-Sham）"
+      - "否则：method.type == 'hf' 且 multiplicity == 1 → RHF"
+      - "否则：method.type == 'hf' 且 multiplicity > 1 → UHF"
+      - "否则：method.type == 'dft' 且 multiplicity == 1 → RKS"
+      - "否则：method.type == 'dft' 且 multiplicity > 1 → UKS"
+
+  interface:
+    bdf_keywords: ["UNDMOL", "MCCEPA"]
+    format: "无值关键词"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.interface"
+    rules:
+      - "settings.scf.interface == 'undmol' → UNDMOL"
+      - "settings.scf.interface == 'mccepa' → MCCEPA"
+
+  # 2. 自旋 / 电荷 / 占据数 ---------------------------------------------------
+  spin_multiplicity:
+    bdf_keywords: ["SPINMULTI", "SPIN"]
+    format: "整数（2S+1）"
+    location: "SCF 模块"
+    yaml_mapping: "molecule.multiplicity"
+    note: "通常由 COMPASS/整体系控制；在 SCF 中可以覆盖"
+
+  charge:
+    bdf_keyword: "CHARGE"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "molecule.charge"
+
+  occupied:
+    bdf_keyword: "OCCUP"
+    format: "一行或多行占据数（按不可约表示）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.occupation.total"
+    note: "高级选项：实数占据，内部转换为整数占据"
+
+  alpha:
+    bdf_keyword: "ALPHA"
+    format: "一行或多行 alpha 占据数"
+    location: "SCF 模块（UHF/UKS）"
+    yaml_mapping: "settings.scf.occupation.alpha"
+
+  beta:
+    bdf_keyword: "BETA"
+    format: "一行或多行 beta 占据数"
+    location: "SCF 模块（UHF/UKS）"
+    yaml_mapping: "settings.scf.occupation.beta"
+
+  mom_pair:
+    bdf_keyword: "IFPAIR"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mom_pair"
+
+  # PIN / HP 系列统一认为是高级高级控制，这里只给出映射占位，用于将来扩展
+  hpoccup:
+    bdf_keyword: "HPOCCUP"
+    format: "多行整数占据控制"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.hp_occup"
+    note: "MOM HPOCCUP 高级控制，暂不在基础 YAML 中暴露"
+
+  pinalpha:
+    bdf_keyword: "PINALPHA"
+    format: "多行整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.pin.alpha"
+
+  pinbeta:
+    bdf_keyword: "PINBETA"
+    format: "多行整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.pin.beta"
+
+  # 3. 收敛与迭代控制 ---------------------------------------------------------
+  convergence_pair:
+    bdf_keyword: "THRESHCONV"
+    format: "两列浮点数（能量、密度）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.convergence"
+    note: "从 settings.scf.convergence.energy/density 生成"
+
+  thresh_ene:
+    bdf_keyword: "THRENE"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.convergence.energy"
+
+  thresh_den:
+    bdf_keyword: "THRDEN"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.convergence.density"
+
+  thresh_diis:
+    bdf_keyword: "THRDIIS"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.convergence.diis"
+
+  max_iterations:
+    bdf_keywords: ["MAXITER", "MAXCYCLE"]
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.max_iterations"
+
+  level_shift:
+    bdf_keyword: "VSHIFT"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.level_shift"
+
+  damping:
+    bdf_keyword: "DAMP"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.damping"
+
+  icheck:
+    bdf_keyword: "ICHECK"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.check_level"
+
+  iaufbau:
+    bdf_keyword: "IAUFBAU"
+    format: "整数/逻辑"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.aufbau"
+
+  deform:
+    bdf_keyword: "DEFORM"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.deformation_threshold"
+
+  # 4. DFT / XC / 色散 --------------------------------------------------------
+  dft_functional:
+    bdf_keyword: "DFT"
+    format: "下一行给出交换/相关泛函名，如 'PBE LYP' 或 'B3LYP'"
+    location: "SCF 模块"
+    yaml_mapping: "method.functional"
+    note: "泛函转换器负责将 YAML 的 functional 规范化为 'X C' 或 'XC' 形式"
+
+  rsalphabeta:
+    bdf_keyword: "RSALPHABETA"
+    format: "两个浮点数（rsalpha, rsbeta）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.rs_alpha + settings.scf.dft.rs_beta"
+
+  xcfun:
+    bdf_keywords: ["XCFUN", "IXCFUN"]
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.xc_function_id"
+
+  hfexch:
+    bdf_keyword: "HFEXCH"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.hf_exchange_ratio"
+
+  dft_d3:
+    bdf_keywords: ["D3", "D3(BJ)", "D2", "D3ZERO", "D3MZERO", "D3MBJ"]
+    format: "无值关键词"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.d3.scheme"
+    note: "根据 scheme 选择具体关键字；版本号由 VERSION/DFTDVERSION 控制"
+
+  dft_d_version:
+    bdf_keywords: ["VERSION", "DFTDVERSION"]
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.d3.version"
+
+  facex:
+    bdf_keyword: "FACEX"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.facex"
+
+  facco:
+    bdf_keyword: "FACCO"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.facco"
+
+  # 5. 数值积分 / COSX / 网格 -------------------------------------------------
+  maxmem:
+    bdf_keyword: "MAXMEM"
+    format: "整数（MB）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.integration.max_memory_mb"
+
+  upden:
+    bdf_keyword: "UPDEN"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.integration.update_density"
+
+  fullvxc:
+    bdf_keyword: "FULLVXC"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.integration.full_vxc"
+
+  thrpcosx:
+    bdf_keyword: "THRPCOSX"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.cosx.thresh_vex"
+
+  psnxyz:
+    bdf_keyword: "PSNXYZ"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.cosx.grid.nxyz"
+
+  psxyz:
+    bdf_keyword: "PSXYZ"
+    format: "多行浮点数（盒子边界）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.cosx.grid.box_min + settings.cosx.grid.box_max"
+
+  # 6. 筛选 / direct SCF / FMM ------------------------------------------------
+  optscr:
+    bdf_keyword: "OPTSCR"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.screening.opt"
+
+  jengin:
+    bdf_keyword: "JENGIN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.screening.j_engine"
+
+  nok2pr:
+    bdf_keyword: "NOK2PR"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.screening.disable_k2prim"
+
+  fmm:
+    bdf_keyword: "FMM"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.fmm.enabled"
+
+  wsind:
+    bdf_keyword: "WSIND"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.fmm.ws_index"
+
+  # 7. 轨道输出 / 初始猜测 / 线性相关 ----------------------------------------
+  molden:
+    bdf_keyword: "MOLDEN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.output.molden"
+
+  pyscforb:
+    bdf_keyword: "PYSCFORB"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.output.pyscf_orbitals"
+
+  noscforb:
+    bdf_keyword: "NOSCFORB"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.output.write_scf_orbitals"
+    note: "YAML 中为 true 表示写出；生成时需要取反控制 NOSCFORB"
+
+  outaooverlap:
+    bdf_keyword: "OUTAOOVERLAP"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.output.write_ao_overlap"
+
+  guess:
+    bdf_keyword: "GUESS"
+    format: "单行文本（nddo/huckel 等）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.guess.type"
+
+  atomguesshf:
+    bdf_keyword: "ATOMGUESSHF"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.guess.atom_hf"
+
+  checklin:
+    bdf_keyword: "CHECKLIN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.linear_dependence.check"
+
+  tollin:
+    bdf_keyword: "TOLLIN"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.linear_dependence.tol"
+
+  lowdinlin:
+    bdf_keyword: "LOWDINLIN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.linear_dependence.lowdin"
+
+  skipaolin:
+    bdf_keyword: "SKIPAOLIN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.linear_dependence.skip_ao"
+
+  # 8. FLMO / 片段 ------------------------------------------------------------
+  flmo:
+    bdf_keyword: "FLMO"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.enabled"
+
+  embedfrag:
+    bdf_keyword: "EMBEDFRAG"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.embed_fragments"
+
+  thrslmotai:
+    bdf_keyword: "THRSLMOTAI"
+    format: "浮点数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.lmo_tail_threshold"
+
+  cutlmotail:
+    bdf_keyword: "CUTLMOTAIL"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.cut_tail"
+
+  diagflmofo:
+    bdf_keyword: "DIAGFLMOFO"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.diag_flmo_fock"
+
+  noreorderflmo:
+    bdf_keyword: "NOREORDERFLMO"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.flmo.no_reorder"
+
+  # 9. 对称性 / 特殊模式 ------------------------------------------------------
+  so3z:
+    bdf_keyword: "SO3Z"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.symmetry.so3z"
+
+  lzsym:
+    bdf_keyword: "LZSYM"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.symmetry.lzsym"
+
+  lzclean:
+    bdf_keyword: "LZCLEAN"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.symmetry.lz_clean_fock"
+
+  mcdensym:
+    bdf_keyword: "MCDENSYM"
+    format: "整数"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.symmetry.mc_density_sym"
+
+  notopt:
+    bdf_keywords: ["NOTOPT", "ONEITER"]
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.notopt"
+
+  fockonly:
+    bdf_keyword: "FOCKONLY"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.fock_only"
+
+  atomonly:
+    bdf_keyword: "ATOMONLY"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.atom_only"
+
+  atomorb:
+    bdf_keyword: "ATOMORB"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.atom_orb"
+
+  atommp2:
+    bdf_keyword: "ATOMMP2"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.atom_mp2"
+
+  # 10. 其它标志 / 分析开关 ---------------------------------------------------
+  sgnfix:
+    bdf_keyword: "SGNFIX"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.fix_sign"
+
+  nopop:
+    bdf_keyword: "NOPOP"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.population.enable_population"
+    note: "YAML 中 true 表示做 population；生成时需要对 NOPOP 取反"
+
+  nomultipole:
+    bdf_keyword: "NOMULTIPOLE"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.population.enable_multipole"
+    note: "YAML 中 true 表示做 multipole；生成时需要对 NOMULTIPOLE 取反"
+
+  sepejk:
+    bdf_keyword: "SEPEJK"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.sepEJK"
+
+  sepexc:
+    bdf_keyword: "SEPEXC"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.sepEXC"
+
+  noorthguess:
+    bdf_keyword: "NOORTHGUESS"
+    format: "无值"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mode.no_orthogonal_guess"
+
+
+# BDFOPT 模块关键词映射
+bdfopt:
+  # 1. 总体控制 / 求解器与电子结构方法 -----------------------------------------
+  iprt:
+    bdf_keyword: "IPRT"
+    format: "下一行整数 optinfo%iprt"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.print_level"
+
+  solver:
+    bdf_keyword: "SOLVER"
+    format: "下一行整数 optinfo%solver"
+    location: "BDFOPT 模块"
+    default: "1"
+    yaml_mapping: "settings.geometry_optimization.solver"
+    note: "0=DL-FIND, 1=BDF 内置几何优化；HESS 仅 Hessian/频率模式会强制设置为 -1 等"
+
+  method:
+    bdf_keyword: "METHOD"
+    format: "下一行字符串 SCF/MCSCF/TDDFT"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.electronic_method"
+    note: "转换为 optinfo%imethod：SCF→0, MCSCF→1, TDDFT→2；用于选择梯度/Hessian 来源"
+
+  maxcycle:
+    bdf_keywords: ["MAXCYCLE", "MAXITER"]
+    format: "下一行整数 bdf_dlf_glob%maxcycle"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.max_iterations"
+
+  trust_radius:
+    bdf_keyword: "TRUST"
+    format: "下一行浮点数 optinfo%init_trusra"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.trust_radius"
+    note: "正值/负值控制初始 trust radius 及最大/最小半径的不同策略"
+
+  tol_grad:
+    bdf_keyword: "TOLGRAD"
+    format: "下一行浮点数 bdf_dlf_glob%tolerance"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.tolerance.gradient"
+
+  tol_energy:
+    bdf_keyword: "TOLENE"
+    format: "下一行浮点数 bdf_dlf_glob%tolerance_e"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.tolerance.energy"
+
+  tol_step:
+    bdf_keyword: "TOLSTEP"
+    format: "下一行浮点数 bdf_tolerance_s"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.tolerance.step"
+
+  iopt:
+    bdf_keyword: "IOPT"
+    format: "下一行整数 bdf_dlf_glob%iopt"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.iopt"
+    note: "DL-FIND 优化方法选择，参见 DL-FIND 手册"
+
+  icoord:
+    bdf_keyword: "ICOORD"
+    format: "下一行整数 bdf_dlf_glob%icoord"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.icoord"
+    note: "坐标系类型，DL-FIND 定义；与内坐标/笛卡尔相关"
+
+  update:
+    bdf_keyword: "UPDATE"
+    format: "下一行整数 bdf_dlf_glob%update"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.update"
+    note: "Hessian 更新方案（BFGS/Bofill 等），若未设置则根据 iopt 选择默认值"
+
+  # 2. 多态 / 多态耦合 / 线搜索 --------------------------------------------------
+  imulti:
+    bdf_keyword: "IMULTI"
+    format: "下一行整数 bdf_dlf_glob%imultistate"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.multistate.imulti"
+
+  noncoupl:
+    bdf_keyword: "NONCOUPL"
+    format: "无值关键词（不需要耦合）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.multistate.no_coupling"
+
+  iline:
+    bdf_keyword: "ILINE"
+    format: "下一行整数 bdf_dlf_glob%iline"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.line_search.iline"
+
+  # 3. 约束 / 连接 / 冻结原子 ----------------------------------------------------
+  constrain:
+    bdf_keyword: "CONSTRAIN"
+    format: "一行整数 N；随后 N 行约束定义（原子索引 + 可选目标值）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.constraints"
+    note: "内部写入 optinfo%nconstraint / %constraints / %constraint_target，自动单位转换（Å→bohr, 度→弧度）"
+
+  connections:
+    bdf_keyword: "CONNECTIONS"
+    format: "一行整数 N；随后 N 行各含两个原子编号 A B"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.connections"
+
+  frozen:
+    bdf_keyword: "FROZEN"
+    format: "一行整数 N；随后 N 行 (A, flag) 控制冻结类型"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.frozen_atoms"
+    note: "flag=-1 冻结全部坐标；-2/-3/-4 等分别冻结 x/y/z 或其组合"
+
+  # 4. 扫描（Relaxed / rigid scan）----------------------------------------------
+  scan:
+    bdf_keyword: "SCAN"
+    format: "一行 'M [N]'；随后定义扫描坐标和扫描值/范围"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.scan"
+    note: "支持规则网格扫描与自定义列表扫描；内部会将角度转换为弧度、距离转换为 bohr"
+
+  dliopt:
+    bdf_keyword: "DLIOPT"
+    format: "下一行整数 bdf_dlf_glob%iopt"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.iopt_override"
+
+  dlhess:
+    bdf_keyword: "DLHESS"
+    format: "下一行整数 bdf_dlf_glob%inithessian"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.initial_hessian_method"
+
+  dlupdate:
+    bdf_keyword: "DLUPDATE"
+    format: "下一行整数 bdf_dlf_glob%update"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dlfind.update_override"
+
+  # 5. Dimer / NEB 路径搜索 ------------------------------------------------------
+  dimer:
+    bdf_keyword: "DIMER"
+    format: "无值或带 'DIMER-BLOCK' 子块控制 NOINT/CRUDE/DELTA"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.dimer"
+    note: "仅支持 DL-FIND 求解器（solver=0），且要求 iopt=3, 合适的 icoord"
+
+  neb:
+    bdf_keyword: "NEB"
+    format: "无值或带 'NEB-BLOCK' 子块控制 NIMAGE/NEBK/NEBMODE/CRUDE"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.neb"
+
+  nframe:
+    bdf_keyword: "NFRAME"
+    format: "下一行整数 Nframe（GEOMETRY2 中的结构帧数）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.neb.nframe"
+
+  geometry2:
+    bdf_keyword: "GEOMETRY2"
+    format: "多行坐标，直至 'END'；可使用 'GEOMETRY2B' 表示 Bohr 单位"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.neb.geometry2"
+
+  # 6. Hessian/频率控制（数值 Hessian, O1NumHess 等）----------------------------
+  hess_block:
+    bdf_keywords: ["HESS", "FREQ"]
+    format: "后续一行控制 INIT/FINAL/INIT+FINAL/ONLY 等子选项"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.block"
+    note: "INIT/FINAL/ONLY 控制是否在优化前/后/仅做 Hessian，ONLY 会将 solver 设为 -1"
+
+  usenumhess:
+    bdf_keywords: ["USENUMHESS", "USENUMFREQ"]
+    format: "无值关键词（强制使用数值 Hessian）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.force_numerical"
+
+  readhess:
+    bdf_keyword: "READHESS"
+    format: "无值关键词（从任务名.hess 读入初始 Hessian，允许重启）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.read_initial"
+
+  restarthess:
+    bdf_keyword: "RESTARTHESS"
+    format: "无值关键词（重启未完成的数值 Hessian）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.restart"
+
+  removeimag:
+    bdf_keywords: ["REMOVEIMAG", "RMIMAG"]
+    format: "无值关键词（自动移除多余虚频）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.remove_imag"
+    note: "仅支持 BDF solver (solver=1)，否则会报错"
+
+  check_geom:
+    bdf_keyword: "CHECK"
+    format: "无值关键词（几何检查）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.check_geometry"
+
+  recalchess:
+    bdf_keyword: "RECALCHESS"
+    format: "下一行整数 recalchess（每隔多少步重算 Hessian）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.recalculate_every"
+
+  numhessstep:
+    bdf_keyword: "NUMHESSSTEP"
+    format: "下一行浮点数 numhessstep"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.num_hess_step"
+
+  o1numhess:
+    bdf_keywords: ["O1NUMHESS", "O1NH"]
+    format: "无值关键词（调用 O1NumHess 程序，O(1) 梯度 Hessian）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.o1numhess"
+
+  parhess:
+    bdf_keyword: "PARHESS"
+    format: "无值关键词（O1NumHess 并行 Hessian）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.parhess"
+
+  dmax:
+    bdf_keyword: "DMAX"
+    format: "下一行浮点数 o1nh_dmax"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.o1nh_dmax"
+
+  ncorepergrad:
+    bdf_keywords: ["NCOREPERGRAD", "NCORESPERGRAD"]
+    format: "下一行整数 o1nh_core"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.o1nh_cores_per_grad"
+
+  nodeletegradfiles:
+    bdf_keyword: "NODELETEGRADFILES"
+    format: "无值关键词（不删除 O1NumHess/ParHess 生成的大文件）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.hessian.keep_grad_files"
+
+  # 7. UniMoVib 相关（振动/热力学分析）------------------------------------------
+  ndeg:
+    bdf_keyword: "NDEG"
+    format: "下一行整数 unimovib%ndeg"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.ndeg"
+
+  ntemp:
+    bdf_keyword: "NTEMP"
+    format: "下一行整数 unimovib%ntemp（1~30）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.ntemp"
+
+  temp:
+    bdf_keyword: "TEMP"
+    format: "一行或多行温度列表（长度 ntemp）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.temp"
+
+  npress:
+    bdf_keyword: "NPRESS"
+    format: "下一行整数 unimovib%npress（1~30）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.npress"
+
+  press:
+    bdf_keyword: "PRESS"
+    format: "一行或多行压强列表（长度 npress）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.press"
+
+  scale:
+    bdf_keyword: "SCALE"
+    format: "下一行浮点数 unimovib%scale"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.scale"
+
+  sctol:
+    bdf_keyword: "SCTOL"
+    format: "下一行浮点数 unimovib%sctol"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.sctol"
+
+  qrrho:
+    bdf_keyword: "QRRHO"
+    format: "无值关键词（开启 quasi-RRHO 修正）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.qrrho"
+
+  nmsym:
+    bdf_keyword: "NMSYM"
+    format: "无值关键词（考虑正常模对称性）"
+    location: "BDFOPT 模块"
+    yaml_mapping: "settings.bdfopt.unimovib.nmsym"
+
+# LOCALMO 模块关键词映射（局域轨道 / FLMO / IAO/IBO 等）
+localmo:
+  # 1. 输出与收敛控制 -----------------------------------------------------------
+  print_level:
+    bdf_keyword: "PRINT"
+    format: "下一行整数 iprt"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.print_level"
+
+  iprt:
+    bdf_keyword: "IPRT"
+    format: "下一行整数 iprt"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.print_level_alt"
+
+  moprt:
+    bdf_keyword: "MOPRT"
+    format: "下一行整数 iprtmo"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.mo_print_level"
+
+  maxcycle:
+    bdf_keyword: "MAXCYCLE"
+    format: "下一行整数 maxcycle"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.max_iterations"
+
+  thresh:
+    bdf_keyword: "THRESH"
+    format: "下一行两个浮点数：thresh_converge, thresh_rotation"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.thresholds.converge_and_rotation"
+
+  thresh_match:
+    bdf_keyword: "THRMATCH"
+    format: "下一行浮点数 thr_match"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.thresholds.match"
+
+  thresh_pop:
+    bdf_keyword: "THRESHPOP"
+    format: "下一行浮点数 thresh_population"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.thresholds.population"
+
+  iapair:
+    bdf_keyword: "IAPAIR"
+    format: "下一行浮点数 thr_iapair"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.thresholds.iapair"
+
+  # 2. 轨道来源 / 自旋 / 读入 ---------------------------------------------------
+  orbi:
+    bdf_keyword: "ORBI"
+    format: "下一行字符串 hforb/mcorb"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.orbitals.source"
+    note: "控制 Fnmo；mcorb 时 nden=1（MCSCF 轨道）"
+
+  spin:
+    bdf_keyword: "SPIN"
+    format: "下一行整数 spin"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.orbitals.spin"
+
+  orbread:
+    bdf_keyword: "ORBREAD"
+    format: "无值关键词（从 inporb 文件读入 MO）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.orbitals.read_external"
+
+  # 3. 冻结/子空间/活性空间控制 ------------------------------------------------
+  frozocc:
+    bdf_keyword: "FROZOCC"
+    format: "下一行整数 frozocc"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.frozen.occ"
+
+  frozvir:
+    bdf_keyword: "FROZVIR"
+    format: "下一行整数 frozvir"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.frozen.vir"
+
+  mosub:
+    bdf_keyword: "MOSUB"
+    format: "一行整数 nsubmo，下一行 nsubmo 个整数 submolist"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.subspace.mosub"
+
+  close:
+    bdf_keyword: "CLOSE"
+    format: "下一行整数 local_nclose"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.subspace.n_close"
+
+  active:
+    bdf_keyword: "ACTIVE"
+    format: "下一行整数 local_nactive"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.subspace.n_active"
+
+  sortact:
+    bdf_keyword: "SORTACT"
+    format: "多行：n_sortact(2)，随后 4 行给出 idx/actidx 的两列索引"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.subspace.sort_active"
+
+  occone:
+    bdf_keyword: "OCCONE"
+    format: "无值关键词（使用每个 LMO 各自的占据数）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.occupancy.one_per_lmo"
+
+  occtot:
+    bdf_keyword: "OCCTOT"
+    format: "无值关键词（使用总占据数）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.occupancy.total"
+
+  # 4. 局域化方法与参数 ---------------------------------------------------------
+  boys:
+    bdf_keyword: "BOYS"
+    format: "无值关键词（Boys 局域化，local_method=1）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.boys"
+
+  mboys:
+    bdf_keyword: "MBOYS"
+    format: "下一行浮点数 powerm（modified Boys 幂次）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.mboys"
+
+  cdloc:
+    bdf_keyword: "CDLOC"
+    format: "无值关键词（local_method=6）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.cdloc"
+
+  fourcent:
+    bdf_keyword: "4CENT"
+    format: "下一行浮点数 powerm"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.four_center"
+
+  pipek:
+    bdf_keywords: ["PEPIK", "PIPEK"]
+    format: "无值关键词（Pipek–Mezey 局域化，local_method=4）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.pipek"
+
+  regboys:
+    bdf_keyword: "REGBOYS"
+    format: "无值关键词（正则化 Boys 局域化，local_method=5）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.regularized_boys"
+
+  ifrenorm:
+    bdf_keyword: "IFRENORM"
+    format: "下一行整数 ifrenorm"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.ifrenorm"
+
+  hybridboys:
+    bdf_keyword: "HYBRIDBOYS"
+    format: "下一行整数 hybrid_boys"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.hybrid_boys"
+
+  hybidthre:
+    bdf_keyword: "HYBRIDTHRE"
+    format: "下一行浮点数 thresh_hybrid"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.hybrid_threshold"
+
+  trust:
+    bdf_keyword: "TRUST"
+    format: "无值关键词（使用 trust-region 方式旋转）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.trust_region"
+
+  jacobi:
+    bdf_keyword: "JACOBI"
+    format: "无值关键词（使用 Jacobi 旋转）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.jacobi"
+
+  tdpiA:
+    bdf_keyword: "TDPIA"
+    format: "无值关键词（开启 TDPIA 模式）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.tdpia"
+
+  tailcut:
+    bdf_keyword: "TAILCUT"
+    format: "下一行浮点数 tceps"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.tail_cut"
+
+  rohfloc:
+    bdf_keyword: "ROHFLOC"
+    format: "无值关键词（ROHF/ROKS 局域化）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.rohf_localization"
+
+  mcscfloc:
+    bdf_keyword: "MCSCFLOC"
+    format: "无值关键词（MCSCF 局域化，Fnmo='mcorb'）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.method.mcscf_localization"
+
+  # 5. FLMO / iOI / iOIZW / Opq 等高级控制 -------------------------------------
+  flmo:
+    bdf_keyword: "FLMO"
+    format: "无值关键词（开启 FLMO 输出）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.flmo.enabled"
+
+  mulliken:
+    bdf_keyword: "MULLIKEN"
+    format: "无值关键词（使用 Mulliken population，默认）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.population.mulliken"
+
+  lowdin:
+    bdf_keyword: "LOWDIN"
+    format: "无值关键词（使用 Löwdin population）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.population.lowdin"
+
+  ioidirect:
+    bdf_keyword: "IOIDIRECT"
+    format: "无值关键词（启用 iOI 直接模式）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.ioi.direct"
+
+  ioizw:
+    bdf_keyword: "IOIZW"
+    format: "无值关键词（启用 iOIZW，隐含 FLMO）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.ioi.ioizw"
+
+  opqact:
+    bdf_keyword: "OPQACT"
+    format: "无值关键词（用 Opq 选择活性轨道）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.opq.active"
+
+  opqthr:
+    bdf_keyword: "OPQTHR"
+    format: "下一行两个浮点数 thr_oij, thr_oia"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.opq.thresholds"
+
+  keeplink:
+    bdf_keyword: "KEEPLINK"
+    format: "一行整数 nkeeplink，下一行给出 keeplink 列表"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.flmo.keeplink"
+
+  # 6. IAO / IBO 与最小基组 -----------------------------------------------------
+  iao:
+    bdf_keyword: "IAO"
+    format: "下一行字符串 minbasis（最小基组名）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.iao.min_basis"
+
+  ibo:
+    bdf_keyword: "IBO"
+    format: "下一行字符串 minbasis（最小基组名）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.ibo.min_basis"
+
+  # 7. 其他开关 / 分析 / 对称性 / Fock 选择 -------------------------------------
+  analyze:
+    bdf_keyword: "ANALYZE"
+    format: "下一行两个整数 nocc(1), nocc(2)"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.analysis.enabled"
+
+  directgrid:
+    bdf_keyword: "DIRECTGRID"
+    format: "无值关键词（DirectGrid=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.integration.direct_grid"
+
+  nosymmo:
+    bdf_keyword: "NOSYMMO"
+    format: "无值关键词（local_nosymmo=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.symmetry.no_symmo"
+
+  withsym:
+    bdf_keyword: "WITHSYM"
+    format: "无值关键词（local_withsym=.true. 且 logic_localmo=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.symmetry.with_sym"
+
+  momatch:
+    bdf_keyword: "MOMATCH"
+    format: "无值关键词（开启 MO 匹配）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.match.mo_match"
+
+  unmatch:
+    bdf_keyword: "UNMATCH"
+    format: "无值关键词（local_unmatch=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.match.allow_unmatched"
+
+  nolmocls:
+    bdf_keyword: "NOLMOCLS"
+    format: "无值关键词（local_nolmocls=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.output.no_lmo_cls"
+
+  nolmoact:
+    bdf_keyword: "NOLMOACT"
+    format: "无值关键词（local_nolmoact=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.output.no_lmo_active"
+
+  nolmovir:
+    bdf_keyword: "NOLMOVIR"
+    format: "无值关键词（local_nolmovir=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.output.no_lmo_virtual"
+
+  focksele:
+    bdf_keyword: "FOCKSELE"
+    format: "一行 integers local_nfocksele(2)，随后两行索引列表"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.fock_selection"
+
+  cutcmo:
+    bdf_keyword: "CUTCMO"
+    format: "下一行两个浮点数 thresh_cutcmo, step_cutcmo"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.cut.cmo"
+
+  cutflmo:
+    bdf_keyword: "CUTFLMO"
+    format: "下一行两个浮点数 thresh_cutflmo, step_cutflmo"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.cut.flmo"
+
+  writemat:
+    bdf_keyword: "WRITEMAT"
+    format: "无值关键词（仅开发调试用途）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.debug.write_matrices"
+
+  nature_map:
+    bdf_keyword: "NATURE"
+    format: "无值关键词（nature_linearscaling_lmo_map=.true.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.nature_lmo_map"
+
+  # 8. Molden 输出控制 ----------------------------------------------------------
+  molden:
+    bdf_keyword: "MOLDEN"
+    format: "无值关键词（logic_molden=.true.，用户显式开启）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.molden.enabled"
+
+  nomolden:
+    bdf_keyword: "NOMOLDEN"
+    format: "无值关键词（logic_molden=.false.）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.molden.disabled"
+
+# NMR 模块关键词映射
+nmr:
+  # 1. 基本输出 / 调试控制 ------------------------------------------------------
+  iprt:
+    bdf_keyword: "IPRT"
+    format: "下一行整数 iprt"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.print_level"
+
+  icg:
+    bdf_keyword: "ICG"
+    format: "下一行整数 icg"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cg.icg"
+
+  igiao:
+    bdf_keyword: "IGIAO"
+    format: "下一行整数 igiao"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.giao.igiao"
+
+  iucpbj:
+    bdf_keyword: "IUCPBJ"
+    format: "下一行整数 iucpbj"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.ucp_bj_scheme"
+
+  thr_ijrad:
+    bdf_keyword: "THR_IJRAD"
+    format: "下一行浮点数 thr_IJrad"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.thresholds.ij_radius"
+
+  itest:
+    bdf_keyword: "ITEST"
+    format: "下一行整数 itest"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.debug.itest"
+
+  # 2. 原子选择 / 同位素 / 参考点 -----------------------------------------------
+  igatom:
+    bdf_keyword: "IGATOM"
+    format: "下一行整数 igatom"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.atom_selection.igatom"
+    note: "指定参考原子编号；与 CGCOORD/ISOTOPE 联合控制"
+
+  isotope:
+    bdf_keyword: "ISOTOPE"
+    format: "接下来 moleobj%natom 行，每行一个整数 isotope(i)"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.atom_selection.isotopes"
+
+  isfx2c:
+    bdf_keyword: "ISFX2C"
+    format: "下一行整数 isfx2c"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.x2c.isfx2c"
+
+  cgunit:
+    bdf_keyword: "CGUNIT"
+    format: "下一行字符串 cgunit（如 'AU'）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cg.unit"
+
+  cgcoord:
+    bdf_keyword: "CGCOORD"
+    format: "接下来 3 行，每行一个浮点数坐标分量"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cg.coord"
+    note: "设置后 igatom 将被设为 -2，表示使用自定义坐标"
+
+  nactive:
+    bdf_keyword: "NACTIVE"
+    format: "一行整数 nactive，随后一行给出 nactive 个原子编号"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.active_nuclei.list"
+
+  nmrfrag:
+    bdf_keyword: "NMRFRAG"
+    format: "一行整数 num_nmrfrag，随后一行 num_nmrfrag 个片段编号"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.active_fragments"
+
+  # 3. CPHF / CPKS 求解控制 -----------------------------------------------------
+  cphfdiis:
+    bdf_keyword: "CPHFDIIS"
+    format: "下一行整数 cphfdiis"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cphf.diis"
+
+  cphftype:
+    bdf_keyword: "CPHFTYPE"
+    format: "下一行整数 cphftype（1=Pople, 2=Davidson, 3=brute force）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cphf.type"
+
+  b_cphf:
+    bdf_keyword: "B_CPHF"
+    format: "下一行整数 b_cphf"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cphf.b_cphf"
+    note: "控制是否求一阶 MO，相对 $\vec{B}^{10}$ 等"
+
+  cphf_con:
+    bdf_keyword: "CPHF_CON"
+    format: "下一行浮点数 cphf_con"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cphf.convergence"
+    note: "同时设置 cphfumx=1.5*cphf_con；若未显式给出，则根据 cphftype 自动选择默认值"
+
+  cphfstep:
+    bdf_keyword: "CPHFSTEP"
+    format: "下一行整数 cphfstep"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.cphf.max_steps"
+
+  if_ti:
+    bdf_keyword: "IF_TI"
+    format: "下一行整数 if_ti（0=原始公式，1/10=第一类 TI 公式）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.formulation.if_ti"
+
+  if_iao:
+    bdf_keyword: "IF_IAO"
+    format: "下一行整数 if_iao"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.iao.enabled"
+
+  # 4. Coulomb 势 / LMO 模式 / 截断等 -------------------------------------------
+  esptype:
+    bdf_keyword: "ESPTYPE"
+    format: "下一行整数 esptype（以及十位上的全局 Coulpot 选项）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.coulomb.esptype"
+    note: "内部根据高位数字和是否逻辑_coulpot 设置 icoulpot 与逻辑_coulpot"
+
+  lmotype:
+    bdf_keyword: "LMOTYPE"
+    format: "下一行整数 lmotype（0=CMO, 1/2/3/4=不同 LMO/CMO 图像）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.type"
+
+  tailmode:
+    bdf_keyword: "TAILMODE"
+    format: "下一行整数 tailmode"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.tail_mode"
+
+  statmode:
+    bdf_keyword: "STATMODE"
+    format: "下一行整数 statmode"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.stat_mode"
+
+  vexmode:
+    bdf_keyword: "VEXMODE"
+    format: "下一行整数 vexmode"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.exchange.mode"
+
+  pso:
+    bdf_keyword: "PSO"
+    format: "下一行实数 pso"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.operators.pso"
+
+  dso:
+    bdf_keyword: "DSO"
+    format: "下一行实数 dso"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.operators.dso"
+
+  fc:
+    bdf_keyword: "FC"
+    format: "下一行实数 fc"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.operators.fc"
+
+  sd:
+    bdf_keyword: "SD"
+    format: "下一行实数 sd"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.operators.sd"
+
+  cuttail:
+    bdf_keyword: "CUTTAIL"
+    format: "无值关键词（precuttail=.true.）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.cuttail"
+
+  uncouple:
+    bdf_keyword: "UNCOUPLE"
+    format: "无值关键词（ifcouple=.false.）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.coupling.disable_coupling"
+
+  sunccouple:
+    bdf_keyword: "SUNCOUPLE"
+    format: "无值关键词（ifcouple2=.false.）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.coupling.disable_secondary_coupling"
+
+  lmoc_cuttol:
+    bdf_keyword: "LMOCCUTTOL"
+    format: "下一行浮点数 mocoef_cut_tol"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.mocoef_cut_tol"
+
+  # 5. LMO / 子系统阈值与模式 ---------------------------------------------------
+  thr_eri:
+    bdf_keyword: "THRERI"
+    format: "下一行三个浮点数 threri(1:3)"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.screening.threri"
+
+  thr_fock:
+    bdf_keyword: "THR_FOCK"
+    format: "下一行一个浮点数 thresh_fock"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.screening.thresh_fock"
+
+  threshpo:
+    bdf_keyword: "THRESHPO"
+    format: "下一行一个浮点数 thr_static"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.thr_static"
+
+  thrpomo:
+    bdf_keyword: "THRPOMO"
+    format: "下一行一个浮点数 thr_pomo"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.thr_pomo"
+
+  thrfij:
+    bdf_keyword: "THRFIJ"
+    format: "下一行一个浮点数 thr_fij"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.thr_fij"
+
+  del_per:
+    bdf_keyword: "DEL_PER"
+    format: "下一行一个浮点数 del_per"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.del_per"
+
+  lmotail:
+    bdf_keyword: "LMOTAIL"
+    format: "下一行两个浮点数 thresh_tail(1:2)"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.tail_thresholds"
+
+  thr_iapair:
+    bdf_keyword: "THR_IAPAIR"
+    format: "下一行一个浮点数 thr_iapair"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.thr_iapair"
+
+  thr_sij:
+    bdf_keyword: "THR_SIJ"
+    format: "下一行一个浮点数 thr_sij"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.thr_sij"
+
+  rabm:
+    bdf_keyword: "RABM"
+    format: "下一行一个浮点数 rabm"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.rabm"
+
+  shellcut:
+    bdf_keyword: "SHELLCUT"
+    format: "下一行一个浮点数 shell_cut_tol"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.shell_cut_tol"
+
+  iamode:
+    bdf_keyword: "IAMODE"
+    format: "下一行整数 iamode"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.iamode"
+
+  ijmode:
+    bdf_keyword: "IJMODE"
+    format: "下一行整数 ijmode"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.subsystem.ijmode"
+
+  fullaospace:
+    bdf_keyword: "FULLAOSPACE"
+    format: "无值关键词（fullAOspace=.true.）"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.lmo.full_ao_space"
+
+  upden:
+    bdf_keyword: "UPDEN"
+    format: "下一行整数 upden"
+    location: "NMR 模块"
+    yaml_mapping: "settings.nmr.integration.upden"
+
+# MP2 模块关键词映射
+mp2:
+  # 1. SCS/SOS / 用户指定缩放因子 ----------------------------------------------
+  fss:
+    bdf_keyword: "FSS"
+    format: "下一行浮点数 fss（same-spin 缩放因子）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.scaling.fss"
+    note: "默认 fss=1.0；若 fss≠1 或 fos≠1，则 iscale=1，使用用户定义 scaling"
+
+  fos:
+    bdf_keyword: "FOS"
+    format: "下一行浮点数 fos（opposite-spin 缩放因子）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.scaling.fos"
+
+  # 2. 资源与磁盘使用 -----------------------------------------------------------
+  maxdisk:
+    bdf_keyword: "MAXDISK"
+    format: "下一行字符串，如 '500MB' 或 '2GB'"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.resources.max_disk_mb"
+    note: "内部单位为 MB；若输入 GB 会转换为 MB（×1024）"
+
+  # 3. 轨道类型与局域 MP2 控制 --------------------------------------------------
+  pcmo:
+    bdf_keyword: "PCMO"
+    format: "无值关键词（使用 PCMO 相关 MP2）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.orbitals.pcmo"
+
+  lmo:
+    bdf_keyword: "LMO"
+    format: "无值关键词（使用 LMO MP2，全分子局域轨道）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.orbitals.lmo"
+    note: "仅支持 C1 群；会从 `hforb` 的 FLMOCOEF 记录读入 LMO 系数"
+
+  paircut:
+    bdf_keyword: "PAIRCUT"
+    format: "无值关键词（开启 LMO MP2 paircut 近似）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.orbitals.lmo_paircut"
+
+  iaiaint:
+    bdf_keyword: "IAIAINT"
+    format: "无值关键词（开启 iaia 积分近似）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.orbitals.iaia_int"
+
+  nature:
+    bdf_keyword: "NATURE"
+    format: "无值关键词（启用 NMO/NATURE MP2 输出）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.nmo.enabled"
+
+  # 4. 轨道输出与打印控制 --------------------------------------------------------
+  molden:
+    bdf_keyword: "MOLDEN"
+    format: "无值关键词（输出 MOLDEN 轨道信息）"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.output.molden"
+
+  iprtmo:
+    bdf_keyword: "IPRTMO"
+    format: "下一行整数 iprtmo"
+    location: "MP2 模块"
+    yaml_mapping: "settings.mp2.output.iprtmo"
+    note: "控制 MP2 相关 MO/密度等的详细打印级别"
+
+# RESP 模块关键词映射（用于几何优化和频率计算）
+# 注意：RESP 模块是几何优化的推荐选择（而非 GRAD 模块）
+# GRAD 模块仅支持 HF 和 MCSCF，不支持 DFT
+resp:
+  # 1. 总体控制 / 任务类型 ------------------------------------------------------
+  method:
+    bdf_keywords: ["METHOD", "IMETHOD"]
+    format: "整数（1=SCF/DFT 梯度或 Hessian，2=TDDFT 梯度/性质等）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.method"
+    default: "1"
+    note: "RESP 内部的 method，与 SCF 的 method.type 概念不同；用于区分基态/激发态响应"
+
+  iprt:
+    bdf_keyword: "IPRT"
+    format: "下一行整数 respinfo%iprt"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.print_level"
+    note: "默认继承 COMPASS 的全局 iprt"
+
+  ixcfun:
+    bdf_keyword: "IXCFUN"
+    format: "下一行整数 ixcfun"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.dft.xc_function_id"
+    note: "默认使用 SCF 中的 ixcfun，一般不需要单独设置"
+
+  # 2. 响应类型选择（几何/线性/极化率/超极化率等） -----------------------------
+  chck:
+    bdf_keyword: "CHCK"
+    format: "无值关键词（检查模式）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.check_only"
+
+  geom:
+    bdf_keyword: "GEOM"
+    format: "无值关键词（几何响应：梯度/Hessian）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.geometry"
+    note: "对应 respinfo%itype(1)=.true."
+
+  line:
+    bdf_keyword: "LINE"
+    format: "无值关键词（线性响应）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.linear"
+    note: "respinfo%itype(2)=.true.，且 alloper=.true."
+
+  quad:
+    bdf_keyword: "QUAD"
+    format: "无值关键词（二阶/四极相关响应）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.quadratic"
+    note: "此处 QUAD 与 TDDFT 中的 QUAD/ECD 无关，是 RESP 自己的类型标志"
+
+  fnac:
+    bdf_keyword: "FNAC"
+    format: "无值关键词（有限差分 NAC，非绝热耦合）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.fnac"
+
+  pola:
+    bdf_keyword: "POLA"
+    format: "无值关键词（极化率）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.polarizability"
+
+  hype:
+    bdf_keyword: "HYPE"
+    format: "无值关键词（超极化率）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.hyperpolarizability"
+
+  fdif:
+    bdf_keyword: "FDIF"
+    format: "无值关键词（有限差分相关类型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.types.finite_difference"
+
+  # 3. 算符与频率 --------------------------------------------------------------
+  aoper:
+    bdf_keyword: "AOPER"
+    format: "下一行一个字符串/整数，指定第一个算符"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.operators.a"
+
+  boper:
+    bdf_keyword: "BOPER"
+    format: "下一行一个字符串/整数，指定第二个算符"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.operators.b"
+
+  coper:
+    bdf_keyword: "COPER"
+    format: "下一行一个字符串/整数，指定第三个算符"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.operators.c"
+
+  bfreq:
+    bdf_keyword: "BFREQ"
+    format: "两行：第一行整数 nfreq，第二行 nfreq 个频率（a.u. 或 eV）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.frequencies.bfreq"
+
+  cfreq:
+    bdf_keyword: "CFREQ"
+    format: "两行：第一行整数 nfreq2，第二行 nfreq2 个频率"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.frequencies.cfreq"
+
+  reduced:
+    bdf_keyword: "REDUCED"
+    format: "无值关键词（做 reduced 响应量）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.reduced"
+
+  noresp:
+    bdf_keyword: "NORESP"
+    format: "无值关键词（不做响应，只做检查等）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.no_response"
+
+  ignore:
+    bdf_keyword: "IGNORE"
+    format: "下一行整数 respinfo%ignore"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.ignore"
+
+  # 4. 二阶响应（quadratic response）-------------------------------------------
+  single:
+    bdf_keyword: "SINGLE"
+    format: "无值关键词（单态 quadratic 响应）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.quadratic.single"
+
+  states:
+    bdf_keyword: "STATES"
+    format: "一行整数 nstate，随后 nstate 行，每行 3 个整数/实数"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.quadratic.states"
+
+  double:
+    bdf_keyword: "DOUBLE"
+    format: "无值关键词（成对态 quadratic 响应）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.quadratic.double"
+
+  pairs:
+    bdf_keyword: "PAIRS"
+    format: "一行整数 npair，随后 npair 行，每行 6 个整数/实数"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.quadratic.pairs"
+
+  step:
+    bdf_keyword: "STEP"
+    format: "下一行浮点数 respinfo%step"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.step"
+    note: "用于有限差分步长；若单位为 Å 且做 FDIF，则内部会按 bohr 转换"
+
+  bohr:
+    bdf_keyword: "BOHR"
+    format: "无值关键词（将 step 等视为 Bohr 单位）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.bohr_units"
+
+  deform:
+    bdf_keyword: "DEFORM"
+    format: "下一行浮点数 respinfo%deform"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.deform"
+
+  # 5. 几何响应（梯度 / Hessian）-----------------------------------------------
+  norder:
+    bdf_keyword: "NORDER"
+    format: "下一行整数 respgeom%norder（0=能量, 1=梯度, 2=Hessian, ...）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.geometry.order"
+    note: "几何优化常用 1，频率/Hessian 计算常用 2"
+
+  nprt:
+    bdf_keyword: "NPRT"
+    format: "下一行整数 respgeom%nprt"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.geometry.print_interval"
+
+  cthrd:
+    bdf_keyword: "CTHRD"
+    format: "下一行浮点数 respgeom%cthrd"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.geometry.cthrd"
+
+  reusez:
+    bdf_keyword: "REUSEZ"
+    format: "下一行整数 respgeom%iReuseZ"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.geometry.reuse_z"
+    note: "控制是否复用上一步几何优化的 Z-vector"
+
+  # 6. CPHF 求解器控制 ---------------------------------------------------------
+  rtol:
+    bdf_keyword: "RTOL"
+    format: "下一行浮点数 respcphf%rtol"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.cphf.rtol"
+    note: "CPHF 收敛阈值；Hessian 计算时，未显式设置会自动放宽/收紧"
+
+  normav:
+    bdf_keyword: "NORMAV"
+    format: "无值关键词（使用 A·V 归一化）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.cphf.normalize_av"
+
+  denormav:
+    bdf_keyword: "DENORMAV"
+    format: "无值关键词（关闭 A·V 归一化）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.cphf.disable_normalize_av"
+
+  isolver:
+    bdf_keyword: "ISOLVER"
+    format: "下一行整数 respcphf%isolver（0/1/2/3）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.cphf.solver"
+    note: "2=Pople+diag 预条件（默认），3=Pople+sTDDFT 预条件（推荐）"
+
+  # 7. TDDFT 关联信息（激发态跟踪）--------------------------------------------
+  nfiles:
+    bdf_keyword: "NFILES"
+    format: "下一行整数 nfiles"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.tddft.nfiles"
+
+  irep:
+    bdf_keyword: "IREP"
+    format: "一行数组，最多 10 个整数，对应需要跟踪的不可约表示"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.tddft.irep"
+
+  iroot:
+    bdf_keyword: "IROOT"
+    format: "一行数组，最多 10 个整数，对应每个 irrep 要跟踪的根号"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.tddft.iroot"
+
+  # 8. Jahn-Teller / NACME / 内存等高级选项 -----------------------------------
+  jahnteller:
+    bdf_keyword: "JAHNTELLER"
+    format: "一行：可以是整数 jahnteller_type 或子群名字"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.jahn_teller"
+    note: "整数 → 方向编号；非数值 → target_subgroup 名称（自动转大写）"
+
+  awf:
+    bdf_keyword: "AWF"
+    format: "下一行整数 respinfo%awf_type（0/1/2/3）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.auxiliary_wavefunction.type"
+    note: "用于 NACME 的辅助波函数方法选择"
+
+  mxmem:
+    bdf_keywords: ["MXMEM", "MAXMEM"]
+    format: "下一行整数（单位 GB，总 heap 内存），内部转换为 double 数量"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.memory.max_gb"
+
+# TDDFT 模块关键词映射
+tddft:
+  # 1. TDDFT 方法类型 / 自旋翻转 / 近似 ----------------------------------------
+  imethod:
+    bdf_keyword: "IMETHOD"
+    format: "整数（1=R-TDDFT, 2=U-TDDFT/X-TDDFT, 3=SA-TDDFT, 4=pp-RPA）"
+    location: "TDDFT 模块"
+    default: "自动：由 SCF 控制 iscfctrl(2/3/4/5/6/7) 推断（通常无需显式设置）"
+    yaml_mapping: "settings.tddft.method.imethod"
+    rules:
+      - "推荐做法：在输入中省略 IMETHOD，由 BDF 根据 SCF 自动选择：RHF/RKS → 1，ROHF/ROKS/UHF/UKS → 2（X-TDDFT，包括 spin-adapted TDDFT 的默认方案）"
+      - "settings.tddft.spin_adapted == true 只影响 SCF 方法（强制使用 ROHF/ROKS），不强制设置 IMETHOD；此时默认得到 X-TDDFT（IMETHOD=2）"
+      - "只有在专家模式下，才建议通过 settings.tddft.method.imethod 显式写 IMETHOD（例如 3=SA-TDDFT，目前主要用于程序调试）"
+    note: "IMETHOD 为高级选项，通常省略；spin-adapted TDDFT 推荐默认使用 X-TDDFT（IMETHOD 2，基于 ROHF/ROKS），SA-TDDFT（IMETHOD 3）仅在调试程序时使用"
+
+  isf:
+    bdf_keyword: "ISF"
+    format: "整数（0=自旋守恒，1/-1/2/3 为不同 SF/X-TDDFT 方案）"
+    location: "TDDFT 模块"
+    default: "0"
+    yaml_mapping: "settings.tddft.method.spin_flip"
+
+  itda:
+    bdf_keyword: "ITDA"
+    format: "整数（0=TD-DFT, 1=TDA）"
+    location: "TDDFT 模块"
+    default: "0"
+    yaml_mapping: "settings.tddft.method.tda"
+
+  ipprpa:
+    bdf_keyword: "PPRPA"
+    format: "整数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.pp_rpa_flag"
+
+  idrpa:
+    bdf_keyword: "IDRPA"
+    format: "整数（1=dRPA）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.drpa_flag"
+
+  ispa:
+    bdf_keyword: "ISPA"
+    format: "整数（1=SPA）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.spa_flag"
+
+  # 2. 特殊核 / X-/S-/SF-TDDFT 细节 --------------------------------------------
+  ialda:
+    bdf_keyword: "IALDA"
+    format: "整数（1=强制 ALDA 核）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.kernel.ialda"
+
+  thrdab:
+    bdf_keyword: "THRDAB"
+    format: "浮点数（spin-flip 激发相关阈值）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.kernel.thrdab"
+
+  kernelctrl:
+    bdf_keyword: "KERNELCTRL"
+    format: "整数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.kernel.kernelctrl"
+    note: "控制 ALDA kernel 稳定化、多重共线核等；MULTICOLLINEAR 将 kernelctrl 直接设为 5"
+
+  multicollinear:
+    bdf_keyword: "MULTICOLLINEAR"
+    format: "无值关键词"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.kernel.multicollinear"
+    note: "等价于 kernelctrl=5，用于多重共线 kernel"
+
+  ncollinear:
+    bdf_keyword: "NCOLLINEAR"
+    format: "整数（Ncollinear）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.kernel.ncollinear"
+
+  itest:
+    bdf_keyword: "ITEST"
+    format: "整数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.test_flag"
+
+  icorrect:
+    bdf_keyword: "ICORRECT"
+    format: "整数（RPA 修正开关）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.icorrect"
+
+  itrans:
+    bdf_keyword: "ITRANS"
+    format: "整数（X-TDDFT 中 U→S 表示的转换控制）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.itrans"
+
+  iro:
+    bdf_keyword: "IRO"
+    format: "整数（S-TDDFT 中 CV(1) 激发选择）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.iro"
+
+  icv:
+    bdf_keyword: "ICV"
+    format: "整数（SF-TDDFT 中 CV(ab) 激发选择）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.icv"
+
+  ioo:
+    bdf_keyword: "IOO"
+    format: "整数（仅包含 oo 类型激发时 =1）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.ioo"
+
+  iksf:
+    bdf_keyword: "IKSF"
+    format: "整数（0/1/2，Ksf 的不同构造方案）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.method.iksf"
+
+  # 3. 有效活性空间 / 能量窗 ---------------------------------------------------
+  iact:
+    bdf_keyword: "IACT"
+    format: "整数（0=无截断；1=活性空间近似）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.active_space.enabled"
+
+  elw:
+    bdf_keyword: "ELW"
+    format: "浮点数（活性空间能量下限）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.active_space.elw"
+
+  eup:
+    bdf_keyword: "EUP"
+    format: "浮点数（活性空间能量上限）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.active_space.eup"
+
+  # 4. 本征问题求解控制（Davidson / iVI） --------------------------------------
+  maxfac:
+    bdf_keyword: "MAXFAC"
+    format: "整数（Davidson 子空间维度 Nfac）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.max_subspace_dim"
+
+  idiag:
+    bdf_keyword: "IDIAG"
+    format: "整数（对角化方法，1=Davidson, 2=FullDiag, 3=iVI）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.idiag"
+
+  iviop:
+    bdf_keyword: "IVIOP"
+    format: "整数（iVI 选项，个位控制能窗/能心模式）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.iviop"
+
+  iguess:
+    bdf_keyword: "IGUESS"
+    format: "整数（0=IPA, 1=读入, 20=sTDA/sTDDFT guess 等）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.guess"
+    note: "也会影响 Davidson dvdsonguess/dvdsondump、iupdate 等"
+
+  grimmestd:
+    bdf_keyword: "GRIMMESTD"
+    format: "无值关键词"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.grimme_std"
+    note: "要求 iguess=20；将 grimmestd%noiter 设为 .true.，对应独立的 sTDA/sTDDFT 模式"
+
+  ndiag:
+    bdf_keyword: "NDIAG"
+    format: "一行数组：每个不可约表示一个整数 ndiag(irep)"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.ndiag_per_irrep"
+
+  iexit:
+    bdf_keyword: "IEXIT"
+    format: "整数（全局激发态数，最后可用来覆盖 nexit）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.excitations.global_nexit"
+
+  nexit:
+    bdf_keyword: "NEXIT"
+    format: "一行数组：每个不可约表示目标激发态数 nexit(irep)"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.excitations.n_states_per_irrep"
+
+  nroot:
+    bdf_keyword: "NROOT"
+    format: "与 NEXIT 相同语义（历史别名）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.excitations.nroot_per_irrep"
+
+  iroot:
+    bdf_keyword: "IROOT"
+    format: "整数（历史用法：目标态数/根号）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.excitations.iroot"
+
+  followiroot:
+    bdf_keyword: "FOLLOWIROOT"
+    format: "整数（跟踪哪一个根）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.excitations.follow_root"
+
+  # 5. 性质计算 / 矩阵元素 / NTO / 冻结轨道 -----------------------------------
+  lefteig:
+    bdf_keyword: "LEFTEIG"
+    format: "无值关键词（现默认已启用，关键字主要用于兼容）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.left_eigvec"
+
+  istore:
+    bdf_keyword: "ISTORE"
+    format: "整数（存在哪个 tdinfoX 文件）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.store_index"
+
+  iprops:
+    bdf_keyword: "IPROPS"
+    format: "整数（是否做性质计算/多少种）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.iprops"
+
+  isoc:
+    bdf_keyword: "ISOC"
+    format: "整数（自旋轨道相关性质总开关）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.isoc"
+
+  readsoc:
+    bdf_keyword: "READSOC"
+    format: "无值关键词（从文件读 SOC 矩阵）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.readsoc"
+
+  imatsoc:
+    bdf_keyword: "IMATSOC"
+    format: "整数 + 随后 imatsoc 行，每行 6 个整数/实数索引"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.imatsoc"
+
+  imatrsf:
+    bdf_keyword: "IMATRSF"
+    format: "整数 + 随后 imatrsf 行，每行 6 个数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.imatrsf"
+    note: "代码注释中提到该关键字目前没有实质效果"
+
+  imatrso:
+    bdf_keyword: "IMATRSO"
+    format: "整数 + 随后 imatrso 行，每行 2 个索引"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.imatrso"
+
+  imatnsf:
+    bdf_keyword: "IMATNSF"
+    format: "整数 + 随后 imatnsf 行，每行 6 个数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.imatnsf"
+
+  imatnso:
+    bdf_keyword: "IMATNSO"
+    format: "整数 + 随后 imatnso 行，每行 2 个索引"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.imatnso"
+
+  ifgs:
+    bdf_keyword: "IFGS"
+    format: "整数（是否包含基态、如何处理）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.ifgs"
+
+  nfiles:
+    bdf_keyword: "NFILES"
+    format: "整数（tdinfo 文件个数）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.nfiles"
+
+  thr_dact:
+    bdf_keyword: "THRDACT"
+    format: "浮点数（active pair 阈值）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.thrd_act"
+
+  isgn:
+    bdf_keyword: "ISGN"
+    format: "整数（测试 TDDFT 解的符号）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.isgn"
+
+  ivo:
+    bdf_keyword: "IVO"
+    format: "整数（IVO 相关控制）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.ivo"
+
+  istab:
+    bdf_keyword: "ISTAB"
+    format: "整数（1=进行稳定性分析）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.stability.istab"
+
+  ikind:
+    bdf_keyword: "IKIND"
+    format: "整数（稳定性分析类型）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.stability.ikind"
+
+  save:
+    bdf_keyword: "SAVE"
+    format: "一行两个整数：isave, iroot"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.save_state"
+
+  iprt:
+    bdf_keyword: "IPRT"
+    format: "整数（TDDFT 模块内部打印等级）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.print_level"
+
+  # 6. ERI / 内存参数 ----------------------------------------------------------
+  maxblk:
+    bdf_keyword: "MAXBLK"
+    format: "整数（ERI 分块大小，后续会乘以 131072 转为记录数）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.eri.maxblk"
+
+  dft:
+    bdf_keyword: "DFT"
+    format: "下一行两个字符串：fun_exchange fun_correlation"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.dft.functional"
+    note: "内部调用 bdf_setfunctional；与 ground-state DFT 紧密关联，通常由 SCF 模块设置"
+
+  maxmem:
+    bdf_keyword: "MAXMEM"
+    format: "整数（M 单位，用于 AO ERI）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.eri.maxmem_mb"
+
+  imemshrink:
+    bdf_keyword: "IMEMSHRINK"
+    format: "整数（内存压缩模式）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.eri.imemshrink"
+
+  memjkop:
+    bdf_keyword: "MEMJKOP"
+    format: "浮点数（J/K 算符 AO-TDDFT 内存上限，MB）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.eri.memjkop_mb"
+
+  maxeri:
+    bdf_keyword: "MAXERI"
+    format: "整数（AO ERI 缓冲大小，后续乘以 131072）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.eri.maxeri"
+
+  # 7. 本征矢输出控制 ----------------------------------------------------------
+  nprt:
+    bdf_keyword: "NPRT"
+    format: "整数（输出多少本征矢）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.output.nprt"
+
+  cthrd:
+    bdf_keyword: "CTHRD"
+    format: "浮点数（本征矢筛选阈值）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.output.cthrd"
+
+  aokxc:
+    bdf_keyword: "AOKXC"
+    format: "无值关键词（开启 AO Kxc）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.aokxc.enabled"
+
+  maxld:
+    bdf_keyword: "MAXLD"
+    format: "整数（内部 iVI 最大维度）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.i_ivi_maxld"
+
+  iwindow:
+    bdf_keyword: "IWINDOW"
+    format: "一行：el er [unit]（unit 可为 eV/NM/AU/CM）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.window"
+
+  icenter:
+    bdf_keyword: "ICENTER"
+    format: "一行：ecenter [unit]"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solver.center"
+
+  # 8. 片段相关 / 调试 / 仅积分模式 -------------------------------------------
+  fragtomol:
+    bdf_keyword: "FRAGTOMOL"
+    format: "整数 ictrl_frag2mole"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.fragments.ictrl_frag2mole"
+
+  print_debug:
+    bdf_keyword: "PRINT"
+    format: "整数（TDDFT 系统级调试打印 iprtsys）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.debug.print"
+
+  onlyint:
+    bdf_keyword: "ONLYINT"
+    format: "无值关键词（只计算积分，不做完整 TDDFT）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.debug.only_integrals"
+
+  lmotocmo:
+    bdf_keyword: "LMOTOCMO"
+    format: "无值关键词（将 LMO 投影到 CMO，配合溶剂分析）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solvent.lmotocmo"
+
+  fragana:
+    bdf_keywords: ["FRAGANA", "FRAGANALYZE", "FRAGANALYSIS"]
+    format: "无值关键词（片段激发分析）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.fragments.fragment_excitation_analyze"
+
+  remstore:
+    bdf_keyword: "REMSTORE"
+    format: "无值关键词（打开 reminfo 文件存储额外信息）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.debug.remstore"
+
+  frzcore:
+    bdf_keyword: "FRZCORE"
+    format: "一行数组：每个 irrep 冻结核轨道数 frzcore(irep)"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.frozen_orbitals.core_per_irrep"
+
+  frzvirt:
+    bdf_keywords: ["FRZVIR", "FRZVIRT"]
+    format: "一行数组：每个 irrep 冻结虚轨道数 frzvirt(irep)"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.frozen_orbitals.virt_per_irrep"
+
+  frzorb:
+    bdf_keyword: "FRZORB"
+    format: "第一行 nfrzorb，第二行给出 nfrzorb 个轨道编号"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.frozen_orbitals.explicit_orbitals"
+
+  ntoan:
+    bdf_keywords: ["NTOAN", "NTOANALYZE", "NTOANALYSIS"]
+    format: "一行整数 nto_nstate，若 >0，下一行给出具体态编号列表"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.nto.analysis"
+
+  dencube:
+    bdf_keyword: "DENCUBE"
+    format: "无值关键词（开通 TRDCUBE 与 DENCUBE）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.density_and_transition"
+
+  trdcube:
+    bdf_keyword: "TRDCUBE"
+    format: "无值关键词（只写出跃迁密度 cube）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.transition_only"
+
+  cubetxyz:
+    bdf_keyword: "CUBETXYZ"
+    format: "一行 3 个实数，cube 网格步长"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.grid_step"
+
+  cubeorigin:
+    bdf_keyword: "CUBEORIGIN"
+    format: "一行 3 个实数，cube 原点坐标"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.origin"
+
+  cubenxyz:
+    bdf_keyword: "CUBENXYZ"
+    format: "一行 3 个整数，cube 网格点数"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.nxyz"
+
+  cuberexpand:
+    bdf_keyword: "CUBEREXPAND"
+    format: "一行实数，cube 盒子扩展半径"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.expand_radius"
+
+  cubesuffix:
+    bdf_keyword: "CUBESUFFIX"
+    format: "一行字符串（文件后缀，最长 8 字符）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.cube.suffix"
+
+  # 9. 实时 TDDFT / 线性响应 ---------------------------------------------------
+  irt:
+    bdf_keyword: "IRT"
+    format: "整数 irt（1=启用实时间 TDDFT）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.irt"
+
+  pert:
+    bdf_keyword: "PERT"
+    format: "一行 3 个实数，外场扰动向量"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.perturbation"
+
+  ievo:
+    bdf_keyword: "IEVO"
+    format: "整数（ABBA 演化算法选择）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.ievo"
+
+  order:
+    bdf_keyword: "ORDER"
+    format: "整数（时间演化算法阶数）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.order"
+
+  tt:
+    bdf_keyword: "TT"
+    format: "浮点数（总演化时间）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.total_time"
+
+  dt:
+    bdf_keyword: "DT"
+    format: "浮点数（时间步长）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.time_step"
+
+  dark:
+    bdf_keyword: "DARK"
+    format: "无值关键词（暗态演化）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.dark"
+
+  rtcheck:
+    bdf_keyword: "RTCHECK"
+    format: "无值关键词（实时演化检查开关）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.real_time.check"
+
+  # 10. ECD / 四极矩 -----------------------------------------------------------
+  ecd:
+    bdf_keyword: "ECD"
+    format: "无值关键词（电子圆二色性 + 磁偶极跃迁贡献）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.ecd"
+
+  quad:
+    bdf_keyword: "QUAD"
+    format: "无值关键词（四极矩贡献，同时自动开启 ECD）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.properties.quad"
+
+# XUANYUAN 模块关键词映射（双电子积分 / 直接 SCF / 相对论等控制）
+xuanyuan:
+  # 1. 范围分离 / RS-DFT --------------------------------------------------------
+  range_separation:
+    bdf_keywords: ["RSOMEGA", "RS"]
+    format: "无值关键词，下一行一个实数 omega"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.range_separation.omega"
+    note: "logic_rangsep=.true.，romiga 从下一行读取，并写入 toptask%param(1)"
+
+  # 2. 多极积分 / 额外多极矩 ----------------------------------------------------
+  multipole:
+    bdf_keyword: "MULTIP"
+    format: "下一行整数 multipole"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.multipole_order"
+    note: "默认 multipole=0（跳过多极积分）"
+
+  # 3. 相对论哈密顿量 / 自旋轨道耦合 -------------------------------------------
+  effective_hamiltonian:
+    bdf_keyword: "HEFF"
+    format: "下一行整数 iheff"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.relativistic.heff"
+    rules:
+      - "iheff≠0 时自动打开 scalar relativistic 逻辑（logic_scalrel=.true.）"
+      - "iheff≠0 且存在 ECP（toptask%task(3)=1 或 7）时报错"
+    note: "最终写入 toptask%task(27)，并可能将 toptask%task(3) 设置为 2（X2C 标量相对论）"
+
+  spin_orbit_coupling:
+    bdf_keyword: "HSOC"
+    format: "下一行整数 ihsoc"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.relativistic.hsoc"
+    rules:
+      - "设置 ihsoc 后自动开启 SO INT 逻辑（logic_sorel=.true.）"
+      - "对于 ECP 体系，hsoc 只能为 10（代码中强制）"
+    note: "最终写入 toptask%task(31)，并要求群必须为 Abel 群（否则停止）"
+
+  # 4. 核半径 / 核模型 ---------------------------------------------------------
+  nuclear_radii_custom:
+    bdf_keyword: "NUCLEARRADII"
+    format: "下一行整数 N；随后 N 行：iatom r"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.nuclear_radii.custom"
+    note: "调用 SetIsotopeNuclearRadius(i-1,r) 自定义核半径，用于精细性质"
+
+  nuclear_model:
+    bdf_keyword: "NUCLEAR"
+    format: "下一行整数 inuc"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.nuclear_model"
+    rules:
+      - "inuc ∈ {-1,0,1}：写入 toptask%task(66)"
+    note: "其它取值视为非法，程序会报错退出"
+
+  # 5. 检查 / 调试标志 ---------------------------------------------------------
+  nocheck:
+    bdf_keyword: "NOCHECK"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.debug.no_check"
+    note: "通过修改 toptask%task(67) 的个位，控制检查行为（task(67)=10*J+I）"
+
+  nrdebug:
+    bdf_keyword: "NRDEBUG"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.debug.nrdebug"
+    note: "通过修改 toptask%task(67) 的十位，打开 NR 调试信息"
+
+  # 6. direct SCF / ERI 存储方式 ----------------------------------------------
+  direct_scf:
+    bdf_keyword: "DIRECT"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.direct_scf"
+    rules:
+      - "若 RI 相关 task(9)≥4，则将 task(9) 取相反数（负号表示 direct RI）"
+      - "否则设置 task(9)=1 并启用 Schwarz 预筛选 task(19)=1"
+    note: "控制是否采用直接 SCF（不把全部二电子积分写盘）"
+
+  non_direct_scf:
+    bdf_keyword: "NONEDIRECT"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.non_direct_scf"
+    rules:
+      - "若 task(9)=1，则重置为 0，表示普通非 direct 计算"
+
+  poisson_integrals:
+    bdf_keyword: "POISSO"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.poisson"
+    note: "将 toptask%task(9) 设为 -1，用 Poisson 方式处理库仑项"
+
+  cholesky_decomposition:
+    bdf_keyword: "CHOLES"
+    format: "关键字后下一行：cdmethod thresh_cd，例如 'S-CD 1.d-4'"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.cholesky"
+    rules:
+      - "S-CD → task(9)=2"
+      - "1C-CD → task(9)=3"
+      - "否则使用标准 CD：task(9)=2, thresh_cd=1.d-4，并打印提示"
+
+  no_primitive_screening:
+    bdf_keyword: "NOPRIM"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.disable_primitive_screening"
+    note: "screen=.false.，关闭 primitive 层面的积分筛选"
+
+  # 7. ERI 缓冲大小 / 内存控制 -------------------------------------------------
+  maxmem:
+    bdf_keyword: "MAXMEM"
+    format: "下一行字符串，形如 '200MW' 或 '2GW'"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.integrals.max_memory"
+    rules:
+      - "单位 MW：max2ebatch = lenm * 1024 * 1024"
+      - "单位 GW：max2ebatch = lenm * 1024 * 1024 * 1024"
+    note: "控制 ERI buffer 大小，最终写入 toptask%task(24)=max2ebatch"
+
+  mass_polarization:
+    bdf_keyword: "MASSPOL"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.mass_polarization"
+    note: "logic_masspol=.true.，开启质量极化项"
+
+  # 8. 打印 / 导数筛选 / 积分跳过 / metric -----------------------------------
+  print_level:
+    bdf_keyword: "PRINT"
+    format: "下一行整数 iprt"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.print_level"
+    note: "覆盖全局 iprt 打印等级（tools 中也会读写 toptask%task(256)）"
+
+  deriv_screen_mode:
+    bdf_keyword: "DERIVSCR"
+    format: "下一行整数 mode_deriv_screen"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.derivative_screening.mode"
+    note: "控制导数积分的筛选模式（mode_deriv_screen）"
+
+  skip_integrals:
+    bdf_keyword: "SKIPINT"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.skip_integrals"
+    note: "skip_int=.true.，用于测试/调试时跳过真实积分计算"
+
+  dump_metric:
+    bdf_keyword: "DUMPMETRIC"
+    format: "无值关键词"
+    location: "XUANYUAN 模块"
+    yaml_mapping: "settings.xuanyuan.dump_metric"
+    note: "dumpmetric=.true.，将 |S_{μν}| 压缩到原子级 metric 并写入 .dsmetric"
+
+# 注意事项
+notes:
+  - "关键词可能需要根据 BDF 版本调整"
+  - "某些关键词可能有多个变体"
+  - "✅ 大小写不敏感：模块名和关键词大小写不敏感，BDF 会自动处理"
+  - "💡 建议格式：模块名使用大写（如 $COMPASS），关键词使用首字母大写（如 Title）"
+  - "💡 为了可读性和一致性，建议使用标准格式"

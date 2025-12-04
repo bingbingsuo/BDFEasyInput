@@ -1,0 +1,4761 @@
+functionals:
+  XC_GGA_C_ACGGA:
+    description: acGGA, asymptotically corrected GGA correlation
+    family: GGA
+    id: 39
+    macro: XC_GGA_C_ACGGA
+    role: C
+    short_name: C_ACGGA
+  XC_GGA_C_ACGGAP:
+    description: acGGA+, asymptotically corrected GGA correlation+
+    family: GGA
+    id: 176
+    macro: XC_GGA_C_ACGGAP
+    role: C
+    short_name: C_ACGGAP
+  XC_GGA_C_AM05:
+    description: Armiento & Mattsson 05
+    family: GGA
+    id: 135
+    macro: XC_GGA_C_AM05
+    role: C
+    short_name: C_AM05
+  XC_GGA_C_APBE:
+    description: mu fixed from the semiclassical neutral atom
+    family: GGA
+    id: 186
+    macro: XC_GGA_C_APBE
+    role: C
+    short_name: C_APBE
+  XC_GGA_C_BMK:
+    description: Boese-Martin correlation for kinetics
+    family: GGA
+    id: 280
+    macro: XC_GGA_C_BMK
+    role: C
+    short_name: C_BMK
+  XC_GGA_C_CCDF:
+    description: 'ccDF: coupled-cluster motivated density functional'
+    family: GGA
+    id: 313
+    macro: XC_GGA_C_CCDF
+    role: C
+    short_name: C_CCDF
+  XC_GGA_C_CHACHIYO:
+    description: Chachiyo simple GGA correlation
+    family: GGA
+    id: 309
+    macro: XC_GGA_C_CHACHIYO
+    role: C
+    short_name: C_CHACHIYO
+  XC_GGA_C_CS1:
+    description: A dynamical correlation functional
+    family: GGA
+    id: 565
+    macro: XC_GGA_C_CS1
+    role: C
+    short_name: C_CS1
+  XC_GGA_C_FT97:
+    description: Filatov & Thiel correlation
+    family: GGA
+    id: 88
+    macro: XC_GGA_C_FT97
+    role: C
+    short_name: C_FT97
+  XC_GGA_C_GAM:
+    description: Minnesota GAM correlation functional
+    family: GGA
+    id: 33
+    macro: XC_GGA_C_GAM
+    role: C
+    short_name: C_GAM
+  XC_GGA_C_GAPC:
+    description: GapC
+    family: GGA
+    id: 555
+    macro: XC_GGA_C_GAPC
+    role: C
+    short_name: C_GAPC
+  XC_GGA_C_GAPLOC:
+    description: Gaploc
+    family: GGA
+    id: 556
+    macro: XC_GGA_C_GAPLOC
+    role: C
+    short_name: C_GAPLOC
+  XC_GGA_C_HCTH_A:
+    description: HCTH-A
+    family: GGA
+    id: 97
+    macro: XC_GGA_C_HCTH_A
+    role: C
+    short_name: C_HCTH_A
+  XC_GGA_C_HYB_TAU_HCTH:
+    description: correlation part of hyb-tau-hcth
+    family: GGA
+    id: 283
+    macro: XC_GGA_C_HYB_TAU_HCTH
+    role: C
+    short_name: C_HYB_TAU_HCTH
+  XC_GGA_C_LM:
+    description: Langreth & Mehl
+    family: GGA
+    id: 137
+    macro: XC_GGA_C_LM
+    role: C
+    short_name: C_LM
+  XC_GGA_C_LYP:
+    description: Lee, Yang & Parr
+    family: GGA
+    id: 131
+    macro: XC_GGA_C_LYP
+    role: C
+    short_name: C_LYP
+  XC_GGA_C_LYPR:
+    description: Short-range LYP by Ai, Fang, and Su
+    family: GGA
+    id: 624
+    macro: XC_GGA_C_LYPR
+    role: C
+    short_name: C_LYPR
+  XC_GGA_C_MGGAC:
+    description: beta fitted to LC20 to be used with MGGAC
+    family: GGA
+    id: 712
+    macro: XC_GGA_C_MGGAC
+    role: C
+    short_name: C_MGGAC
+  XC_GGA_C_N12:
+    description: Minnesota N12 correlation functional
+    family: GGA
+    id: 80
+    macro: XC_GGA_C_N12
+    role: C
+    short_name: C_N12
+  XC_GGA_C_N12_SX:
+    description: Minnesota N12-SX correlation functional
+    family: GGA
+    id: 79
+    macro: XC_GGA_C_N12_SX
+    role: C
+    short_name: C_N12_SX
+  XC_GGA_C_OPTC:
+    description: Optimized correlation functional of Cohen and Handy
+    family: GGA
+    id: 200
+    macro: XC_GGA_C_OPTC
+    role: C
+    short_name: C_OPTC
+  XC_GGA_C_OP_B88:
+    description: one-parameter progressive functional (B88 version)
+    family: GGA
+    id: 87
+    macro: XC_GGA_C_OP_B88
+    role: C
+    short_name: C_OP_B88
+  XC_GGA_C_OP_G96:
+    description: one-parameter progressive functional (G96 version)
+    family: GGA
+    id: 85
+    macro: XC_GGA_C_OP_G96
+    role: C
+    short_name: C_OP_G96
+  XC_GGA_C_OP_PBE:
+    description: one-parameter progressive functional (PBE version)
+    family: GGA
+    id: 86
+    macro: XC_GGA_C_OP_PBE
+    role: C
+    short_name: C_OP_PBE
+  XC_GGA_C_OP_PW91:
+    description: one-parameter progressive functional (PW91 version)
+    family: GGA
+    id: 262
+    macro: XC_GGA_C_OP_PW91
+    role: C
+    short_name: C_OP_PW91
+  XC_GGA_C_OP_XALPHA:
+    description: one-parameter progressive functional (Xalpha version)
+    family: GGA
+    id: 84
+    macro: XC_GGA_C_OP_XALPHA
+    role: C
+    short_name: C_OP_XALPHA
+  XC_GGA_C_P86:
+    description: Perdew 86
+    family: GGA
+    id: 132
+    macro: XC_GGA_C_P86
+    role: C
+    short_name: C_P86
+  XC_GGA_C_P86VWN:
+    description: Perdew 86 based on VWN5 correlation
+    family: GGA
+    id: 252
+    macro: XC_GGA_C_P86VWN
+    role: C
+    short_name: C_P86VWN
+  XC_GGA_C_P86VWN_FT:
+    description: Perdew 86 based on VWN5 correlation, with more accurate value for
+      ftilde
+    family: GGA
+    id: 253
+    macro: XC_GGA_C_P86VWN_FT
+    role: C
+    short_name: C_P86VWN_FT
+  XC_GGA_C_P86_FT:
+    description: Perdew 86 with more accurate value for ftilde
+    family: GGA
+    id: 217
+    macro: XC_GGA_C_P86_FT
+    role: C
+    short_name: C_P86_FT
+  XC_GGA_C_PBE:
+    description: Perdew, Burke & Ernzerhof
+    family: GGA
+    id: 130
+    macro: XC_GGA_C_PBE
+    role: C
+    short_name: C_PBE
+  XC_GGA_C_PBEFE:
+    description: PBE for formation energies
+    family: GGA
+    id: 258
+    macro: XC_GGA_C_PBEFE
+    role: C
+    short_name: C_PBEFE
+  XC_GGA_C_PBEINT:
+    description: PBE for hybrid interfaces
+    family: GGA
+    id: 62
+    macro: XC_GGA_C_PBEINT
+    role: C
+    short_name: C_PBEINT
+  XC_GGA_C_PBELOC:
+    description: Semilocal dynamical correlation
+    family: GGA
+    id: 246
+    macro: XC_GGA_C_PBELOC
+    role: C
+    short_name: C_PBELOC
+  XC_GGA_C_PBE_ERF_GWS:
+    description: Short ranged PBE correlation (erfc)
+    family: GGA
+    id: 657
+    macro: XC_GGA_C_PBE_ERF_GWS
+    role: C
+    short_name: C_PBE_ERF_GWS
+  XC_GGA_C_PBE_GAUSSIAN:
+    description: Perdew, Burke & Ernzerhof with parameters from Gaussian
+    family: GGA
+    id: 322
+    macro: XC_GGA_C_PBE_GAUSSIAN
+    role: C
+    short_name: C_PBE_GAUSSIAN
+  XC_GGA_C_PBE_JRGX:
+    description: Reparametrized PBE by Pedroza, Silva & Capelle
+    family: GGA
+    id: 138
+    macro: XC_GGA_C_PBE_JRGX
+    role: C
+    short_name: C_PBE_JRGX
+  XC_GGA_C_PBE_MOL:
+    description: Reparametrized PBE by del Campo, Gazquez, Trickey & Vela
+    family: GGA
+    id: 272
+    macro: XC_GGA_C_PBE_MOL
+    role: C
+    short_name: C_PBE_MOL
+  XC_GGA_C_PBE_SOL:
+    description: Perdew, Burke & Ernzerhof SOL
+    family: GGA
+    id: 133
+    macro: XC_GGA_C_PBE_SOL
+    role: C
+    short_name: C_PBE_SOL
+  XC_GGA_C_PBE_VWN:
+    description: Perdew, Burke & Ernzerhof based on VWN correlation
+    family: GGA
+    id: 216
+    macro: XC_GGA_C_PBE_VWN
+    role: C
+    short_name: C_PBE_VWN
+  XC_GGA_C_PW91:
+    description: Perdew & Wang 91
+    family: GGA
+    id: 134
+    macro: XC_GGA_C_PW91
+    role: C
+    short_name: C_PW91
+  XC_GGA_C_Q2D:
+    description: Chiodo et al
+    family: GGA
+    id: 47
+    macro: XC_GGA_C_Q2D
+    role: C
+    short_name: C_Q2D
+  XC_GGA_C_REGTPSS:
+    description: regularized TPSS correlation
+    family: GGA
+    id: 83
+    macro: XC_GGA_C_REGTPSS
+    role: C
+    short_name: C_REGTPSS
+  XC_GGA_C_REVTCA:
+    description: Tognetti, Cortona, Adamo (revised)
+    family: GGA
+    id: 99
+    macro: XC_GGA_C_REVTCA
+    role: C
+    short_name: C_REVTCA
+  XC_GGA_C_RGE2:
+    description: Regularized PBE
+    family: GGA
+    id: 143
+    macro: XC_GGA_C_RGE2
+    role: C
+    short_name: C_RGE2
+  XC_GGA_C_SCAN_E0:
+    description: GGA component of SCAN
+    family: GGA
+    id: 553
+    macro: XC_GGA_C_SCAN_E0
+    role: C
+    short_name: C_SCAN_E0
+  XC_GGA_C_SG4:
+    description: Semiclassical GGA at fourth order
+    family: GGA
+    id: 534
+    macro: XC_GGA_C_SG4
+    role: C
+    short_name: C_SG4
+  XC_GGA_C_SOGGA11:
+    description: Second-order generalized gradient approximation 2011
+    family: GGA
+    id: 152
+    macro: XC_GGA_C_SOGGA11
+    role: C
+    short_name: C_SOGGA11
+  XC_GGA_C_SOGGA11_X:
+    description: To be used with HYB_GGA_X_SOGGA11_X
+    family: GGA
+    id: 159
+    macro: XC_GGA_C_SOGGA11_X
+    role: C
+    short_name: C_SOGGA11_X
+  XC_GGA_C_SPBE:
+    description: PBE correlation to be used with the SSB exchange
+    family: GGA
+    id: 89
+    macro: XC_GGA_C_SPBE
+    role: C
+    short_name: C_SPBE
+  XC_GGA_C_TAU_HCTH:
+    description: correlation part of tau-hcth
+    family: GGA
+    id: 281
+    macro: XC_GGA_C_TAU_HCTH
+    role: C
+    short_name: C_TAU_HCTH
+  XC_GGA_C_TCA:
+    description: Tognetti, Cortona, Adamo
+    family: GGA
+    id: 100
+    macro: XC_GGA_C_TCA
+    role: C
+    short_name: C_TCA
+  XC_GGA_C_TM_LYP:
+    description: Takkar and McCarthy reparametrization, also known as reLYP
+    family: GGA
+    id: 559
+    macro: XC_GGA_C_TM_LYP
+    role: C
+    short_name: C_TM_LYP
+  XC_GGA_C_TM_PBE:
+    description: Thakkar and McCarthy reparametrization
+    family: GGA
+    id: 560
+    macro: XC_GGA_C_TM_PBE
+    role: C
+    short_name: C_TM_PBE
+  XC_GGA_C_W94:
+    description: Wilson 94 (Eq. 25)
+    family: GGA
+    id: 561
+    macro: XC_GGA_C_W94
+    role: C
+    short_name: C_W94
+  XC_GGA_C_WI:
+    description: Wilson & Ivanov
+    family: GGA
+    id: 148
+    macro: XC_GGA_C_WI
+    role: C
+    short_name: C_WI
+  XC_GGA_C_WI0:
+    description: Wilson & Ivanov initial version
+    family: GGA
+    id: 153
+    macro: XC_GGA_C_WI0
+    role: C
+    short_name: C_WI0
+  XC_GGA_C_WL:
+    description: Wilson & Levy
+    family: GGA
+    id: 147
+    macro: XC_GGA_C_WL
+    role: C
+    short_name: C_WL
+  XC_GGA_C_XPBE:
+    description: Extended PBE by Xu & Goddard III
+    family: GGA
+    id: 136
+    macro: XC_GGA_C_XPBE
+    role: C
+    short_name: C_XPBE
+  XC_GGA_C_ZPBEINT:
+    description: spin-dependent gradient correction to PBEint
+    family: GGA
+    id: 61
+    macro: XC_GGA_C_ZPBEINT
+    role: C
+    short_name: C_ZPBEINT
+  XC_GGA_C_ZPBESOL:
+    description: spin-dependent gradient correction to PBEsol
+    family: GGA
+    id: 63
+    macro: XC_GGA_C_ZPBESOL
+    role: C
+    short_name: C_ZPBESOL
+  XC_GGA_C_ZVPBEINT:
+    description: another spin-dependent correction to PBEint
+    family: GGA
+    id: 557
+    macro: XC_GGA_C_ZVPBEINT
+    role: C
+    short_name: C_ZVPBEINT
+  XC_GGA_C_ZVPBELOC:
+    description: PBEloc variation with enhanced compatibility with exact exchange
+    family: GGA
+    id: 606
+    macro: XC_GGA_C_ZVPBELOC
+    role: C
+    short_name: C_ZVPBELOC
+  XC_GGA_C_ZVPBESOL:
+    description: another spin-dependent correction to PBEsol
+    family: GGA
+    id: 558
+    macro: XC_GGA_C_ZVPBESOL
+    role: C
+    short_name: C_ZVPBESOL
+  XC_GGA_K_ABSP1:
+    description: gamma-TFvW form by Acharya et al [$g = 1 - 1.412/N^{1/3}$]
+    family: GGA
+    id: 506
+    macro: XC_GGA_K_ABSP1
+    role: K
+    short_name: K_ABSP1
+  XC_GGA_K_ABSP2:
+    description: gamma-TFvW form by Acharya et al [$g = 1 - 1.332/N^{1/3}$]
+    family: GGA
+    id: 507
+    macro: XC_GGA_K_ABSP2
+    role: K
+    short_name: K_ABSP2
+  XC_GGA_K_ABSP3:
+    description: gamma-TFvW form by Acharya et al [$g = 1 - 1.513/N^{0.35}]$
+    family: GGA
+    id: 277
+    macro: XC_GGA_K_ABSP3
+    role: K
+    short_name: K_ABSP3
+  XC_GGA_K_ABSP4:
+    description: gamma-TFvW form by Acharya et al [$g = l = 1/(1 + 1.332/N^{1/3})$]
+    family: GGA
+    id: 278
+    macro: XC_GGA_K_ABSP4
+    role: K
+    short_name: K_ABSP4
+  XC_GGA_K_APBE:
+    description: mu fixed from the semiclassical neutral atom
+    family: GGA
+    id: 185
+    macro: XC_GGA_K_APBE
+    role: K
+    short_name: K_APBE
+  XC_GGA_K_APBEINT:
+    description: interpolated version of APBE
+    family: GGA
+    id: 54
+    macro: XC_GGA_K_APBEINT
+    role: K
+    short_name: K_APBEINT
+  XC_GGA_K_BALTIN:
+    description: TF-lambda-vW form by Baltin (l = 5/9)
+    family: GGA
+    id: 504
+    macro: XC_GGA_K_BALTIN
+    role: K
+    short_name: K_BALTIN
+  XC_GGA_K_DK:
+    description: DePristo and Kress
+    family: GGA
+    id: 516
+    macro: XC_GGA_K_DK
+    role: K
+    short_name: K_DK
+  XC_GGA_K_ERNZERHOF:
+    description: Ernzerhof
+    family: GGA
+    id: 520
+    macro: XC_GGA_K_ERNZERHOF
+    role: K
+    short_name: K_ERNZERHOF
+  XC_GGA_K_EXP4:
+    description: Intermediate form between PBE3 and PBE4
+    family: GGA
+    id: 597
+    macro: XC_GGA_K_EXP4
+    role: K
+    short_name: K_EXP4
+  XC_GGA_K_FR_B88:
+    description: Fuentealba & Reyes (B88 version)
+    family: GGA
+    id: 514
+    macro: XC_GGA_K_FR_B88
+    role: K
+    short_name: K_FR_B88
+  XC_GGA_K_FR_PW86:
+    description: Fuentealba & Reyes (PW86 version)
+    family: GGA
+    id: 515
+    macro: XC_GGA_K_FR_PW86
+    role: K
+    short_name: K_FR_PW86
+  XC_GGA_K_GDS08:
+    description: Combined analytical theory with Monte Carlo sampling
+    family: GGA
+    id: 591
+    macro: XC_GGA_K_GDS08
+    role: K
+    short_name: K_GDS08
+  XC_GGA_K_GE2:
+    description: Second-order gradient expansion of the kinetic energy density
+    family: GGA
+    id: 501
+    macro: XC_GGA_K_GE2
+    role: K
+    short_name: K_GE2
+  XC_GGA_K_GHDS10:
+    description: As GDS08 but for an electron gas with spin
+    family: GGA
+    id: 592
+    macro: XC_GGA_K_GHDS10
+    role: K
+    short_name: K_GHDS10
+  XC_GGA_K_GHDS10R:
+    description: Reparametrized GHDS10
+    family: GGA
+    id: 593
+    macro: XC_GGA_K_GHDS10R
+    role: K
+    short_name: K_GHDS10R
+  XC_GGA_K_GOLDEN:
+    description: TF-lambda-vW form by Golden (l = 13/45)
+    family: GGA
+    id: 502
+    macro: XC_GGA_K_GOLDEN
+    role: K
+    short_name: K_GOLDEN
+  XC_GGA_K_GP85:
+    description: gamma-TFvW form by Ghosh and Parr
+    family: GGA
+    id: 510
+    macro: XC_GGA_K_GP85
+    role: K
+    short_name: K_GP85
+  XC_GGA_K_GR:
+    description: gamma-TFvW form by Gazquez and Robles
+    family: GGA
+    id: 508
+    macro: XC_GGA_K_GR
+    role: K
+    short_name: K_GR
+  XC_GGA_K_LC94:
+    description: Lembarki & Chermette
+    family: GGA
+    id: 521
+    macro: XC_GGA_K_LC94
+    role: K
+    short_name: K_LC94
+  XC_GGA_K_LGAP:
+    description: LGAP by Constantin et al
+    family: GGA
+    id: 620
+    macro: XC_GGA_K_LGAP
+    role: K
+    short_name: K_LGAP
+  XC_GGA_K_LGAP_GE:
+    description: LGAP-GE by Constantin et al
+    family: GGA
+    id: 633
+    macro: XC_GGA_K_LGAP_GE
+    role: K
+    short_name: K_LGAP_GE
+  XC_GGA_K_LIEB:
+    description: TF-lambda-vW form by Lieb (l = 0.185909191)
+    family: GGA
+    id: 505
+    macro: XC_GGA_K_LIEB
+    role: K
+    short_name: K_LIEB
+  XC_GGA_K_LKT:
+    description: Luo-Karasiev-Trickey GGA kinetic
+    family: GGA
+    id: 613
+    macro: XC_GGA_K_LKT
+    role: K
+    short_name: K_LKT
+  XC_GGA_K_LLP:
+    description: Lee, Lee & Parr
+    family: GGA
+    id: 522
+    macro: XC_GGA_K_LLP
+    role: K
+    short_name: K_LLP
+  XC_GGA_K_LUDENA:
+    description: gamma-TFvW form by Ludena
+    family: GGA
+    id: 509
+    macro: XC_GGA_K_LUDENA
+    role: K
+    short_name: K_LUDENA
+  XC_GGA_K_MEYER:
+    description: Meyer,  Wang, and Young
+    family: GGA
+    id: 57
+    macro: XC_GGA_K_MEYER
+    role: K
+    short_name: K_MEYER
+  XC_GGA_K_OL1:
+    description: Ou-Yang and Levy v.1
+    family: GGA
+    id: 512
+    macro: XC_GGA_K_OL1
+    role: K
+    short_name: K_OL1
+  XC_GGA_K_OL2:
+    description: Ou-Yang and Levy v.2
+    family: GGA
+    id: 513
+    macro: XC_GGA_K_OL2
+    role: K
+    short_name: K_OL2
+  XC_GGA_K_PBE2:
+    description: Three parameter PBE-like expansion
+    family: GGA
+    id: 616
+    macro: XC_GGA_K_PBE2
+    role: K
+    short_name: K_PBE2
+  XC_GGA_K_PBE3:
+    description: Three parameter PBE-like expansion
+    family: GGA
+    id: 595
+    macro: XC_GGA_K_PBE3
+    role: K
+    short_name: K_PBE3
+  XC_GGA_K_PBE4:
+    description: Four parameter PBE-like expansion
+    family: GGA
+    id: 596
+    macro: XC_GGA_K_PBE4
+    role: K
+    short_name: K_PBE4
+  XC_GGA_K_PEARSON:
+    description: Pearson 1992
+    family: GGA
+    id: 511
+    macro: XC_GGA_K_PEARSON
+    role: K
+    short_name: K_PEARSON
+  XC_GGA_K_PERDEW:
+    description: Perdew
+    family: GGA
+    id: 517
+    macro: XC_GGA_K_PERDEW
+    role: K
+    short_name: K_PERDEW
+  XC_GGA_K_PG1:
+    description: PG1 (Pauli-Gaussian) functional by Constantin, Fabiano, and Della
+      Sala
+    family: GGA
+    id: 219
+    macro: XC_GGA_K_PG1
+    role: K
+    short_name: K_PG1
+  XC_GGA_K_RATIONAL_P:
+    description: RATIONAL$^{p}$ by Lehtomaki and Lopez-Acevedo (by default $p=3/2$,
+      $C_{2}=0.7687$)
+    family: GGA
+    id: 218
+    macro: XC_GGA_K_RATIONAL_P
+    role: K
+    short_name: K_RATIONAL_P
+  XC_GGA_K_REVAPBE:
+    description: revised APBE
+    family: GGA
+    id: 55
+    macro: XC_GGA_K_REVAPBE
+    role: K
+    short_name: K_REVAPBE
+  XC_GGA_K_REVAPBEINT:
+    description: interpolated version of revAPBE
+    family: GGA
+    id: 53
+    macro: XC_GGA_K_REVAPBEINT
+    role: K
+    short_name: K_REVAPBEINT
+  XC_GGA_K_TFVW:
+    description: Thomas-Fermi plus von Weiszaecker correction
+    family: GGA
+    id: 52
+    macro: XC_GGA_K_TFVW
+    role: K
+    short_name: K_TFVW
+  XC_GGA_K_TFVW_OPT:
+    description: empirically optimized gamma-TFvW form
+    family: GGA
+    id: 635
+    macro: XC_GGA_K_TFVW_OPT
+    role: K
+    short_name: K_TFVW_OPT
+  XC_GGA_K_THAKKAR:
+    description: Thakkar 1992
+    family: GGA
+    id: 523
+    macro: XC_GGA_K_THAKKAR
+    role: K
+    short_name: K_THAKKAR
+  XC_GGA_K_TKVLN:
+    description: Trickey, Karasiev, and Vela
+    family: GGA
+    id: 594
+    macro: XC_GGA_K_TKVLN
+    role: K
+    short_name: K_TKVLN
+  XC_GGA_K_TW1:
+    description: Tran and Wesolowski set 1 (Table II)
+    family: GGA
+    id: 187
+    macro: XC_GGA_K_TW1
+    role: K
+    short_name: K_TW1
+  XC_GGA_K_TW2:
+    description: Tran and Wesolowski set 2 (Table II)
+    family: GGA
+    id: 188
+    macro: XC_GGA_K_TW2
+    role: K
+    short_name: K_TW2
+  XC_GGA_K_TW3:
+    description: Tran and Wesolowski set 3 (Table II)
+    family: GGA
+    id: 189
+    macro: XC_GGA_K_TW3
+    role: K
+    short_name: K_TW3
+  XC_GGA_K_TW4:
+    description: Tran and Wesolowski set 4 (Table II)
+    family: GGA
+    id: 190
+    macro: XC_GGA_K_TW4
+    role: K
+    short_name: K_TW4
+  XC_GGA_K_VJKS:
+    description: Vitos, Johansson, Kollar, and Skriver
+    family: GGA
+    id: 519
+    macro: XC_GGA_K_VJKS
+    role: K
+    short_name: K_VJKS
+  XC_GGA_K_VSK:
+    description: Vitos, Skriver, and Kollar
+    family: GGA
+    id: 518
+    macro: XC_GGA_K_VSK
+    role: K
+    short_name: K_VSK
+  XC_GGA_K_VT84F:
+    description: VT84F by Karasiev et al
+    family: GGA
+    id: 619
+    macro: XC_GGA_K_VT84F
+    role: K
+    short_name: K_VT84F
+  XC_GGA_K_VW:
+    description: von Weiszaecker correction to Thomas-Fermi
+    family: GGA
+    id: 500
+    macro: XC_GGA_K_VW
+    role: K
+    short_name: K_VW
+  XC_GGA_K_YT65:
+    description: TF-lambda-vW form by Yonei and Tomishima (l = 1/5)
+    family: GGA
+    id: 503
+    macro: XC_GGA_K_YT65
+    role: K
+    short_name: K_YT65
+  XC_GGA_XC_B97_3C:
+    description: Becke 97-3c by Grimme et. al.
+    family: GGA
+    id: 327
+    macro: XC_GGA_XC_B97_3C
+    role: XC
+    short_name: XC_B97_3C
+  XC_GGA_XC_B97_D:
+    description: Becke 97-D
+    family: GGA
+    id: 170
+    macro: XC_GGA_XC_B97_D
+    role: XC
+    short_name: XC_B97_D
+  XC_GGA_XC_B97_GGA1:
+    description: Becke 97 GGA-1
+    family: GGA
+    id: 96
+    macro: XC_GGA_XC_B97_GGA1
+    role: XC
+    short_name: XC_B97_GGA1
+  XC_GGA_XC_BEEFVDW:
+    description: BEEF-vdW exchange-correlation
+    family: GGA
+    id: 286
+    macro: XC_GGA_XC_BEEFVDW
+    role: XC
+    short_name: XC_BEEFVDW
+  XC_GGA_XC_EDF1:
+    description: EDF1
+    family: GGA
+    id: 165
+    macro: XC_GGA_XC_EDF1
+    role: XC
+    short_name: XC_EDF1
+  XC_GGA_XC_HCTH_120:
+    description: HCTH/120
+    family: GGA
+    id: 162
+    macro: XC_GGA_XC_HCTH_120
+    role: XC
+    short_name: XC_HCTH_120
+  XC_GGA_XC_HCTH_147:
+    description: HCTH/147
+    family: GGA
+    id: 163
+    macro: XC_GGA_XC_HCTH_147
+    role: XC
+    short_name: XC_HCTH_147
+  XC_GGA_XC_HCTH_407:
+    description: HCTH/407
+    family: GGA
+    id: 164
+    macro: XC_GGA_XC_HCTH_407
+    role: XC
+    short_name: XC_HCTH_407
+  XC_GGA_XC_HCTH_407P:
+    description: HCTH/407+
+    family: GGA
+    id: 93
+    macro: XC_GGA_XC_HCTH_407P
+    role: XC
+    short_name: XC_HCTH_407P
+  XC_GGA_XC_HCTH_93:
+    description: HCTH/93
+    family: GGA
+    id: 161
+    macro: XC_GGA_XC_HCTH_93
+    role: XC
+    short_name: XC_HCTH_93
+  XC_GGA_XC_HCTH_P14:
+    description: HCTH p=1/4
+    family: GGA
+    id: 95
+    macro: XC_GGA_XC_HCTH_P14
+    role: XC
+    short_name: XC_HCTH_P14
+  XC_GGA_XC_HCTH_P76:
+    description: HCTH p=7/6
+    family: GGA
+    id: 94
+    macro: XC_GGA_XC_HCTH_P76
+    role: XC
+    short_name: XC_HCTH_P76
+  XC_GGA_XC_HLE16:
+    description: high local exchange 2016
+    family: GGA
+    id: 545
+    macro: XC_GGA_XC_HLE16
+    role: XC
+    short_name: XC_HLE16
+  XC_GGA_XC_KT1:
+    description: Keal and Tozer, version 1
+    family: GGA
+    id: 167
+    macro: XC_GGA_XC_KT1
+    role: XC
+    short_name: XC_KT1
+  XC_GGA_XC_KT2:
+    description: Keal and Tozer, version 2
+    family: GGA
+    id: 146
+    macro: XC_GGA_XC_KT2
+    role: XC
+    short_name: XC_KT2
+  XC_GGA_XC_KT3:
+    description: Keal and Tozer, version 3
+    family: GGA
+    id: 587
+    macro: XC_GGA_XC_KT3
+    role: XC
+    short_name: XC_KT3
+  XC_GGA_XC_MOHLYP:
+    description: Functional for organometallic chemistry
+    family: GGA
+    id: 194
+    macro: XC_GGA_XC_MOHLYP
+    role: XC
+    short_name: XC_MOHLYP
+  XC_GGA_XC_MOHLYP2:
+    description: Functional for barrier heights
+    family: GGA
+    id: 195
+    macro: XC_GGA_XC_MOHLYP2
+    role: XC
+    short_name: XC_MOHLYP2
+  XC_GGA_XC_MPWLYP1W:
+    description: mPWLYP1w
+    family: GGA
+    id: 174
+    macro: XC_GGA_XC_MPWLYP1W
+    role: XC
+    short_name: XC_MPWLYP1W
+  XC_GGA_XC_NCAP:
+    description: NCAP exchange + P86 correlation
+    family: GGA
+    id: 181
+    macro: XC_GGA_XC_NCAP
+    role: XC
+    short_name: XC_NCAP
+  XC_GGA_XC_OBLYP_D:
+    description: oBLYP-D functional of Goerigk and Grimme
+    family: GGA
+    id: 67
+    macro: XC_GGA_XC_OBLYP_D
+    role: XC
+    short_name: XC_OBLYP_D
+  XC_GGA_XC_OPBE_D:
+    description: oPBE-D functional of Goerigk and Grimme
+    family: GGA
+    id: 65
+    macro: XC_GGA_XC_OPBE_D
+    role: XC
+    short_name: XC_OPBE_D
+  XC_GGA_XC_OPWLYP_D:
+    description: oPWLYP-D functional of Goerigk and Grimme
+    family: GGA
+    id: 66
+    macro: XC_GGA_XC_OPWLYP_D
+    role: XC
+    short_name: XC_OPWLYP_D
+  XC_GGA_XC_PBE1W:
+    description: PBE1W
+    family: GGA
+    id: 173
+    macro: XC_GGA_XC_PBE1W
+    role: XC
+    short_name: XC_PBE1W
+  XC_GGA_XC_PBELYP1W:
+    description: PBELYP1W
+    family: GGA
+    id: 175
+    macro: XC_GGA_XC_PBELYP1W
+    role: XC
+    short_name: XC_PBELYP1W
+  XC_GGA_XC_TH1:
+    description: Tozer and Handy v. 1
+    family: GGA
+    id: 154
+    macro: XC_GGA_XC_TH1
+    role: XC
+    short_name: XC_TH1
+  XC_GGA_XC_TH2:
+    description: Tozer and Handy v. 2
+    family: GGA
+    id: 155
+    macro: XC_GGA_XC_TH2
+    role: XC
+    short_name: XC_TH2
+  XC_GGA_XC_TH3:
+    description: Tozer and Handy v. 3
+    family: GGA
+    id: 156
+    macro: XC_GGA_XC_TH3
+    role: XC
+    short_name: XC_TH3
+  XC_GGA_XC_TH4:
+    description: Tozer and Handy v. 4
+    family: GGA
+    id: 157
+    macro: XC_GGA_XC_TH4
+    role: XC
+    short_name: XC_TH4
+  XC_GGA_XC_TH_FC:
+    description: Tozer and Handy v. FC
+    family: GGA
+    id: 197
+    macro: XC_GGA_XC_TH_FC
+    role: XC
+    short_name: XC_TH_FC
+  XC_GGA_XC_TH_FCFO:
+    description: Tozer and Handy v. FCFO
+    family: GGA
+    id: 198
+    macro: XC_GGA_XC_TH_FCFO
+    role: XC
+    short_name: XC_TH_FCFO
+  XC_GGA_XC_TH_FCO:
+    description: Tozer and Handy v. FCO
+    family: GGA
+    id: 199
+    macro: XC_GGA_XC_TH_FCO
+    role: XC
+    short_name: XC_TH_FCO
+  XC_GGA_XC_TH_FL:
+    description: Tozer and Handy v. FL
+    family: GGA
+    id: 196
+    macro: XC_GGA_XC_TH_FL
+    role: XC
+    short_name: XC_TH_FL
+  XC_GGA_XC_VV10:
+    description: Vydrov and Van Voorhis
+    family: GGA
+    id: 255
+    macro: XC_GGA_XC_VV10
+    role: XC
+    short_name: XC_VV10
+  XC_GGA_XC_XLYP:
+    description: XLYP
+    family: GGA
+    id: 166
+    macro: XC_GGA_XC_XLYP
+    role: XC
+    short_name: XC_XLYP
+  XC_GGA_X_2D_B86:
+    description: Becke 86 in 2D
+    family: GGA
+    id: 128
+    macro: XC_GGA_X_2D_B86
+    role: X
+    short_name: X_2D_B86
+  XC_GGA_X_2D_B86_MGC:
+    description: Becke 86 with modified gradient correction for 2D
+    family: GGA
+    id: 124
+    macro: XC_GGA_X_2D_B86_MGC
+    role: X
+    short_name: X_2D_B86_MGC
+  XC_GGA_X_2D_B88:
+    description: Becke 88 in 2D
+    family: GGA
+    id: 127
+    macro: XC_GGA_X_2D_B88
+    role: X
+    short_name: X_2D_B88
+  XC_GGA_X_2D_PBE:
+    description: Perdew, Burke & Ernzerhof in 2D
+    family: GGA
+    id: 129
+    macro: XC_GGA_X_2D_PBE
+    role: X
+    short_name: X_2D_PBE
+  XC_GGA_X_AIRY:
+    description: Constantin et al based on the Airy gas
+    family: GGA
+    id: 192
+    macro: XC_GGA_X_AIRY
+    role: X
+    short_name: X_AIRY
+  XC_GGA_X_AK13:
+    description: Armiento & Kuemmel 2013
+    family: GGA
+    id: 56
+    macro: XC_GGA_X_AK13
+    role: X
+    short_name: X_AK13
+  XC_GGA_X_AM05:
+    description: Armiento & Mattsson 05
+    family: GGA
+    id: 120
+    macro: XC_GGA_X_AM05
+    role: X
+    short_name: X_AM05
+  XC_GGA_X_APBE:
+    description: mu fixed from the semiclassical neutral atom
+    family: GGA
+    id: 184
+    macro: XC_GGA_X_APBE
+    role: X
+    short_name: X_APBE
+  XC_GGA_X_B86:
+    description: Becke 86
+    family: GGA
+    id: 103
+    macro: XC_GGA_X_B86
+    role: X
+    short_name: X_B86
+  XC_GGA_X_B86_MGC:
+    description: Becke 86 with modified gradient correction
+    family: GGA
+    id: 105
+    macro: XC_GGA_X_B86_MGC
+    role: X
+    short_name: X_B86_MGC
+  XC_GGA_X_B86_R:
+    description: Revised Becke 86 with modified gradient correction
+    family: GGA
+    id: 41
+    macro: XC_GGA_X_B86_R
+    role: X
+    short_name: X_B86_R
+  XC_GGA_X_B88:
+    description: Becke 88
+    family: GGA
+    id: 106
+    macro: XC_GGA_X_B88
+    role: X
+    short_name: X_B88
+  XC_GGA_X_B88M:
+    description: Becke 88 reoptimized to be used with tau1
+    family: GGA
+    id: 570
+    macro: XC_GGA_X_B88M
+    role: X
+    short_name: X_B88M
+  XC_GGA_X_B88_6311G:
+    description: Becke 88 reoptimized with the 6-311G** basis set
+    family: GGA
+    id: 179
+    macro: XC_GGA_X_B88_6311G
+    role: X
+    short_name: X_B88_6311G
+  XC_GGA_X_BAYESIAN:
+    description: Bayesian best fit for the enhancement factor
+    family: GGA
+    id: 125
+    macro: XC_GGA_X_BAYESIAN
+    role: X
+    short_name: X_BAYESIAN
+  XC_GGA_X_BCGP:
+    description: Burke, Cancio, Gould, and Pittalis
+    family: GGA
+    id: 38
+    macro: XC_GGA_X_BCGP
+    role: X
+    short_name: X_BCGP
+  XC_GGA_X_BEEFVDW:
+    description: BEEF-vdW exchange
+    family: GGA
+    id: 285
+    macro: XC_GGA_X_BEEFVDW
+    role: X
+    short_name: X_BEEFVDW
+  XC_GGA_X_BKL1:
+    description: Type-I band gap functional by Bhattacharjee, Koshi and Lee
+    family: GGA
+    id: 338
+    macro: XC_GGA_X_BKL1
+    role: X
+    short_name: X_BKL1
+  XC_GGA_X_BKL2:
+    description: Type-II band gap functional by Bhattacharjee, Koshi and Lee
+    family: GGA
+    id: 339
+    macro: XC_GGA_X_BKL2
+    role: X
+    short_name: X_BKL2
+  XC_GGA_X_BPCCAC:
+    description: BPCCAC (GRAC for the energy)
+    family: GGA
+    id: 98
+    macro: XC_GGA_X_BPCCAC
+    role: X
+    short_name: X_BPCCAC
+  XC_GGA_X_C09X:
+    description: C09x to be used with the VdW of Rutgers-Chalmers
+    family: GGA
+    id: 158
+    macro: XC_GGA_X_C09X
+    role: X
+    short_name: X_C09X
+  XC_GGA_X_CAP:
+    description: Correct Asymptotic Potential
+    family: GGA
+    id: 270
+    macro: XC_GGA_X_CAP
+    role: X
+    short_name: X_CAP
+  XC_GGA_X_CHACHIYO:
+    description: Chachiyo exchange
+    family: GGA
+    id: 298
+    macro: XC_GGA_X_CHACHIYO
+    role: X
+    short_name: X_CHACHIYO
+  XC_GGA_X_DK87_R1:
+    description: dePristo & Kress 87 version R1
+    family: GGA
+    id: 111
+    macro: XC_GGA_X_DK87_R1
+    role: X
+    short_name: X_DK87_R1
+  XC_GGA_X_DK87_R2:
+    description: dePristo & Kress 87 version R2
+    family: GGA
+    id: 112
+    macro: XC_GGA_X_DK87_R2
+    role: X
+    short_name: X_DK87_R2
+  XC_GGA_X_EB88:
+    description: Non-empirical (excogitated) B88 functional of Becke and Elliott
+    family: GGA
+    id: 271
+    macro: XC_GGA_X_EB88
+    role: X
+    short_name: X_EB88
+  XC_GGA_X_ECMV92:
+    description: Engel, Chevary, Macdonald and Vosko
+    family: GGA
+    id: 215
+    macro: XC_GGA_X_ECMV92
+    role: X
+    short_name: X_ECMV92
+  XC_GGA_X_EV93:
+    description: Engel and Vosko
+    family: GGA
+    id: 35
+    macro: XC_GGA_X_EV93
+    role: X
+    short_name: X_EV93
+  XC_GGA_X_FD_LB94:
+    description: Functional derivative recovered from the stray LB94 potential
+    family: GGA
+    id: 604
+    macro: XC_GGA_X_FD_LB94
+    role: X
+    short_name: X_FD_LB94
+  XC_GGA_X_FD_REVLB94:
+    description: Revised FD_LB94
+    family: GGA
+    id: 605
+    macro: XC_GGA_X_FD_REVLB94
+    role: X
+    short_name: X_FD_REVLB94
+  XC_GGA_X_FT97_A:
+    description: Filatov & Thiel 97 (version A)
+    family: GGA
+    id: 114
+    macro: XC_GGA_X_FT97_A
+    role: X
+    short_name: X_FT97_A
+  XC_GGA_X_FT97_B:
+    description: Filatov & Thiel 97 (version B)
+    family: GGA
+    id: 115
+    macro: XC_GGA_X_FT97_B
+    role: X
+    short_name: X_FT97_B
+  XC_GGA_X_G96:
+    description: Gill 96
+    family: GGA
+    id: 107
+    macro: XC_GGA_X_G96
+    role: X
+    short_name: X_G96
+  XC_GGA_X_GAM:
+    description: Minnesota GAM exhange functional
+    family: GGA
+    id: 32
+    macro: XC_GGA_X_GAM
+    role: X
+    short_name: X_GAM
+  XC_GGA_X_GG99:
+    description: Gilbert and Gill 1999
+    family: GGA
+    id: 535
+    macro: XC_GGA_X_GG99
+    role: X
+    short_name: X_GG99
+  XC_GGA_X_HCTH_A:
+    description: HCTH-A
+    family: GGA
+    id: 34
+    macro: XC_GGA_X_HCTH_A
+    role: X
+    short_name: X_HCTH_A
+  XC_GGA_X_HJS_B88:
+    description: HJS screened exchange B88 version
+    family: GGA
+    id: 527
+    macro: XC_GGA_X_HJS_B88
+    role: X
+    short_name: X_HJS_B88
+  XC_GGA_X_HJS_B88_V2:
+    description: HJS screened exchange B88 corrected version
+    family: GGA
+    id: 46
+    macro: XC_GGA_X_HJS_B88_V2
+    role: X
+    short_name: X_HJS_B88_V2
+  XC_GGA_X_HJS_B97X:
+    description: HJS screened exchange B97x version
+    family: GGA
+    id: 528
+    macro: XC_GGA_X_HJS_B97X
+    role: X
+    short_name: X_HJS_B97X
+  XC_GGA_X_HJS_PBE:
+    description: HJS screened exchange PBE version
+    family: GGA
+    id: 525
+    macro: XC_GGA_X_HJS_PBE
+    role: X
+    short_name: X_HJS_PBE
+  XC_GGA_X_HJS_PBE_SOL:
+    description: HJS screened exchange PBE_SOL version
+    family: GGA
+    id: 526
+    macro: XC_GGA_X_HJS_PBE_SOL
+    role: X
+    short_name: X_HJS_PBE_SOL
+  XC_GGA_X_HTBS:
+    description: Haas, Tran, Blaha, and Schwarz
+    family: GGA
+    id: 191
+    macro: XC_GGA_X_HTBS
+    role: X
+    short_name: X_HTBS
+  XC_GGA_X_ITYH:
+    description: Short-range recipe for B88 functional - erf
+    family: GGA
+    id: 529
+    macro: XC_GGA_X_ITYH
+    role: X
+    short_name: X_ITYH
+  XC_GGA_X_ITYH_OPTX:
+    description: Short-range recipe for OPTX functional
+    family: GGA
+    id: 622
+    macro: XC_GGA_X_ITYH_OPTX
+    role: X
+    short_name: X_ITYH_OPTX
+  XC_GGA_X_ITYH_PBE:
+    description: Short-range recipe for PBE functional
+    family: GGA
+    id: 623
+    macro: XC_GGA_X_ITYH_PBE
+    role: X
+    short_name: X_ITYH_PBE
+  XC_GGA_X_KGG99:
+    description: Gilbert and Gill 1999 (mixed)
+    family: GGA
+    id: 544
+    macro: XC_GGA_X_KGG99
+    role: X
+    short_name: X_KGG99
+  XC_GGA_X_KT1:
+    description: Exchange part of Keal and Tozer version 1
+    family: GGA
+    id: 145
+    macro: XC_GGA_X_KT1
+    role: X
+    short_name: X_KT1
+  XC_GGA_X_LAG:
+    description: Local Airy Gas
+    family: GGA
+    id: 193
+    macro: XC_GGA_X_LAG
+    role: X
+    short_name: X_LAG
+  XC_GGA_X_LAMBDA_CH_N:
+    description: lambda_CH(N) version of PBE
+    family: GGA
+    id: 44
+    macro: XC_GGA_X_LAMBDA_CH_N
+    role: X
+    short_name: X_LAMBDA_CH_N
+  XC_GGA_X_LAMBDA_LO_N:
+    description: lambda_LO(N) version of PBE
+    family: GGA
+    id: 45
+    macro: XC_GGA_X_LAMBDA_LO_N
+    role: X
+    short_name: X_LAMBDA_LO_N
+  XC_GGA_X_LAMBDA_OC2_N:
+    description: lambda_OC2(N) version of PBE
+    family: GGA
+    id: 40
+    macro: XC_GGA_X_LAMBDA_OC2_N
+    role: X
+    short_name: X_LAMBDA_OC2_N
+  XC_GGA_X_LB:
+    description: van Leeuwen & Baerends
+    family: GGA
+    id: 160
+    macro: XC_GGA_X_LB
+    role: X
+    short_name: X_LB
+  XC_GGA_X_LBM:
+    description: van Leeuwen & Baerends modified
+    family: GGA
+    id: 182
+    macro: XC_GGA_X_LBM
+    role: X
+    short_name: X_LBM
+  XC_GGA_X_LG93:
+    description: Lacks & Gordon 93
+    family: GGA
+    id: 113
+    macro: XC_GGA_X_LG93
+    role: X
+    short_name: X_LG93
+  XC_GGA_X_LSPBE:
+    description: lsPBE, a PW91-like modification of PBE exchange
+    family: GGA
+    id: 168
+    macro: XC_GGA_X_LSPBE
+    role: X
+    short_name: X_LSPBE
+  XC_GGA_X_LSRPBE:
+    description: lsRPBE, a PW91-like modification of RPBE
+    family: GGA
+    id: 169
+    macro: XC_GGA_X_LSRPBE
+    role: X
+    short_name: X_LSRPBE
+  XC_GGA_X_LV_RPW86:
+    description: Berland and Hyldgaard
+    family: GGA
+    id: 58
+    macro: XC_GGA_X_LV_RPW86
+    role: X
+    short_name: X_LV_RPW86
+  XC_GGA_X_MB88:
+    description: Modified Becke 88 for proton transfer
+    family: GGA
+    id: 149
+    macro: XC_GGA_X_MB88
+    role: X
+    short_name: X_MB88
+  XC_GGA_X_MPBE:
+    description: Adamo & Barone modification to PBE
+    family: GGA
+    id: 122
+    macro: XC_GGA_X_MPBE
+    role: X
+    short_name: X_MPBE
+  XC_GGA_X_MPW91:
+    description: mPW91 of Adamo & Barone
+    family: GGA
+    id: 119
+    macro: XC_GGA_X_MPW91
+    role: X
+    short_name: X_MPW91
+  XC_GGA_X_N12:
+    description: Minnesota N12 exchange functional
+    family: GGA
+    id: 82
+    macro: XC_GGA_X_N12
+    role: X
+    short_name: X_N12
+  XC_GGA_X_NCAP:
+    description: Nearly correct asymptotic potential
+    family: GGA
+    id: 180
+    macro: XC_GGA_X_NCAP
+    role: X
+    short_name: X_NCAP
+  XC_GGA_X_NCAPR:
+    description: Nearly correct asymptotic potential revised
+    family: GGA
+    id: 324
+    macro: XC_GGA_X_NCAPR
+    role: X
+    short_name: X_NCAPR
+  XC_GGA_X_OL2:
+    description: Exchange form based on Ou-Yang and Levy v.2
+    family: GGA
+    id: 183
+    macro: XC_GGA_X_OL2
+    role: X
+    short_name: X_OL2
+  XC_GGA_X_OPTB86B_VDW:
+    description: Becke 86 reoptimized for use with vdW functional of Dion et al
+    family: GGA
+    id: 171
+    macro: XC_GGA_X_OPTB86B_VDW
+    role: X
+    short_name: X_OPTB86B_VDW
+  XC_GGA_X_OPTB88_VDW:
+    description: opt-Becke 88 for vdW
+    family: GGA
+    id: 139
+    macro: XC_GGA_X_OPTB88_VDW
+    role: X
+    short_name: X_OPTB88_VDW
+  XC_GGA_X_OPTPBE_VDW:
+    description: Reparametrized PBE for vdW
+    family: GGA
+    id: 141
+    macro: XC_GGA_X_OPTPBE_VDW
+    role: X
+    short_name: X_OPTPBE_VDW
+  XC_GGA_X_OPTX:
+    description: Handy & Cohen OPTX 01
+    family: GGA
+    id: 110
+    macro: XC_GGA_X_OPTX
+    role: X
+    short_name: X_OPTX
+  XC_GGA_X_PBE:
+    description: Perdew, Burke & Ernzerhof
+    family: GGA
+    id: 101
+    macro: XC_GGA_X_PBE
+    role: X
+    short_name: X_PBE
+  XC_GGA_X_PBEA:
+    description: Madsen 07
+    family: GGA
+    id: 121
+    macro: XC_GGA_X_PBEA
+    role: X
+    short_name: X_PBEA
+  XC_GGA_X_PBEFE:
+    description: PBE for formation energies
+    family: GGA
+    id: 265
+    macro: XC_GGA_X_PBEFE
+    role: X
+    short_name: X_PBEFE
+  XC_GGA_X_PBEINT:
+    description: PBE for hybrid interfaces
+    family: GGA
+    id: 60
+    macro: XC_GGA_X_PBEINT
+    role: X
+    short_name: X_PBEINT
+  XC_GGA_X_PBEK1_VDW:
+    description: Reparametrized PBE for vdW
+    family: GGA
+    id: 140
+    macro: XC_GGA_X_PBEK1_VDW
+    role: X
+    short_name: X_PBEK1_VDW
+  XC_GGA_X_PBEPOW:
+    description: PBE power
+    family: GGA
+    id: 539
+    macro: XC_GGA_X_PBEPOW
+    role: X
+    short_name: X_PBEPOW
+  XC_GGA_X_PBETRANS:
+    description: Gradient-regulated connection-based correction for the PBE exchange
+    family: GGA
+    id: 291
+    macro: XC_GGA_X_PBETRANS
+    role: X
+    short_name: X_PBETRANS
+  XC_GGA_X_PBE_ERF_GWS:
+    description: Short ranged PBE exchange (erfc)
+    family: GGA
+    id: 655
+    macro: XC_GGA_X_PBE_ERF_GWS
+    role: X
+    short_name: X_PBE_ERF_GWS
+  XC_GGA_X_PBE_GAUSSIAN:
+    description: Perdew, Burke & Ernzerhof with parameter values used in Gaussian
+    family: GGA
+    id: 321
+    macro: XC_GGA_X_PBE_GAUSSIAN
+    role: X
+    short_name: X_PBE_GAUSSIAN
+  XC_GGA_X_PBE_JSJR:
+    description: Reparametrized PBE by Pedroza, Silva & Capelle
+    family: GGA
+    id: 126
+    macro: XC_GGA_X_PBE_JSJR
+    role: X
+    short_name: X_PBE_JSJR
+  XC_GGA_X_PBE_MOD:
+    description: Perdew, Burke & Ernzerhof with less precise value for beta
+    family: GGA
+    id: 320
+    macro: XC_GGA_X_PBE_MOD
+    role: X
+    short_name: X_PBE_MOD
+  XC_GGA_X_PBE_MOL:
+    description: Reparametrized PBE by del Campo, Gazquez, Trickey & Vela
+    family: GGA
+    id: 49
+    macro: XC_GGA_X_PBE_MOL
+    role: X
+    short_name: X_PBE_MOL
+  XC_GGA_X_PBE_R:
+    description: Revised PBE from Zhang & Yang
+    family: GGA
+    id: 102
+    macro: XC_GGA_X_PBE_R
+    role: X
+    short_name: X_PBE_R
+  XC_GGA_X_PBE_SOL:
+    description: Perdew, Burke & Ernzerhof SOL
+    family: GGA
+    id: 116
+    macro: XC_GGA_X_PBE_SOL
+    role: X
+    short_name: X_PBE_SOL
+  XC_GGA_X_PBE_TCA:
+    description: PBE revised by Tognetti et al
+    family: GGA
+    id: 59
+    macro: XC_GGA_X_PBE_TCA
+    role: X
+    short_name: X_PBE_TCA
+  XC_GGA_X_PW86:
+    description: Perdew & Wang 86
+    family: GGA
+    id: 108
+    macro: XC_GGA_X_PW86
+    role: X
+    short_name: X_PW86
+  XC_GGA_X_PW91:
+    description: Perdew & Wang 91
+    family: GGA
+    id: 109
+    macro: XC_GGA_X_PW91
+    role: X
+    short_name: X_PW91
+  XC_GGA_X_PW91_MOD:
+    description: PW91, alternate version with more digits
+    family: GGA
+    id: 316
+    macro: XC_GGA_X_PW91_MOD
+    role: X
+    short_name: X_PW91_MOD
+  XC_GGA_X_Q1D:
+    description: Functional for quasi-1D systems
+    family: GGA
+    id: 734
+    macro: XC_GGA_X_Q1D
+    role: X
+    short_name: X_Q1D
+  XC_GGA_X_Q2D:
+    description: Chiodo et al
+    family: GGA
+    id: 48
+    macro: XC_GGA_X_Q2D
+    role: X
+    short_name: X_Q2D
+  XC_GGA_X_REVSSB_D:
+    description: Revised Swart, Sola and Bickelhaupt dispersion
+    family: GGA
+    id: 312
+    macro: XC_GGA_X_REVSSB_D
+    role: X
+    short_name: X_REVSSB_D
+  XC_GGA_X_RGE2:
+    description: Regularized PBE
+    family: GGA
+    id: 142
+    macro: XC_GGA_X_RGE2
+    role: X
+    short_name: X_RGE2
+  XC_GGA_X_RPBE:
+    description: Hammer, Hansen, and Norskov
+    family: GGA
+    id: 117
+    macro: XC_GGA_X_RPBE
+    role: X
+    short_name: X_RPBE
+  XC_GGA_X_RPW86:
+    description: Refitted Perdew & Wang 86
+    family: GGA
+    id: 144
+    macro: XC_GGA_X_RPW86
+    role: X
+    short_name: X_RPW86
+  XC_GGA_X_S12G:
+    description: Swart 2012 GGA exchange
+    family: GGA
+    id: 495
+    macro: XC_GGA_X_S12G
+    role: X
+    short_name: X_S12G
+  XC_GGA_X_SFAT:
+    description: Short-range recipe for B88 functional - Yukawa
+    family: GGA
+    id: 530
+    macro: XC_GGA_X_SFAT
+    role: X
+    short_name: X_SFAT
+  XC_GGA_X_SFAT_PBE:
+    description: Short-range recipe for PBE functional - Yukawa
+    family: GGA
+    id: 601
+    macro: XC_GGA_X_SFAT_PBE
+    role: X
+    short_name: X_SFAT_PBE
+  XC_GGA_X_SG4:
+    description: Semiclassical GGA at fourth order
+    family: GGA
+    id: 533
+    macro: XC_GGA_X_SG4
+    role: X
+    short_name: X_SG4
+  XC_GGA_X_SOGGA:
+    description: Second-order generalized gradient approximation
+    family: GGA
+    id: 150
+    macro: XC_GGA_X_SOGGA
+    role: X
+    short_name: X_SOGGA
+  XC_GGA_X_SOGGA11:
+    description: Second-order generalized gradient approximation 2011
+    family: GGA
+    id: 151
+    macro: XC_GGA_X_SOGGA11
+    role: X
+    short_name: X_SOGGA11
+  XC_GGA_X_SSB:
+    description: Swart, Sola and Bickelhaupt
+    family: GGA
+    id: 91
+    macro: XC_GGA_X_SSB
+    role: X
+    short_name: X_SSB
+  XC_GGA_X_SSB_D:
+    description: Swart, Sola and Bickelhaupt dispersion
+    family: GGA
+    id: 92
+    macro: XC_GGA_X_SSB_D
+    role: X
+    short_name: X_SSB_D
+  XC_GGA_X_SSB_SW:
+    description: Swart, Sola and Bickelhaupt correction to PBE
+    family: GGA
+    id: 90
+    macro: XC_GGA_X_SSB_SW
+    role: X
+    short_name: X_SSB_SW
+  XC_GGA_X_VMT84_GE:
+    description: VMT{8,4} with constraint satisfaction with mu = mu_GE
+    family: GGA
+    id: 68
+    macro: XC_GGA_X_VMT84_GE
+    role: X
+    short_name: X_VMT84_GE
+  XC_GGA_X_VMT84_PBE:
+    description: VMT{8,4} with constraint satisfaction with mu = mu_PBE
+    family: GGA
+    id: 69
+    macro: XC_GGA_X_VMT84_PBE
+    role: X
+    short_name: X_VMT84_PBE
+  XC_GGA_X_VMT_GE:
+    description: Vela, Medel, and Trickey with mu = mu_GE
+    family: GGA
+    id: 70
+    macro: XC_GGA_X_VMT_GE
+    role: X
+    short_name: X_VMT_GE
+  XC_GGA_X_VMT_PBE:
+    description: Vela, Medel, and Trickey with mu = mu_PBE
+    family: GGA
+    id: 71
+    macro: XC_GGA_X_VMT_PBE
+    role: X
+    short_name: X_VMT_PBE
+  XC_GGA_X_WC:
+    description: Wu & Cohen
+    family: GGA
+    id: 118
+    macro: XC_GGA_X_WC
+    role: X
+    short_name: X_WC
+  XC_GGA_X_WPBEH:
+    description: short-range part of the PBE (default w=0 gives PBEh)
+    family: GGA
+    id: 524
+    macro: XC_GGA_X_WPBEH
+    role: X
+    short_name: X_WPBEH
+  XC_GGA_X_XPBE:
+    description: Extended PBE by Xu & Goddard III
+    family: GGA
+    id: 123
+    macro: XC_GGA_X_XPBE
+    role: X
+    short_name: X_XPBE
+  XC_HYB_GGA_XC_APBE0:
+    description: Hybrid based on APBE
+    family: HYB_GGA
+    id: 607
+    macro: XC_HYB_GGA_XC_APBE0
+    role: XC
+    short_name: XC_APBE0
+  XC_HYB_GGA_XC_APF:
+    description: APF hybrid functional
+    family: HYB_GGA
+    id: 409
+    macro: XC_HYB_GGA_XC_APF
+    role: XC
+    short_name: XC_APF
+  XC_HYB_GGA_XC_B1LYP:
+    description: B1LYP
+    family: HYB_GGA
+    id: 416
+    macro: XC_HYB_GGA_XC_B1LYP
+    role: XC
+    short_name: XC_B1LYP
+  XC_HYB_GGA_XC_B1PW91:
+    description: B1PW91
+    family: HYB_GGA
+    id: 417
+    macro: XC_HYB_GGA_XC_B1PW91
+    role: XC
+    short_name: XC_B1PW91
+  XC_HYB_GGA_XC_B1WC:
+    description: B1WC
+    family: HYB_GGA
+    id: 412
+    macro: XC_HYB_GGA_XC_B1WC
+    role: XC
+    short_name: XC_B1WC
+  XC_HYB_GGA_XC_B3LYP:
+    description: B3LYP
+    family: HYB_GGA
+    id: 402
+    macro: XC_HYB_GGA_XC_B3LYP
+    role: XC
+    short_name: XC_B3LYP
+  XC_HYB_GGA_XC_B3LYP3:
+    description: B3LYP with VWN functional 3 instead of RPA
+    family: HYB_GGA
+    id: 394
+    macro: XC_HYB_GGA_XC_B3LYP3
+    role: XC
+    short_name: XC_B3LYP3
+  XC_HYB_GGA_XC_B3LYP5:
+    description: B3LYP with VWN functional 5 instead of RPA
+    family: HYB_GGA
+    id: 475
+    macro: XC_HYB_GGA_XC_B3LYP5
+    role: XC
+    short_name: XC_B3LYP5
+  XC_HYB_GGA_XC_B3LYPS:
+    description: B3LYP*
+    family: HYB_GGA
+    id: 459
+    macro: XC_HYB_GGA_XC_B3LYPS
+    role: XC
+    short_name: XC_B3LYPS
+  XC_HYB_GGA_XC_B3LYP_MCM1:
+    description: B3LYP-MCM1
+    family: HYB_GGA
+    id: 461
+    macro: XC_HYB_GGA_XC_B3LYP_MCM1
+    role: XC
+    short_name: XC_B3LYP_MCM1
+  XC_HYB_GGA_XC_B3LYP_MCM2:
+    description: B3LYP-MCM2
+    family: HYB_GGA
+    id: 462
+    macro: XC_HYB_GGA_XC_B3LYP_MCM2
+    role: XC
+    short_name: XC_B3LYP_MCM2
+  XC_HYB_GGA_XC_B3P86:
+    description: B3P86
+    family: HYB_GGA
+    id: 403
+    macro: XC_HYB_GGA_XC_B3P86
+    role: XC
+    short_name: XC_B3P86
+  XC_HYB_GGA_XC_B3P86_NWCHEM:
+    description: B3P86, NWChem version
+    family: HYB_GGA
+    id: 315
+    macro: XC_HYB_GGA_XC_B3P86_NWCHEM
+    role: XC
+    short_name: XC_B3P86_NWCHEM
+  XC_HYB_GGA_XC_B3PW91:
+    description: The original (ACM, B3PW91) hybrid of Becke
+    family: HYB_GGA
+    id: 401
+    macro: XC_HYB_GGA_XC_B3PW91
+    role: XC
+    short_name: XC_B3PW91
+  XC_HYB_GGA_XC_B5050LYP:
+    description: B5050LYP
+    family: HYB_GGA
+    id: 572
+    macro: XC_HYB_GGA_XC_B5050LYP
+    role: XC
+    short_name: XC_B5050LYP
+  XC_HYB_GGA_XC_B97:
+    description: Becke 97
+    family: HYB_GGA
+    id: 407
+    macro: XC_HYB_GGA_XC_B97
+    role: XC
+    short_name: XC_B97
+  XC_HYB_GGA_XC_B97_1:
+    description: Becke 97-1
+    family: HYB_GGA
+    id: 408
+    macro: XC_HYB_GGA_XC_B97_1
+    role: XC
+    short_name: XC_B97_1
+  XC_HYB_GGA_XC_B97_1P:
+    description: version of B97 by Cohen and Handy
+    family: HYB_GGA
+    id: 266
+    macro: XC_HYB_GGA_XC_B97_1P
+    role: XC
+    short_name: XC_B97_1P
+  XC_HYB_GGA_XC_B97_2:
+    description: Becke 97-2
+    family: HYB_GGA
+    id: 410
+    macro: XC_HYB_GGA_XC_B97_2
+    role: XC
+    short_name: XC_B97_2
+  XC_HYB_GGA_XC_B97_3:
+    description: Becke 97-3
+    family: HYB_GGA
+    id: 414
+    macro: XC_HYB_GGA_XC_B97_3
+    role: XC
+    short_name: XC_B97_3
+  XC_HYB_GGA_XC_B97_K:
+    description: Boese-Martin for Kinetics
+    family: HYB_GGA
+    id: 413
+    macro: XC_HYB_GGA_XC_B97_K
+    role: XC
+    short_name: XC_B97_K
+  XC_HYB_GGA_XC_BHANDH:
+    description: BHandH i.e. BHLYP
+    family: HYB_GGA
+    id: 435
+    macro: XC_HYB_GGA_XC_BHANDH
+    role: XC
+    short_name: XC_BHANDH
+  XC_HYB_GGA_XC_BHANDHLYP:
+    description: BHandHLYP
+    family: HYB_GGA
+    id: 436
+    macro: XC_HYB_GGA_XC_BHANDHLYP
+    role: XC
+    short_name: XC_BHANDHLYP
+  XC_HYB_GGA_XC_BLYP35:
+    description: BLYP35
+    family: HYB_GGA
+    id: 499
+    macro: XC_HYB_GGA_XC_BLYP35
+    role: XC
+    short_name: XC_BLYP35
+  XC_HYB_GGA_XC_CAMH_B3LYP:
+    description: CAM version of B3LYP, tuned for TDDFT
+    family: HYB_GGA
+    id: 614
+    macro: XC_HYB_GGA_XC_CAMH_B3LYP
+    role: XC
+    short_name: XC_CAMH_B3LYP
+  XC_HYB_GGA_XC_CAMY_B3LYP:
+    description: CAMY version of B3LYP
+    family: HYB_GGA
+    id: 470
+    macro: XC_HYB_GGA_XC_CAMY_B3LYP
+    role: XC
+    short_name: XC_CAMY_B3LYP
+  XC_HYB_GGA_XC_CAMY_BLYP:
+    description: CAMY version of BLYP
+    family: HYB_GGA
+    id: 455
+    macro: XC_HYB_GGA_XC_CAMY_BLYP
+    role: XC
+    short_name: XC_CAMY_BLYP
+  XC_HYB_GGA_XC_CAMY_PBEH:
+    description: CAMY hybrid screened exchange PBE version
+    family: HYB_GGA
+    id: 682
+    macro: XC_HYB_GGA_XC_CAMY_PBEH
+    role: XC
+    short_name: XC_CAMY_PBEH
+  XC_HYB_GGA_XC_CAM_B3LYP:
+    description: CAM version of B3LYP
+    family: HYB_GGA
+    id: 433
+    macro: XC_HYB_GGA_XC_CAM_B3LYP
+    role: XC
+    short_name: XC_CAM_B3LYP
+  XC_HYB_GGA_XC_CAM_O3LYP:
+    description: CAM-O3LYP
+    family: HYB_GGA
+    id: 395
+    macro: XC_HYB_GGA_XC_CAM_O3LYP
+    role: XC
+    short_name: XC_CAM_O3LYP
+  XC_HYB_GGA_XC_CAM_PBEH:
+    description: CAM hybrid screened exchange PBE version
+    family: HYB_GGA
+    id: 681
+    macro: XC_HYB_GGA_XC_CAM_PBEH
+    role: XC
+    short_name: XC_CAM_PBEH
+  XC_HYB_GGA_XC_CAM_QTP_00:
+    description: CAM-B3LYP retuned using ionization potentials of water
+    family: HYB_GGA
+    id: 490
+    macro: XC_HYB_GGA_XC_CAM_QTP_00
+    role: XC
+    short_name: XC_CAM_QTP_00
+  XC_HYB_GGA_XC_CAM_QTP_01:
+    description: CAM-B3LYP retuned using ionization potentials of water
+    family: HYB_GGA
+    id: 482
+    macro: XC_HYB_GGA_XC_CAM_QTP_01
+    role: XC
+    short_name: XC_CAM_QTP_01
+  XC_HYB_GGA_XC_CAM_QTP_02:
+    description: CAM-B3LYP retuned using ionization potentials of water
+    family: HYB_GGA
+    id: 491
+    macro: XC_HYB_GGA_XC_CAM_QTP_02
+    role: XC
+    short_name: XC_CAM_QTP_02
+  XC_HYB_GGA_XC_CAP0:
+    description: Correct Asymptotic Potential hybrid
+    family: HYB_GGA
+    id: 477
+    macro: XC_HYB_GGA_XC_CAP0
+    role: XC
+    short_name: XC_CAP0
+  XC_HYB_GGA_XC_CASE21:
+    description: 'CASE21: Constrained And Smoothed semi-Empirical 2021 functional'
+    family: HYB_GGA
+    id: 390
+    macro: XC_HYB_GGA_XC_CASE21
+    role: XC
+    short_name: XC_CASE21
+  XC_HYB_GGA_XC_EDF2:
+    description: EDF2
+    family: HYB_GGA
+    id: 476
+    macro: XC_HYB_GGA_XC_EDF2
+    role: XC
+    short_name: XC_EDF2
+  XC_HYB_GGA_XC_HAPBE:
+    description: Hybrid based in APBE and zvPBEloc
+    family: HYB_GGA
+    id: 608
+    macro: XC_HYB_GGA_XC_HAPBE
+    role: XC
+    short_name: XC_HAPBE
+  XC_HYB_GGA_XC_HFLYP:
+    description: HF + LYP correlation
+    family: HYB_GGA
+    id: 314
+    macro: XC_HYB_GGA_XC_HFLYP
+    role: XC
+    short_name: XC_HFLYP
+  XC_HYB_GGA_XC_HJS_B88:
+    description: HJS hybrid screened exchange B88 version
+    family: HYB_GGA
+    id: 431
+    macro: XC_HYB_GGA_XC_HJS_B88
+    role: XC
+    short_name: XC_HJS_B88
+  XC_HYB_GGA_XC_HJS_B97X:
+    description: HJS hybrid screened exchange B97x version
+    family: HYB_GGA
+    id: 432
+    macro: XC_HYB_GGA_XC_HJS_B97X
+    role: XC
+    short_name: XC_HJS_B97X
+  XC_HYB_GGA_XC_HJS_PBE:
+    description: HJS hybrid screened exchange PBE version
+    family: HYB_GGA
+    id: 429
+    macro: XC_HYB_GGA_XC_HJS_PBE
+    role: XC
+    short_name: XC_HJS_PBE
+  XC_HYB_GGA_XC_HJS_PBE_SOL:
+    description: HJS hybrid screened exchange PBE_SOL version
+    family: HYB_GGA
+    id: 430
+    macro: XC_HYB_GGA_XC_HJS_PBE_SOL
+    role: XC
+    short_name: XC_HJS_PBE_SOL
+  XC_HYB_GGA_XC_HPBEINT:
+    description: hPBEint
+    family: HYB_GGA
+    id: 472
+    macro: XC_HYB_GGA_XC_HPBEINT
+    role: XC
+    short_name: XC_HPBEINT
+  XC_HYB_GGA_XC_HSE03:
+    description: HSE03
+    family: HYB_GGA
+    id: 427
+    macro: XC_HYB_GGA_XC_HSE03
+    role: XC
+    short_name: XC_HSE03
+  XC_HYB_GGA_XC_HSE06:
+    description: HSE06
+    family: HYB_GGA
+    id: 428
+    macro: XC_HYB_GGA_XC_HSE06
+    role: XC
+    short_name: XC_HSE06
+  XC_HYB_GGA_XC_HSE12:
+    description: HSE12
+    family: HYB_GGA
+    id: 479
+    macro: XC_HYB_GGA_XC_HSE12
+    role: XC
+    short_name: XC_HSE12
+  XC_HYB_GGA_XC_HSE12S:
+    description: HSE12 (short-range version)
+    family: HYB_GGA
+    id: 480
+    macro: XC_HYB_GGA_XC_HSE12S
+    role: XC
+    short_name: XC_HSE12S
+  XC_HYB_GGA_XC_HSE_SOL:
+    description: HSEsol
+    family: HYB_GGA
+    id: 481
+    macro: XC_HYB_GGA_XC_HSE_SOL
+    role: XC
+    short_name: XC_HSE_SOL
+  XC_HYB_GGA_XC_KMLYP:
+    description: Kang-Musgrave hybrid
+    family: HYB_GGA
+    id: 485
+    macro: XC_HYB_GGA_XC_KMLYP
+    role: XC
+    short_name: XC_KMLYP
+  XC_HYB_GGA_XC_LB07:
+    description: Livshits and Baer, empirical functional also used for IP tuning
+    family: HYB_GGA
+    id: 589
+    macro: XC_HYB_GGA_XC_LB07
+    role: XC
+    short_name: XC_LB07
+  XC_HYB_GGA_XC_LCY_BLYP:
+    description: LCY version of BLYP
+    family: HYB_GGA
+    id: 468
+    macro: XC_HYB_GGA_XC_LCY_BLYP
+    role: XC
+    short_name: XC_LCY_BLYP
+  XC_HYB_GGA_XC_LCY_PBE:
+    description: LCY version of PBE
+    family: HYB_GGA
+    id: 467
+    macro: XC_HYB_GGA_XC_LCY_PBE
+    role: XC
+    short_name: XC_LCY_PBE
+  XC_HYB_GGA_XC_LC_BLYP:
+    description: LC version of BLYP
+    family: HYB_GGA
+    id: 400
+    macro: XC_HYB_GGA_XC_LC_BLYP
+    role: XC
+    short_name: XC_LC_BLYP
+  XC_HYB_GGA_XC_LC_BLYPR:
+    description: LC version of BLYP with correlation only in the short range
+    family: HYB_GGA
+    id: 639
+    macro: XC_HYB_GGA_XC_LC_BLYPR
+    role: XC
+    short_name: XC_LC_BLYPR
+  XC_HYB_GGA_XC_LC_BLYP_EA:
+    description: LC version of BLYP for electron affinities
+    family: HYB_GGA
+    id: 625
+    macro: XC_HYB_GGA_XC_LC_BLYP_EA
+    role: XC
+    short_name: XC_LC_BLYP_EA
+  XC_HYB_GGA_XC_LC_BOP:
+    description: LC version of B88
+    family: HYB_GGA
+    id: 636
+    macro: XC_HYB_GGA_XC_LC_BOP
+    role: XC
+    short_name: XC_LC_BOP
+  XC_HYB_GGA_XC_LC_PBEOP:
+    description: LC version of PBE
+    family: HYB_GGA
+    id: 637
+    macro: XC_HYB_GGA_XC_LC_PBEOP
+    role: XC
+    short_name: XC_LC_PBEOP
+  XC_HYB_GGA_XC_LC_QTP:
+    description: CAM-B3LYP retuned using ionization potentials of water
+    family: HYB_GGA
+    id: 492
+    macro: XC_HYB_GGA_XC_LC_QTP
+    role: XC
+    short_name: XC_LC_QTP
+  XC_HYB_GGA_XC_LC_VV10:
+    description: Vydrov and Van Voorhis
+    family: HYB_GGA
+    id: 469
+    macro: XC_HYB_GGA_XC_LC_VV10
+    role: XC
+    short_name: XC_LC_VV10
+  XC_HYB_GGA_XC_LC_WPBE:
+    description: Long-range corrected PBE (LC-wPBE) by Vydrov and Scuseria
+    family: HYB_GGA
+    id: 478
+    macro: XC_HYB_GGA_XC_LC_WPBE
+    role: XC
+    short_name: XC_LC_WPBE
+  XC_HYB_GGA_XC_LC_WPBE08_WHS:
+    description: Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria
+    family: HYB_GGA
+    id: 488
+    macro: XC_HYB_GGA_XC_LC_WPBE08_WHS
+    role: XC
+    short_name: XC_LC_WPBE08_WHS
+  XC_HYB_GGA_XC_LC_WPBEH_WHS:
+    description: Long-range corrected short-range hybrid PBE (LC-wPBE) by Weintraub,
+      Henderson and Scuseria
+    family: HYB_GGA
+    id: 487
+    macro: XC_HYB_GGA_XC_LC_WPBEH_WHS
+    role: XC
+    short_name: XC_LC_WPBEH_WHS
+  XC_HYB_GGA_XC_LC_WPBESOL_WHS:
+    description: Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria
+    family: HYB_GGA
+    id: 489
+    macro: XC_HYB_GGA_XC_LC_WPBESOL_WHS
+    role: XC
+    short_name: XC_LC_WPBESOL_WHS
+  XC_HYB_GGA_XC_LC_WPBE_WHS:
+    description: Long-range corrected PBE (LC-wPBE) by Weintraub, Henderson and Scuseria
+    family: HYB_GGA
+    id: 486
+    macro: XC_HYB_GGA_XC_LC_WPBE_WHS
+    role: XC
+    short_name: XC_LC_WPBE_WHS
+  XC_HYB_GGA_XC_LRC_WPBE:
+    description: Long-range corrected PBE (LRC-wPBE) by Rohrdanz, Martins and Herbert
+    family: HYB_GGA
+    id: 473
+    macro: XC_HYB_GGA_XC_LRC_WPBE
+    role: XC
+    short_name: XC_LRC_WPBE
+  XC_HYB_GGA_XC_LRC_WPBEH:
+    description: Long-range corrected short-range hybrid PBE (LRC-wPBEh) by Rohrdanz,
+      Martins and Herbert
+    family: HYB_GGA
+    id: 465
+    macro: XC_HYB_GGA_XC_LRC_WPBEH
+    role: XC
+    short_name: XC_LRC_WPBEH
+  XC_HYB_GGA_XC_MB3LYP_RC04:
+    description: B3LYP with RC04 LDA
+    family: HYB_GGA
+    id: 437
+    macro: XC_HYB_GGA_XC_MB3LYP_RC04
+    role: XC
+    short_name: XC_MB3LYP_RC04
+  XC_HYB_GGA_XC_MCAM_B3LYP:
+    description: Modified CAM-B3LYP by Day, Nguyen and Pachter
+    family: HYB_GGA
+    id: 640
+    macro: XC_HYB_GGA_XC_MCAM_B3LYP
+    role: XC
+    short_name: XC_MCAM_B3LYP
+  XC_HYB_GGA_XC_MPW1K:
+    description: mPW1K
+    family: HYB_GGA
+    id: 405
+    macro: XC_HYB_GGA_XC_MPW1K
+    role: XC
+    short_name: XC_MPW1K
+  XC_HYB_GGA_XC_MPW1LYP:
+    description: mPW1LYP
+    family: HYB_GGA
+    id: 483
+    macro: XC_HYB_GGA_XC_MPW1LYP
+    role: XC
+    short_name: XC_MPW1LYP
+  XC_HYB_GGA_XC_MPW1PBE:
+    description: mPW1PBE
+    family: HYB_GGA
+    id: 484
+    macro: XC_HYB_GGA_XC_MPW1PBE
+    role: XC
+    short_name: XC_MPW1PBE
+  XC_HYB_GGA_XC_MPW1PW:
+    description: mPW1PW
+    family: HYB_GGA
+    id: 418
+    macro: XC_HYB_GGA_XC_MPW1PW
+    role: XC
+    short_name: XC_MPW1PW
+  XC_HYB_GGA_XC_MPW3LYP:
+    description: MPW3LYP
+    family: HYB_GGA
+    id: 419
+    macro: XC_HYB_GGA_XC_MPW3LYP
+    role: XC
+    short_name: XC_MPW3LYP
+  XC_HYB_GGA_XC_MPW3PW:
+    description: MPW3PW of Adamo & Barone
+    family: HYB_GGA
+    id: 415
+    macro: XC_HYB_GGA_XC_MPW3PW
+    role: XC
+    short_name: XC_MPW3PW
+  XC_HYB_GGA_XC_MPWLYP1M:
+    description: MPW with 1 par. for metals/LYP
+    family: HYB_GGA
+    id: 453
+    macro: XC_HYB_GGA_XC_MPWLYP1M
+    role: XC
+    short_name: XC_MPWLYP1M
+  XC_HYB_GGA_XC_O3LYP:
+    description: O3LYP
+    family: HYB_GGA
+    id: 404
+    macro: XC_HYB_GGA_XC_O3LYP
+    role: XC
+    short_name: XC_O3LYP
+  XC_HYB_GGA_XC_OPB3LYP:
+    description: 'opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set'
+    family: HYB_GGA
+    id: 386
+    macro: XC_HYB_GGA_XC_OPB3LYP
+    role: XC
+    short_name: XC_OPB3LYP
+  XC_HYB_GGA_XC_PBE0_13:
+    description: PBE0-1/3
+    family: HYB_GGA
+    id: 456
+    macro: XC_HYB_GGA_XC_PBE0_13
+    role: XC
+    short_name: XC_PBE0_13
+  XC_HYB_GGA_XC_PBE38:
+    description: 'PBE38: PBE0 with 3/8 = 37.5% exact exchange'
+    family: HYB_GGA
+    id: 393
+    macro: XC_HYB_GGA_XC_PBE38
+    role: XC
+    short_name: XC_PBE38
+  XC_HYB_GGA_XC_PBE50:
+    description: PBE50
+    family: HYB_GGA
+    id: 290
+    macro: XC_HYB_GGA_XC_PBE50
+    role: XC
+    short_name: XC_PBE50
+  XC_HYB_GGA_XC_PBEB0:
+    description: PBEbeta0
+    family: HYB_GGA
+    id: 275
+    macro: XC_HYB_GGA_XC_PBEB0
+    role: XC
+    short_name: XC_PBEB0
+  XC_HYB_GGA_XC_PBEH:
+    description: PBEH (PBE0)
+    family: HYB_GGA
+    id: 406
+    macro: XC_HYB_GGA_XC_PBEH
+    role: XC
+    short_name: XC_PBEH
+  XC_HYB_GGA_XC_PBE_2X:
+    description: 'PBE-2X: PBE0 with 56% exact exchange'
+    family: HYB_GGA
+    id: 392
+    macro: XC_HYB_GGA_XC_PBE_2X
+    role: XC
+    short_name: XC_PBE_2X
+  XC_HYB_GGA_XC_PBE_MOL0:
+    description: PBEmol0
+    family: HYB_GGA
+    id: 273
+    macro: XC_HYB_GGA_XC_PBE_MOL0
+    role: XC
+    short_name: XC_PBE_MOL0
+  XC_HYB_GGA_XC_PBE_MOLB0:
+    description: PBEmolbeta0
+    family: HYB_GGA
+    id: 276
+    macro: XC_HYB_GGA_XC_PBE_MOLB0
+    role: XC
+    short_name: XC_PBE_MOLB0
+  XC_HYB_GGA_XC_PBE_SOL0:
+    description: PBEsol0
+    family: HYB_GGA
+    id: 274
+    macro: XC_HYB_GGA_XC_PBE_SOL0
+    role: XC
+    short_name: XC_PBE_SOL0
+  XC_HYB_GGA_XC_QTP17:
+    description: Global hybrid for vertical ionization potentials
+    family: HYB_GGA
+    id: 460
+    macro: XC_HYB_GGA_XC_QTP17
+    role: XC
+    short_name: XC_QTP17
+  XC_HYB_GGA_XC_RCAM_B3LYP:
+    description: Similar to CAM-B3LYP, but trying to reduce the many-electron self-interaction
+    family: HYB_GGA
+    id: 610
+    macro: XC_HYB_GGA_XC_RCAM_B3LYP
+    role: XC
+    short_name: XC_RCAM_B3LYP
+  XC_HYB_GGA_XC_RELPBE0:
+    description: 'relPBE0 a.k.a. relPBE: PBE0 refitted for actinide compounds'
+    family: HYB_GGA
+    id: 325
+    macro: XC_HYB_GGA_XC_RELPBE0
+    role: XC
+    short_name: XC_RELPBE0
+  XC_HYB_GGA_XC_REVB3LYP:
+    description: Revised B3LYP
+    family: HYB_GGA
+    id: 454
+    macro: XC_HYB_GGA_XC_REVB3LYP
+    role: XC
+    short_name: XC_REVB3LYP
+  XC_HYB_GGA_XC_SB98_1A:
+    description: SB98 (1a)
+    family: HYB_GGA
+    id: 420
+    macro: XC_HYB_GGA_XC_SB98_1A
+    role: XC
+    short_name: XC_SB98_1A
+  XC_HYB_GGA_XC_SB98_1B:
+    description: SB98 (1b)
+    family: HYB_GGA
+    id: 421
+    macro: XC_HYB_GGA_XC_SB98_1B
+    role: XC
+    short_name: XC_SB98_1B
+  XC_HYB_GGA_XC_SB98_1C:
+    description: SB98 (1c)
+    family: HYB_GGA
+    id: 422
+    macro: XC_HYB_GGA_XC_SB98_1C
+    role: XC
+    short_name: XC_SB98_1C
+  XC_HYB_GGA_XC_SB98_2A:
+    description: SB98 (2a)
+    family: HYB_GGA
+    id: 423
+    macro: XC_HYB_GGA_XC_SB98_2A
+    role: XC
+    short_name: XC_SB98_2A
+  XC_HYB_GGA_XC_SB98_2B:
+    description: SB98 (2b)
+    family: HYB_GGA
+    id: 424
+    macro: XC_HYB_GGA_XC_SB98_2B
+    role: XC
+    short_name: XC_SB98_2B
+  XC_HYB_GGA_XC_SB98_2C:
+    description: SB98 (2c)
+    family: HYB_GGA
+    id: 425
+    macro: XC_HYB_GGA_XC_SB98_2C
+    role: XC
+    short_name: XC_SB98_2C
+  XC_HYB_GGA_XC_TUNED_CAM_B3LYP:
+    description: CAM version of B3LYP, tuned for excitations and properties
+    family: HYB_GGA
+    id: 434
+    macro: XC_HYB_GGA_XC_TUNED_CAM_B3LYP
+    role: XC
+    short_name: XC_TUNED_CAM_B3LYP
+  XC_HYB_GGA_XC_WB97:
+    description: wB97 range-separated functional
+    family: HYB_GGA
+    id: 463
+    macro: XC_HYB_GGA_XC_WB97
+    role: XC
+    short_name: XC_WB97
+  XC_HYB_GGA_XC_WB97X:
+    description: wB97X range-separated functional
+    family: HYB_GGA
+    id: 464
+    macro: XC_HYB_GGA_XC_WB97X
+    role: XC
+    short_name: XC_WB97X
+  XC_HYB_GGA_XC_WB97X_D:
+    description: wB97X-D range-separated functional
+    family: HYB_GGA
+    id: 471
+    macro: XC_HYB_GGA_XC_WB97X_D
+    role: XC
+    short_name: XC_WB97X_D
+  XC_HYB_GGA_XC_WB97X_D3:
+    description: wB97X-D3 range-separated functional
+    family: HYB_GGA
+    id: 399
+    macro: XC_HYB_GGA_XC_WB97X_D3
+    role: XC
+    short_name: XC_WB97X_D3
+  XC_HYB_GGA_XC_WB97X_V:
+    description: wB97X-V range-separated functional
+    family: HYB_GGA
+    id: 466
+    macro: XC_HYB_GGA_XC_WB97X_V
+    role: XC
+    short_name: XC_WB97X_V
+  XC_HYB_GGA_XC_WC04:
+    description: hybrid fitted to carbon NMR shifts
+    family: HYB_GGA
+    id: 611
+    macro: XC_HYB_GGA_XC_WC04
+    role: XC
+    short_name: XC_WC04
+  XC_HYB_GGA_XC_WHPBE0:
+    description: Long-range corrected short-range hybrid PBE (whPBE0) by Shao et al
+    family: HYB_GGA
+    id: 615
+    macro: XC_HYB_GGA_XC_WHPBE0
+    role: XC
+    short_name: XC_WHPBE0
+  XC_HYB_GGA_XC_WP04:
+    description: hybrid fitted to proton NMR shifts
+    family: HYB_GGA
+    id: 612
+    macro: XC_HYB_GGA_XC_WP04
+    role: XC
+    short_name: XC_WP04
+  XC_HYB_GGA_XC_X3LYP:
+    description: X3LYP
+    family: HYB_GGA
+    id: 411
+    macro: XC_HYB_GGA_XC_X3LYP
+    role: XC
+    short_name: XC_X3LYP
+  XC_HYB_GGA_X_CAM_S12G:
+    description: Swart 2012 range-separated hybrid GGA exchange
+    family: HYB_GGA
+    id: 646
+    macro: XC_HYB_GGA_X_CAM_S12G
+    role: X
+    short_name: X_CAM_S12G
+  XC_HYB_GGA_X_CAM_S12H:
+    description: Swart 2012 range-separated hybrid GGA exchange
+    family: HYB_GGA
+    id: 647
+    macro: XC_HYB_GGA_X_CAM_S12H
+    role: X
+    short_name: X_CAM_S12H
+  XC_HYB_GGA_X_N12_SX:
+    description: Minnesota N12-SX exchange functional
+    family: HYB_GGA
+    id: 81
+    macro: XC_HYB_GGA_X_N12_SX
+    role: X
+    short_name: X_N12_SX
+  XC_HYB_GGA_X_PBE_ERF_GWS:
+    description: Short-range PBE (GWS) exchange (erfc) + long-range exact exchange
+    family: HYB_GGA
+    id: 656
+    macro: XC_HYB_GGA_X_PBE_ERF_GWS
+    role: X
+    short_name: X_PBE_ERF_GWS
+  XC_HYB_GGA_X_S12H:
+    description: Swart 2012 hybrid GGA exchange
+    family: HYB_GGA
+    id: 496
+    macro: XC_HYB_GGA_X_S12H
+    role: X
+    short_name: X_S12H
+  XC_HYB_GGA_X_SOGGA11_X:
+    description: Hybrid based on SOGGA11 form
+    family: HYB_GGA
+    id: 426
+    macro: XC_HYB_GGA_X_SOGGA11_X
+    role: X
+    short_name: X_SOGGA11_X
+  XC_HYB_LDA_XC_BN05:
+    description: Baer and Neuhauser, gamma=1
+    family: HYB_LDA
+    id: 588
+    macro: XC_HYB_LDA_XC_BN05
+    role: XC
+    short_name: XC_BN05
+  XC_HYB_LDA_XC_CAM_LDA0:
+    description: CAM version of LDA0
+    family: HYB_LDA
+    id: 178
+    macro: XC_HYB_LDA_XC_CAM_LDA0
+    role: XC
+    short_name: XC_CAM_LDA0
+  XC_HYB_LDA_XC_LDA0:
+    description: LDA hybrid exchange (LDA0)
+    family: HYB_LDA
+    id: 177
+    macro: XC_HYB_LDA_XC_LDA0
+    role: XC
+    short_name: XC_LDA0
+  XC_HYB_LDA_X_ERF:
+    description: Long-range corrected functional based on short-range LDA exchange
+      (erfc)
+    family: HYB_LDA
+    id: 653
+    macro: XC_HYB_LDA_X_ERF
+    role: X
+    short_name: X_ERF
+  XC_HYB_MGGA_XC_B0KCIS:
+    description: Hybrid based on KCIS
+    family: HYB_MGGA
+    id: 563
+    macro: XC_HYB_MGGA_XC_B0KCIS
+    role: XC
+    short_name: XC_B0KCIS
+  XC_HYB_MGGA_XC_B86B95:
+    description: Mixture of B86 with BC95
+    family: HYB_MGGA
+    id: 441
+    macro: XC_HYB_MGGA_XC_B86B95
+    role: XC
+    short_name: XC_B86B95
+  XC_HYB_MGGA_XC_B88B95:
+    description: Mixture of B88 with BC95 (B1B95)
+    family: HYB_MGGA
+    id: 440
+    macro: XC_HYB_MGGA_XC_B88B95
+    role: XC
+    short_name: XC_B88B95
+  XC_HYB_MGGA_XC_B94_HYB:
+    description: Becke 1994 hybrid meta-GGA
+    family: HYB_MGGA
+    id: 398
+    macro: XC_HYB_MGGA_XC_B94_HYB
+    role: XC
+    short_name: XC_B94_HYB
+  XC_HYB_MGGA_XC_B98:
+    description: Becke 98
+    family: HYB_MGGA
+    id: 598
+    macro: XC_HYB_MGGA_XC_B98
+    role: XC
+    short_name: XC_B98
+  XC_HYB_MGGA_XC_BB1K:
+    description: Mixture of B88 with BC95 from Zhao and Truhlar
+    family: HYB_MGGA
+    id: 443
+    macro: XC_HYB_MGGA_XC_BB1K
+    role: XC
+    short_name: XC_BB1K
+  XC_HYB_MGGA_XC_BR3P86:
+    description: BR3P86 hybrid meta-GGA from Neumann and Handy
+    family: HYB_MGGA
+    id: 389
+    macro: XC_HYB_MGGA_XC_BR3P86
+    role: XC
+    short_name: XC_BR3P86
+  XC_HYB_MGGA_XC_EDMGGAH:
+    description: EDMGGA hybrid
+    family: HYB_MGGA
+    id: 695
+    macro: XC_HYB_MGGA_XC_EDMGGAH
+    role: XC
+    short_name: XC_EDMGGAH
+  XC_HYB_MGGA_XC_GAS22:
+    description: Google Accelerated Science 22
+    family: HYB_MGGA
+    id: 658
+    macro: XC_HYB_MGGA_XC_GAS22
+    role: XC
+    short_name: XC_GAS22
+  XC_HYB_MGGA_XC_LC_TMLYP:
+    description: Long-range corrected TM-LYP by Jana et al
+    family: HYB_MGGA
+    id: 720
+    macro: XC_HYB_MGGA_XC_LC_TMLYP
+    role: XC
+    short_name: XC_LC_TMLYP
+  XC_HYB_MGGA_XC_MPW1B95:
+    description: Mixture of mPW91 with BC95 from Zhao and Truhlar
+    family: HYB_MGGA
+    id: 445
+    macro: XC_HYB_MGGA_XC_MPW1B95
+    role: XC
+    short_name: XC_MPW1B95
+  XC_HYB_MGGA_XC_MPW1KCIS:
+    description: MPW1KCIS for barrier heights
+    family: HYB_MGGA
+    id: 566
+    macro: XC_HYB_MGGA_XC_MPW1KCIS
+    role: XC
+    short_name: XC_MPW1KCIS
+  XC_HYB_MGGA_XC_MPWB1K:
+    description: Mixture of mPW91 with BC95 for kinetics
+    family: HYB_MGGA
+    id: 446
+    macro: XC_HYB_MGGA_XC_MPWB1K
+    role: XC
+    short_name: XC_MPWB1K
+  XC_HYB_MGGA_XC_MPWKCIS1K:
+    description: MPWKCIS1K for barrier heights
+    family: HYB_MGGA
+    id: 567
+    macro: XC_HYB_MGGA_XC_MPWKCIS1K
+    role: XC
+    short_name: XC_MPWKCIS1K
+  XC_HYB_MGGA_XC_PBE1KCIS:
+    description: PBE1KCIS for binding energies
+    family: HYB_MGGA
+    id: 568
+    macro: XC_HYB_MGGA_XC_PBE1KCIS
+    role: XC
+    short_name: XC_PBE1KCIS
+  XC_HYB_MGGA_XC_PW6B95:
+    description: Mixture of PW91 with BC95 from Zhao and Truhlar
+    family: HYB_MGGA
+    id: 451
+    macro: XC_HYB_MGGA_XC_PW6B95
+    role: XC
+    short_name: XC_PW6B95
+  XC_HYB_MGGA_XC_PW86B95:
+    description: Mixture of PW86 with BC95
+    family: HYB_MGGA
+    id: 442
+    macro: XC_HYB_MGGA_XC_PW86B95
+    role: XC
+    short_name: XC_PW86B95
+  XC_HYB_MGGA_XC_PWB6K:
+    description: Mixture of PW91 with BC95 from Zhao and Truhlar for kinetics
+    family: HYB_MGGA
+    id: 452
+    macro: XC_HYB_MGGA_XC_PWB6K
+    role: XC
+    short_name: XC_PWB6K
+  XC_HYB_MGGA_XC_R2SCAN0:
+    description: 'r2SCAN0: r2SCAN hybrid like PBE0 with 25% exact exchange'
+    family: HYB_MGGA
+    id: 660
+    macro: XC_HYB_MGGA_XC_R2SCAN0
+    role: XC
+    short_name: XC_R2SCAN0
+  XC_HYB_MGGA_XC_R2SCAN50:
+    description: 'r2SCAN50: r2SCAN hybrid like PBE50 with 50% exact exchange'
+    family: HYB_MGGA
+    id: 661
+    macro: XC_HYB_MGGA_XC_R2SCAN50
+    role: XC
+    short_name: XC_R2SCAN50
+  XC_HYB_MGGA_XC_R2SCANH:
+    description: 'r2SCANh: r2SCAN hybrid like TPSSh with 10% exact exchange'
+    family: HYB_MGGA
+    id: 659
+    macro: XC_HYB_MGGA_XC_R2SCANH
+    role: XC
+    short_name: XC_R2SCANH
+  XC_HYB_MGGA_XC_REVTPSSH:
+    description: revTPSSh
+    family: HYB_MGGA
+    id: 458
+    macro: XC_HYB_MGGA_XC_REVTPSSH
+    role: XC
+    short_name: XC_REVTPSSH
+  XC_HYB_MGGA_XC_TPSS0:
+    description: TPSS0 with 25% exact exchange
+    family: HYB_MGGA
+    id: 396
+    macro: XC_HYB_MGGA_XC_TPSS0
+    role: XC
+    short_name: XC_TPSS0
+  XC_HYB_MGGA_XC_TPSS1KCIS:
+    description: TPSS1KCIS for thermochemistry and kinetics
+    family: HYB_MGGA
+    id: 569
+    macro: XC_HYB_MGGA_XC_TPSS1KCIS
+    role: XC
+    short_name: XC_TPSS1KCIS
+  XC_HYB_MGGA_XC_TPSSH:
+    description: TPSSh
+    family: HYB_MGGA
+    id: 457
+    macro: XC_HYB_MGGA_XC_TPSSH
+    role: XC
+    short_name: XC_TPSSH
+  XC_HYB_MGGA_XC_WB97M_V:
+    description: wB97M-V exchange-correlation functional
+    family: HYB_MGGA
+    id: 531
+    macro: XC_HYB_MGGA_XC_WB97M_V
+    role: XC
+    short_name: XC_WB97M_V
+  XC_HYB_MGGA_XC_X1B95:
+    description: Mixture of X with BC95
+    family: HYB_MGGA
+    id: 447
+    macro: XC_HYB_MGGA_XC_X1B95
+    role: XC
+    short_name: XC_X1B95
+  XC_HYB_MGGA_XC_XB1K:
+    description: Mixture of X with BC95 for kinetics
+    family: HYB_MGGA
+    id: 448
+    macro: XC_HYB_MGGA_XC_XB1K
+    role: XC
+    short_name: XC_XB1K
+  XC_HYB_MGGA_X_BMK:
+    description: Boese-Martin for kinetics
+    family: HYB_MGGA
+    id: 279
+    macro: XC_HYB_MGGA_X_BMK
+    role: X
+    short_name: X_BMK
+  XC_HYB_MGGA_X_CF22D:
+    description: Minnesota CF22D hybrid exchange functional
+    family: HYB_MGGA
+    id: 340
+    macro: XC_HYB_MGGA_X_CF22D
+    role: X
+    short_name: X_CF22D
+  XC_HYB_MGGA_X_DLDF:
+    description: Dispersionless Density Functional
+    family: HYB_MGGA
+    id: 36
+    macro: XC_HYB_MGGA_X_DLDF
+    role: X
+    short_name: X_DLDF
+  XC_HYB_MGGA_X_JS18:
+    description: Jana and Samal 2018, screened range-separated TM exchange
+    family: HYB_MGGA
+    id: 705
+    macro: XC_HYB_MGGA_X_JS18
+    role: X
+    short_name: X_JS18
+  XC_HYB_MGGA_X_M05:
+    description: Minnesota M05 hybrid exchange functional
+    family: HYB_MGGA
+    id: 438
+    macro: XC_HYB_MGGA_X_M05
+    role: X
+    short_name: X_M05
+  XC_HYB_MGGA_X_M05_2X:
+    description: Minnesota M05-2X hybrid exchange functional
+    family: HYB_MGGA
+    id: 439
+    macro: XC_HYB_MGGA_X_M05_2X
+    role: X
+    short_name: X_M05_2X
+  XC_HYB_MGGA_X_M06:
+    description: Minnesota M06 hybrid exchange functional
+    family: HYB_MGGA
+    id: 449
+    macro: XC_HYB_MGGA_X_M06
+    role: X
+    short_name: X_M06
+  XC_HYB_MGGA_X_M06_2X:
+    description: Minnesota M06-2X hybrid exchange functional
+    family: HYB_MGGA
+    id: 450
+    macro: XC_HYB_MGGA_X_M06_2X
+    role: X
+    short_name: X_M06_2X
+  XC_HYB_MGGA_X_M06_HF:
+    description: Minnesota M06-HF hybrid exchange functional
+    family: HYB_MGGA
+    id: 444
+    macro: XC_HYB_MGGA_X_M06_HF
+    role: X
+    short_name: X_M06_HF
+  XC_HYB_MGGA_X_M06_SX:
+    description: Minnesota M06-SX short-range hybrid exchange functional
+    family: HYB_MGGA
+    id: 310
+    macro: XC_HYB_MGGA_X_M06_SX
+    role: X
+    short_name: X_M06_SX
+  XC_HYB_MGGA_X_M08_HX:
+    description: Minnesota M08-HX hybrid exchange functional
+    family: HYB_MGGA
+    id: 295
+    macro: XC_HYB_MGGA_X_M08_HX
+    role: X
+    short_name: X_M08_HX
+  XC_HYB_MGGA_X_M08_SO:
+    description: Minnesota M08-SO hybrid exchange functional
+    family: HYB_MGGA
+    id: 296
+    macro: XC_HYB_MGGA_X_M08_SO
+    role: X
+    short_name: X_M08_SO
+  XC_HYB_MGGA_X_M11:
+    description: Minnesota M11 hybrid exchange functional
+    family: HYB_MGGA
+    id: 297
+    macro: XC_HYB_MGGA_X_M11
+    role: X
+    short_name: X_M11
+  XC_HYB_MGGA_X_MN12_SX:
+    description: Minnesota MN12-SX hybrid exchange functional
+    family: HYB_MGGA
+    id: 248
+    macro: XC_HYB_MGGA_X_MN12_SX
+    role: X
+    short_name: X_MN12_SX
+  XC_HYB_MGGA_X_MN15:
+    description: Minnesota MN15 hybrid exchange functional
+    family: HYB_MGGA
+    id: 268
+    macro: XC_HYB_MGGA_X_MN15
+    role: X
+    short_name: X_MN15
+  XC_HYB_MGGA_X_MS2H:
+    description: MS2 hybrid exchange of Sun, et al
+    family: HYB_MGGA
+    id: 224
+    macro: XC_HYB_MGGA_X_MS2H
+    role: X
+    short_name: X_MS2H
+  XC_HYB_MGGA_X_MVSH:
+    description: MVSh hybrid exchange functional
+    family: HYB_MGGA
+    id: 474
+    macro: XC_HYB_MGGA_X_MVSH
+    role: X
+    short_name: X_MVSH
+  XC_HYB_MGGA_X_PJS18:
+    description: Patra, Jana and Samal 2018, screened range-separated TM exchange
+    family: HYB_MGGA
+    id: 706
+    macro: XC_HYB_MGGA_X_PJS18
+    role: X
+    short_name: X_PJS18
+  XC_HYB_MGGA_X_REVM06:
+    description: Revised Minnesota M06 hybrid exchange functional
+    family: HYB_MGGA
+    id: 305
+    macro: XC_HYB_MGGA_X_REVM06
+    role: X
+    short_name: X_REVM06
+  XC_HYB_MGGA_X_REVM11:
+    description: Revised Minnesota M11 hybrid exchange functional
+    family: HYB_MGGA
+    id: 304
+    macro: XC_HYB_MGGA_X_REVM11
+    role: X
+    short_name: X_REVM11
+  XC_HYB_MGGA_X_REVSCAN0:
+    description: revised SCAN hybrid exchange (SCAN0)
+    family: HYB_MGGA
+    id: 583
+    macro: XC_HYB_MGGA_X_REVSCAN0
+    role: X
+    short_name: X_REVSCAN0
+  XC_HYB_MGGA_X_SCAN0:
+    description: SCAN hybrid exchange (SCAN0)
+    family: HYB_MGGA
+    id: 264
+    macro: XC_HYB_MGGA_X_SCAN0
+    role: X
+    short_name: X_SCAN0
+  XC_HYB_MGGA_X_TAU_HCTH:
+    description: Hybrid version of tau-HCTH
+    family: HYB_MGGA
+    id: 282
+    macro: XC_HYB_MGGA_X_TAU_HCTH
+    role: X
+    short_name: X_TAU_HCTH
+  XC_LDA_C_1D_CSC:
+    description: Casula, Sorella & Senatore
+    family: LDA
+    id: 18
+    macro: XC_LDA_C_1D_CSC
+    role: C
+    short_name: C_1D_CSC
+  XC_LDA_C_1D_LOOS:
+    description: P-F Loos correlation LDA
+    family: LDA
+    id: 26
+    macro: XC_LDA_C_1D_LOOS
+    role: C
+    short_name: C_1D_LOOS
+  XC_LDA_C_2D_AMGB:
+    description: AMGB (for 2D systems)
+    family: LDA
+    id: 15
+    macro: XC_LDA_C_2D_AMGB
+    role: C
+    short_name: C_2D_AMGB
+  XC_LDA_C_2D_PRM:
+    description: PRM (for 2D systems)
+    family: LDA
+    id: 16
+    macro: XC_LDA_C_2D_PRM
+    role: C
+    short_name: C_2D_PRM
+  XC_LDA_C_BR78:
+    description: Brual & Rothstein 78
+    family: LDA
+    id: 552
+    macro: XC_LDA_C_BR78
+    role: C
+    short_name: C_BR78
+  XC_LDA_C_CHACHIYO:
+    description: Chachiyo simple 2 parameter correlation
+    family: LDA
+    id: 287
+    macro: XC_LDA_C_CHACHIYO
+    role: C
+    short_name: C_CHACHIYO
+  XC_LDA_C_CHACHIYO_MOD:
+    description: Chachiyo simple 2 parameter correlation with modified spin scaling
+    family: LDA
+    id: 307
+    macro: XC_LDA_C_CHACHIYO_MOD
+    role: C
+    short_name: C_CHACHIYO_MOD
+  XC_LDA_C_EPC17:
+    description: 'epc17(-1): electron-proton correlation 2017'
+    family: LDA
+    id: 328
+    macro: XC_LDA_C_EPC17
+    role: C
+    short_name: C_EPC17
+  XC_LDA_C_EPC17_2:
+    description: 'epc17-2: electron-proton correlation 2017 for proton affinities'
+    family: LDA
+    id: 329
+    macro: XC_LDA_C_EPC17_2
+    role: C
+    short_name: C_EPC17_2
+  XC_LDA_C_EPC18_1:
+    description: 'epc18-1: electron-proton correlation 2018'
+    family: LDA
+    id: 330
+    macro: XC_LDA_C_EPC18_1
+    role: C
+    short_name: C_EPC18_1
+  XC_LDA_C_EPC18_2:
+    description: 'epc18-2: electron-proton correlation 2018 for proton affinities'
+    family: LDA
+    id: 331
+    macro: XC_LDA_C_EPC18_2
+    role: C
+    short_name: C_EPC18_2
+  XC_LDA_C_GK72:
+    description: Gordon and Kim 1972
+    family: LDA
+    id: 578
+    macro: XC_LDA_C_GK72
+    role: C
+    short_name: C_GK72
+  XC_LDA_C_GL:
+    description: Gunnarson & Lundqvist
+    family: LDA
+    id: 5
+    macro: XC_LDA_C_GL
+    role: C
+    short_name: C_GL
+  XC_LDA_C_GOMBAS:
+    description: Gombas
+    family: LDA
+    id: 24
+    macro: XC_LDA_C_GOMBAS
+    role: C
+    short_name: C_GOMBAS
+  XC_LDA_C_HL:
+    description: Hedin & Lundqvist
+    family: LDA
+    id: 4
+    macro: XC_LDA_C_HL
+    role: C
+    short_name: C_HL
+  XC_LDA_C_KARASIEV:
+    description: Karasiev reparameterization of Chachiyo
+    family: LDA
+    id: 579
+    macro: XC_LDA_C_KARASIEV
+    role: C
+    short_name: C_KARASIEV
+  XC_LDA_C_KARASIEV_MOD:
+    description: Karasiev reparameterization of Chachiyo
+    family: LDA
+    id: 308
+    macro: XC_LDA_C_KARASIEV_MOD
+    role: C
+    short_name: C_KARASIEV_MOD
+  XC_LDA_C_LP96:
+    description: Liu-Parr correlation
+    family: LDA
+    id: 289
+    macro: XC_LDA_C_LP96
+    role: C
+    short_name: C_LP96
+  XC_LDA_C_MCWEENY:
+    description: McWeeny 76
+    family: LDA
+    id: 551
+    macro: XC_LDA_C_MCWEENY
+    role: C
+    short_name: C_MCWEENY
+  XC_LDA_C_ML1:
+    description: Modified LSD (version 1) of Proynov and Salahub
+    family: LDA
+    id: 22
+    macro: XC_LDA_C_ML1
+    role: C
+    short_name: C_ML1
+  XC_LDA_C_ML2:
+    description: Modified LSD (version 2) of Proynov and Salahub
+    family: LDA
+    id: 23
+    macro: XC_LDA_C_ML2
+    role: C
+    short_name: C_ML2
+  XC_LDA_C_OB_PW:
+    description: Ortiz & Ballone (PW parametrization)
+    family: LDA
+    id: 14
+    macro: XC_LDA_C_OB_PW
+    role: C
+    short_name: C_OB_PW
+  XC_LDA_C_OB_PZ:
+    description: Ortiz & Ballone (PZ parametrization)
+    family: LDA
+    id: 11
+    macro: XC_LDA_C_OB_PZ
+    role: C
+    short_name: C_OB_PZ
+  XC_LDA_C_OW:
+    description: Optimized Wigner
+    family: LDA
+    id: 574
+    macro: XC_LDA_C_OW
+    role: C
+    short_name: C_OW
+  XC_LDA_C_OW_LYP:
+    description: Wigner with corresponding LYP parameters
+    family: LDA
+    id: 573
+    macro: XC_LDA_C_OW_LYP
+    role: C
+    short_name: C_OW_LYP
+  XC_LDA_C_PK09:
+    description: Proynov and Kong 2009
+    family: LDA
+    id: 554
+    macro: XC_LDA_C_PK09
+    role: C
+    short_name: C_PK09
+  XC_LDA_C_PMGB06:
+    description: Long-range LDA correlation functional
+    family: LDA
+    id: 590
+    macro: XC_LDA_C_PMGB06
+    role: C
+    short_name: C_PMGB06
+  XC_LDA_C_PW:
+    description: Perdew & Wang
+    family: LDA
+    id: 12
+    macro: XC_LDA_C_PW
+    role: C
+    short_name: C_PW
+  XC_LDA_C_PW_ERF:
+    description: Short ranged correlation LDA (erfc)
+    family: LDA
+    id: 654
+    macro: XC_LDA_C_PW_ERF
+    role: C
+    short_name: C_PW_ERF
+  XC_LDA_C_PW_MOD:
+    description: Perdew & Wang (modified)
+    family: LDA
+    id: 13
+    macro: XC_LDA_C_PW_MOD
+    role: C
+    short_name: C_PW_MOD
+  XC_LDA_C_PW_RPA:
+    description: Perdew & Wang (fit to the RPA energy)
+    family: LDA
+    id: 25
+    macro: XC_LDA_C_PW_RPA
+    role: C
+    short_name: C_PW_RPA
+  XC_LDA_C_PZ:
+    description: Perdew & Zunger
+    family: LDA
+    id: 9
+    macro: XC_LDA_C_PZ
+    role: C
+    short_name: C_PZ
+  XC_LDA_C_PZ_MOD:
+    description: Perdew & Zunger (Modified)
+    family: LDA
+    id: 10
+    macro: XC_LDA_C_PZ_MOD
+    role: C
+    short_name: C_PZ_MOD
+  XC_LDA_C_RC04:
+    description: Ragot-Cortona
+    family: LDA
+    id: 27
+    macro: XC_LDA_C_RC04
+    role: C
+    short_name: C_RC04
+  XC_LDA_C_RPA:
+    description: Random Phase Approximation (RPA)
+    family: LDA
+    id: 3
+    macro: XC_LDA_C_RPA
+    role: C
+    short_name: C_RPA
+  XC_LDA_C_RPW92:
+    description: Ruggeri, Rios, and Alavi restricted fit
+    family: LDA
+    id: 684
+    macro: XC_LDA_C_RPW92
+    role: C
+    short_name: C_RPW92
+  XC_LDA_C_UPW92:
+    description: Ruggeri, Rios, and Alavi unrestricted fit
+    family: LDA
+    id: 683
+    macro: XC_LDA_C_UPW92
+    role: C
+    short_name: C_UPW92
+  XC_LDA_C_VBH:
+    description: von Barth & Hedin
+    family: LDA
+    id: 17
+    macro: XC_LDA_C_VBH
+    role: C
+    short_name: C_VBH
+  XC_LDA_C_VWN:
+    description: Vosko, Wilk & Nusair (VWN5)
+    family: LDA
+    id: 7
+    macro: XC_LDA_C_VWN
+    role: C
+    short_name: C_VWN
+  XC_LDA_C_VWN_1:
+    description: Vosko, Wilk & Nusair (VWN1)
+    family: LDA
+    id: 28
+    macro: XC_LDA_C_VWN_1
+    role: C
+    short_name: C_VWN_1
+  XC_LDA_C_VWN_2:
+    description: Vosko, Wilk & Nusair (VWN2)
+    family: LDA
+    id: 29
+    macro: XC_LDA_C_VWN_2
+    role: C
+    short_name: C_VWN_2
+  XC_LDA_C_VWN_3:
+    description: Vosko, Wilk & Nusair (VWN3)
+    family: LDA
+    id: 30
+    macro: XC_LDA_C_VWN_3
+    role: C
+    short_name: C_VWN_3
+  XC_LDA_C_VWN_4:
+    description: Vosko, Wilk & Nusair (VWN4)
+    family: LDA
+    id: 31
+    macro: XC_LDA_C_VWN_4
+    role: C
+    short_name: C_VWN_4
+  XC_LDA_C_VWN_RPA:
+    description: Vosko, Wilk & Nusair (VWN5_RPA)
+    family: LDA
+    id: 8
+    macro: XC_LDA_C_VWN_RPA
+    role: C
+    short_name: C_VWN_RPA
+  XC_LDA_C_W20:
+    description: Xie, Wu, and Zhao interpolation ansatz without fitting parameters
+    family: LDA
+    id: 317
+    macro: XC_LDA_C_W20
+    role: C
+    short_name: C_W20
+  XC_LDA_C_WIGNER:
+    description: Wigner
+    family: LDA
+    id: 2
+    macro: XC_LDA_C_WIGNER
+    role: C
+    short_name: C_WIGNER
+  XC_LDA_C_XALPHA:
+    description: Slater's Xalpha
+    family: LDA
+    id: 6
+    macro: XC_LDA_C_XALPHA
+    role: C
+    short_name: C_XALPHA
+  XC_LDA_K_LP:
+    description: Lee and Parr Gaussian ansatz for the kinetic energy
+    family: LDA
+    id: 51
+    macro: XC_LDA_K_LP
+    role: K
+    short_name: K_LP
+  XC_LDA_K_LP96:
+    description: Liu-Parr kinetic
+    family: LDA
+    id: 580
+    macro: XC_LDA_K_LP96
+    role: K
+    short_name: K_LP96
+  XC_LDA_K_TF:
+    description: Thomas-Fermi kinetic energy
+    family: LDA
+    id: 50
+    macro: XC_LDA_K_TF
+    role: K
+    short_name: K_TF
+  XC_LDA_K_ZLP:
+    description: Wigner including kinetic energy contribution
+    family: LDA
+    id: 550
+    macro: XC_LDA_K_ZLP
+    role: K
+    short_name: K_ZLP
+  XC_LDA_X:
+    description: Slater exchange
+    family: LDA
+    id: 1
+    macro: XC_LDA_X
+    role: X
+    short_name: X
+  XC_LDA_XC_1D_EHWLRG_1:
+    description: LDA constructed from slab-like systems of 1 electron
+    family: LDA
+    id: 536
+    macro: XC_LDA_XC_1D_EHWLRG_1
+    role: XC
+    short_name: XC_1D_EHWLRG_1
+  XC_LDA_XC_1D_EHWLRG_2:
+    description: LDA constructed from slab-like systems of 2 electrons
+    family: LDA
+    id: 537
+    macro: XC_LDA_XC_1D_EHWLRG_2
+    role: XC
+    short_name: XC_1D_EHWLRG_2
+  XC_LDA_XC_1D_EHWLRG_3:
+    description: LDA constructed from slab-like systems of 3 electrons
+    family: LDA
+    id: 538
+    macro: XC_LDA_XC_1D_EHWLRG_3
+    role: XC
+    short_name: XC_1D_EHWLRG_3
+  XC_LDA_XC_CORRKSDT:
+    description: Corrected KSDT by Karasiev, Dufty and Trickey
+    family: LDA
+    id: 318
+    macro: XC_LDA_XC_CORRKSDT
+    role: XC
+    short_name: XC_CORRKSDT
+  XC_LDA_XC_GDSMFB:
+    description: Groth, Dornheim, Sjostrom, Malone, Foulkes, Bonitz
+    family: LDA
+    id: 577
+    macro: XC_LDA_XC_GDSMFB
+    role: XC
+    short_name: XC_GDSMFB
+  XC_LDA_XC_KSDT:
+    description: Karasiev, Sjostrom, Dufty & Trickey
+    family: LDA
+    id: 259
+    macro: XC_LDA_XC_KSDT
+    role: XC
+    short_name: XC_KSDT
+  XC_LDA_XC_LP_A:
+    description: Lee-Parr reparametrization A
+    family: LDA
+    id: 547
+    macro: XC_LDA_XC_LP_A
+    role: XC
+    short_name: XC_LP_A
+  XC_LDA_XC_LP_B:
+    description: Lee-Parr reparametrization B
+    family: LDA
+    id: 548
+    macro: XC_LDA_XC_LP_B
+    role: XC
+    short_name: XC_LP_B
+  XC_LDA_XC_TETER93:
+    description: Teter 93
+    family: LDA
+    id: 20
+    macro: XC_LDA_XC_TETER93
+    role: XC
+    short_name: XC_TETER93
+  XC_LDA_XC_TIH:
+    description: Neural network LDA from Tozer et al
+    family: LDA
+    id: 599
+    macro: XC_LDA_XC_TIH
+    role: XC
+    short_name: XC_TIH
+  XC_LDA_XC_ZLP:
+    description: Zhao, Levy & Parr, Eq. (20)
+    family: LDA
+    id: 43
+    macro: XC_LDA_XC_ZLP
+    role: XC
+    short_name: XC_ZLP
+  XC_LDA_X_1D_EXPONENTIAL:
+    description: Exchange in 1D for an exponentially screened interaction
+    family: LDA
+    id: 600
+    macro: XC_LDA_X_1D_EXPONENTIAL
+    role: X
+    short_name: X_1D_EXPONENTIAL
+  XC_LDA_X_1D_SOFT:
+    description: Exchange in 1D for an soft-Coulomb interaction
+    family: LDA
+    id: 21
+    macro: XC_LDA_X_1D_SOFT
+    role: X
+    short_name: X_1D_SOFT
+  XC_LDA_X_2D:
+    description: Slater exchange
+    family: LDA
+    id: 19
+    macro: XC_LDA_X_2D
+    role: X
+    short_name: X_2D
+  XC_LDA_X_ERF:
+    description: Short-range LDA exchange with error function kernel (erfc)
+    family: LDA
+    id: 546
+    macro: XC_LDA_X_ERF
+    role: X
+    short_name: X_ERF
+  XC_LDA_X_RAE:
+    description: Rae self-energy corrected exchange
+    family: LDA
+    id: 549
+    macro: XC_LDA_X_RAE
+    role: X
+    short_name: X_RAE
+  XC_LDA_X_REL:
+    description: Slater exchange with relativistic corrections
+    family: LDA
+    id: 532
+    macro: XC_LDA_X_REL
+    role: X
+    short_name: X_REL
+  XC_LDA_X_SLOC:
+    description: simple local model for Slater potential
+    family: LDA
+    id: 692
+    macro: XC_LDA_X_SLOC
+    role: X
+    short_name: X_SLOC
+  XC_LDA_X_YUKAWA:
+    description: Short-range LDA exchange with Yukawa attenuation
+    family: LDA
+    id: 641
+    macro: XC_LDA_X_YUKAWA
+    role: X
+    short_name: X_YUKAWA
+  XC_MGGA_C_B88:
+    description: Meta-GGA correlation by Becke
+    family: MGGA
+    id: 571
+    macro: XC_MGGA_C_B88
+    role: C
+    short_name: C_B88
+  XC_MGGA_C_B94:
+    description: Becke 1994 meta-GGA correlation
+    family: MGGA
+    id: 397
+    macro: XC_MGGA_C_B94
+    role: C
+    short_name: C_B94
+  XC_MGGA_C_BC95:
+    description: Becke correlation 95
+    family: MGGA
+    id: 240
+    macro: XC_MGGA_C_BC95
+    role: C
+    short_name: C_BC95
+  XC_MGGA_C_CC:
+    description: Self-interaction corrected correlation functional by Schmidt et al
+    family: MGGA
+    id: 387
+    macro: XC_MGGA_C_CC
+    role: C
+    short_name: C_CC
+  XC_MGGA_C_CCALDA:
+    description: Iso-orbital corrected LDA correlation by Lebeda et al
+    family: MGGA
+    id: 388
+    macro: XC_MGGA_C_CCALDA
+    role: C
+    short_name: C_CCALDA
+  XC_MGGA_C_CF22D:
+    description: Minnesota CF22D correlation functional
+    family: MGGA
+    id: 341
+    macro: XC_MGGA_C_CF22D
+    role: C
+    short_name: C_CF22D
+  XC_MGGA_C_CS:
+    description: Colle and Salvetti
+    family: MGGA
+    id: 72
+    macro: XC_MGGA_C_CS
+    role: C
+    short_name: C_CS
+  XC_MGGA_C_DLDF:
+    description: Dispersionless Density Functional
+    family: MGGA
+    id: 37
+    macro: XC_MGGA_C_DLDF
+    role: C
+    short_name: C_DLDF
+  XC_MGGA_C_HLTAPW:
+    description: Half-and-half meta-LDAized PW correlation by Lehtola and Marques
+    family: MGGA
+    id: 699
+    macro: XC_MGGA_C_HLTAPW
+    role: C
+    short_name: C_HLTAPW
+  XC_MGGA_C_KCIS:
+    description: Krieger, Chen, Iafrate, and Savin
+    family: MGGA
+    id: 562
+    macro: XC_MGGA_C_KCIS
+    role: C
+    short_name: C_KCIS
+  XC_MGGA_C_KCISK:
+    description: Krieger, Chen, and Kurth
+    family: MGGA
+    id: 638
+    macro: XC_MGGA_C_KCISK
+    role: C
+    short_name: C_KCISK
+  XC_MGGA_C_M05:
+    description: Minnesota M05 correlation functional
+    family: MGGA
+    id: 237
+    macro: XC_MGGA_C_M05
+    role: C
+    short_name: C_M05
+  XC_MGGA_C_M05_2X:
+    description: Minnesota M05-2X correlation functional
+    family: MGGA
+    id: 238
+    macro: XC_MGGA_C_M05_2X
+    role: C
+    short_name: C_M05_2X
+  XC_MGGA_C_M06:
+    description: Minnesota M06 correlation functional
+    family: MGGA
+    id: 235
+    macro: XC_MGGA_C_M06
+    role: C
+    short_name: C_M06
+  XC_MGGA_C_M06_2X:
+    description: Minnesota M06-2X correlation functional
+    family: MGGA
+    id: 236
+    macro: XC_MGGA_C_M06_2X
+    role: C
+    short_name: C_M06_2X
+  XC_MGGA_C_M06_HF:
+    description: Minnesota M06-HF correlation functional
+    family: MGGA
+    id: 234
+    macro: XC_MGGA_C_M06_HF
+    role: C
+    short_name: C_M06_HF
+  XC_MGGA_C_M06_L:
+    description: Minnesota M06-L correlation functional
+    family: MGGA
+    id: 233
+    macro: XC_MGGA_C_M06_L
+    role: C
+    short_name: C_M06_L
+  XC_MGGA_C_M06_SX:
+    description: Minnesota M06-SX correlation functional
+    family: MGGA
+    id: 311
+    macro: XC_MGGA_C_M06_SX
+    role: C
+    short_name: C_M06_SX
+  XC_MGGA_C_M08_HX:
+    description: Minnesota M08 correlation functional
+    family: MGGA
+    id: 78
+    macro: XC_MGGA_C_M08_HX
+    role: C
+    short_name: C_M08_HX
+  XC_MGGA_C_M08_SO:
+    description: Minnesota M08-SO correlation functional
+    family: MGGA
+    id: 77
+    macro: XC_MGGA_C_M08_SO
+    role: C
+    short_name: C_M08_SO
+  XC_MGGA_C_M11:
+    description: Minnesota M11 correlation functional
+    family: MGGA
+    id: 76
+    macro: XC_MGGA_C_M11
+    role: C
+    short_name: C_M11
+  XC_MGGA_C_M11_L:
+    description: Minnesota M11-L correlation functional
+    family: MGGA
+    id: 75
+    macro: XC_MGGA_C_M11_L
+    role: C
+    short_name: C_M11_L
+  XC_MGGA_C_MN12_L:
+    description: Minnesota MN12-L correlation functional
+    family: MGGA
+    id: 74
+    macro: XC_MGGA_C_MN12_L
+    role: C
+    short_name: C_MN12_L
+  XC_MGGA_C_MN12_SX:
+    description: Minnesota MN12-SX correlation functional
+    family: MGGA
+    id: 73
+    macro: XC_MGGA_C_MN12_SX
+    role: C
+    short_name: C_MN12_SX
+  XC_MGGA_C_MN15:
+    description: Minnesota MN15 correlation functional
+    family: MGGA
+    id: 269
+    macro: XC_MGGA_C_MN15
+    role: C
+    short_name: C_MN15
+  XC_MGGA_C_MN15_L:
+    description: Minnesota MN15-L correlation functional
+    family: MGGA
+    id: 261
+    macro: XC_MGGA_C_MN15_L
+    role: C
+    short_name: C_MN15_L
+  XC_MGGA_C_PKZB:
+    description: Perdew, Kurth, Zupan, and Blaha
+    family: MGGA
+    id: 239
+    macro: XC_MGGA_C_PKZB
+    role: C
+    short_name: C_PKZB
+  XC_MGGA_C_R2SCAN:
+    description: Re-regularized SCAN correlation by Furness et al
+    family: MGGA
+    id: 498
+    macro: XC_MGGA_C_R2SCAN
+    role: C
+    short_name: C_R2SCAN
+  XC_MGGA_C_R2SCAN01:
+    description: Re-regularized SCAN correlation with larger value for eta
+    family: MGGA
+    id: 642
+    macro: XC_MGGA_C_R2SCAN01
+    role: C
+    short_name: C_R2SCAN01
+  XC_MGGA_C_R2SCANL:
+    description: Deorbitalized re-regularized SCAN (r2SCAN-L) correlation
+    family: MGGA
+    id: 719
+    macro: XC_MGGA_C_R2SCANL
+    role: C
+    short_name: C_R2SCANL
+  XC_MGGA_C_REVM06:
+    description: Revised Minnesota M06 correlation functional
+    family: MGGA
+    id: 306
+    macro: XC_MGGA_C_REVM06
+    role: C
+    short_name: C_REVM06
+  XC_MGGA_C_REVM06_L:
+    description: Minnesota revM06-L correlation functional
+    family: MGGA
+    id: 294
+    macro: XC_MGGA_C_REVM06_L
+    role: C
+    short_name: C_REVM06_L
+  XC_MGGA_C_REVM11:
+    description: Revised Minnesota M11 correlation functional
+    family: MGGA
+    id: 172
+    macro: XC_MGGA_C_REVM11
+    role: C
+    short_name: C_REVM11
+  XC_MGGA_C_REVSCAN:
+    description: revised SCAN
+    family: MGGA
+    id: 582
+    macro: XC_MGGA_C_REVSCAN
+    role: C
+    short_name: C_REVSCAN
+  XC_MGGA_C_REVSCAN_VV10:
+    description: REVSCAN + VV10 correlation
+    family: MGGA
+    id: 585
+    macro: XC_MGGA_C_REVSCAN_VV10
+    role: C
+    short_name: C_REVSCAN_VV10
+  XC_MGGA_C_REVTM:
+    description: revised Tao and Mo 2016 exchange
+    family: MGGA
+    id: 694
+    macro: XC_MGGA_C_REVTM
+    role: C
+    short_name: C_REVTM
+  XC_MGGA_C_REVTPSS:
+    description: revised TPSS correlation
+    family: MGGA
+    id: 241
+    macro: XC_MGGA_C_REVTPSS
+    role: C
+    short_name: C_REVTPSS
+  XC_MGGA_C_RMGGAC:
+    description: Revised correlation energy for MGGAC exchange functional
+    family: MGGA
+    id: 643
+    macro: XC_MGGA_C_RMGGAC
+    role: C
+    short_name: C_RMGGAC
+  XC_MGGA_C_RPPSCAN:
+    description: 'r++SCAN: rSCAN with uniform density limit and coordinate scaling
+      behavior'
+    family: MGGA
+    id: 649
+    macro: XC_MGGA_C_RPPSCAN
+    role: C
+    short_name: C_RPPSCAN
+  XC_MGGA_C_RREGTM:
+    description: Revised regTM correlation by Jana et al
+    family: MGGA
+    id: 391
+    macro: XC_MGGA_C_RREGTM
+    role: C
+    short_name: C_RREGTM
+  XC_MGGA_C_RSCAN:
+    description: Regularized SCAN correlation by Bartok and Yates
+    family: MGGA
+    id: 494
+    macro: XC_MGGA_C_RSCAN
+    role: C
+    short_name: C_RSCAN
+  XC_MGGA_C_SCAN:
+    description: SCAN correlation of Sun, Ruzsinszky, and Perdew
+    family: MGGA
+    id: 267
+    macro: XC_MGGA_C_SCAN
+    role: C
+    short_name: C_SCAN
+  XC_MGGA_C_SCANL:
+    description: Deorbitalized SCAN (SCAN-L) correlation
+    family: MGGA
+    id: 702
+    macro: XC_MGGA_C_SCANL
+    role: C
+    short_name: C_SCANL
+  XC_MGGA_C_SCANL_RVV10:
+    description: SCAN-L + rVV10 correlation
+    family: MGGA
+    id: 703
+    macro: XC_MGGA_C_SCANL_RVV10
+    role: C
+    short_name: C_SCANL_RVV10
+  XC_MGGA_C_SCANL_VV10:
+    description: SCAN-L + VV10 correlation
+    family: MGGA
+    id: 704
+    macro: XC_MGGA_C_SCANL_VV10
+    role: C
+    short_name: C_SCANL_VV10
+  XC_MGGA_C_SCAN_RVV10:
+    description: SCAN + rVV10 correlation
+    family: MGGA
+    id: 292
+    macro: XC_MGGA_C_SCAN_RVV10
+    role: C
+    short_name: C_SCAN_RVV10
+  XC_MGGA_C_SCAN_VV10:
+    description: SCAN + VV10 correlation
+    family: MGGA
+    id: 584
+    macro: XC_MGGA_C_SCAN_VV10
+    role: C
+    short_name: C_SCAN_VV10
+  XC_MGGA_C_TM:
+    description: Tao and Mo 2016 correlation
+    family: MGGA
+    id: 251
+    macro: XC_MGGA_C_TM
+    role: C
+    short_name: C_TM
+  XC_MGGA_C_TPSS:
+    description: Tao, Perdew, Staroverov & Scuseria
+    family: MGGA
+    id: 231
+    macro: XC_MGGA_C_TPSS
+    role: C
+    short_name: C_TPSS
+  XC_MGGA_C_TPSSLOC:
+    description: Semilocal dynamical correlation
+    family: MGGA
+    id: 247
+    macro: XC_MGGA_C_TPSSLOC
+    role: C
+    short_name: C_TPSSLOC
+  XC_MGGA_C_TPSS_GAUSSIAN:
+    description: Tao, Perdew, Staroverov & Scuseria with parameters from Gaussian
+    family: MGGA
+    id: 323
+    macro: XC_MGGA_C_TPSS_GAUSSIAN
+    role: C
+    short_name: C_TPSS_GAUSSIAN
+  XC_MGGA_C_VSXC:
+    description: VSXC (correlation part)
+    family: MGGA
+    id: 232
+    macro: XC_MGGA_C_VSXC
+    role: C
+    short_name: C_VSXC
+  XC_MGGA_K_CSK1:
+    description: mGGA-rev functional by Cancio, Stewart, and Kuna (a=1)
+    family: MGGA
+    id: 629
+    macro: XC_MGGA_K_CSK1
+    role: K
+    short_name: K_CSK1
+  XC_MGGA_K_CSK4:
+    description: mGGA-rev functional by Cancio, Stewart, and Kuna (a=4)
+    family: MGGA
+    id: 630
+    macro: XC_MGGA_K_CSK4
+    role: K
+    short_name: K_CSK4
+  XC_MGGA_K_CSK_LOC1:
+    description: mGGAloc-rev functional by Cancio, Stewart, and Kuna (a=1)
+    family: MGGA
+    id: 631
+    macro: XC_MGGA_K_CSK_LOC1
+    role: K
+    short_name: K_CSK_LOC1
+  XC_MGGA_K_CSK_LOC4:
+    description: mGGAloc-rev functional by Cancio, Stewart, and Kuna (a=4)
+    family: MGGA
+    id: 632
+    macro: XC_MGGA_K_CSK_LOC4
+    role: K
+    short_name: K_CSK_LOC4
+  XC_MGGA_K_GEA2:
+    description: Second-order gradient expansion
+    family: MGGA
+    id: 627
+    macro: XC_MGGA_K_GEA2
+    role: K
+    short_name: K_GEA2
+  XC_MGGA_K_GEA4:
+    description: Fourth-order gradient expansion
+    family: MGGA
+    id: 628
+    macro: XC_MGGA_K_GEA4
+    role: K
+    short_name: K_GEA4
+  XC_MGGA_K_L04:
+    description: L0.4 by Laricchia et al
+    family: MGGA
+    id: 617
+    macro: XC_MGGA_K_L04
+    role: K
+    short_name: K_L04
+  XC_MGGA_K_L06:
+    description: L0.6 by Laricchia et al
+    family: MGGA
+    id: 618
+    macro: XC_MGGA_K_L06
+    role: K
+    short_name: K_L06
+  XC_MGGA_K_PC07:
+    description: Perdew and Constantin 2007
+    family: MGGA
+    id: 543
+    macro: XC_MGGA_K_PC07
+    role: K
+    short_name: K_PC07
+  XC_MGGA_K_PC07_OPT:
+    description: Reoptimized PC07 by Mejia-Rodriguez and Trickey
+    family: MGGA
+    id: 634
+    macro: XC_MGGA_K_PC07_OPT
+    role: K
+    short_name: K_PC07_OPT
+  XC_MGGA_K_PGSL025:
+    description: PGSL025 (Pauli-Gaussian) functional by Constantin, Fabiano, and Della
+      Sala
+    family: MGGA
+    id: 220
+    macro: XC_MGGA_K_PGSL025
+    role: K
+    short_name: K_PGSL025
+  XC_MGGA_K_RDA:
+    description: Reduced derivative approximation by Karasiev et al
+    family: MGGA
+    id: 621
+    macro: XC_MGGA_K_RDA
+    role: K
+    short_name: K_RDA
+  XC_MGGA_XC_B97M_V:
+    description: B97M-V exchange-correlation functional
+    family: MGGA
+    id: 254
+    macro: XC_MGGA_XC_B97M_V
+    role: XC
+    short_name: XC_B97M_V
+  XC_MGGA_XC_CC06:
+    description: Cancio and Chou 2006
+    family: MGGA
+    id: 229
+    macro: XC_MGGA_XC_CC06
+    role: XC
+    short_name: XC_CC06
+  XC_MGGA_XC_HLE17:
+    description: high local exchange 2017
+    family: MGGA
+    id: 288
+    macro: XC_MGGA_XC_HLE17
+    role: XC
+    short_name: XC_HLE17
+  XC_MGGA_XC_LP90:
+    description: Lee & Parr, Eq. (56)
+    family: MGGA
+    id: 564
+    macro: XC_MGGA_XC_LP90
+    role: XC
+    short_name: XC_LP90
+  XC_MGGA_XC_OTPSS_D:
+    description: oTPSS-D functional of Goerigk and Grimme
+    family: MGGA
+    id: 64
+    macro: XC_MGGA_XC_OTPSS_D
+    role: XC
+    short_name: XC_OTPSS_D
+  XC_MGGA_XC_TPSSLYP1W:
+    description: TPSSLYP1W
+    family: MGGA
+    id: 242
+    macro: XC_MGGA_XC_TPSSLYP1W
+    role: XC
+    short_name: XC_TPSSLYP1W
+  XC_MGGA_XC_VCML_RVV10:
+    description: VCML-rVV10 by Trepte and Voss
+    family: MGGA
+    id: 652
+    macro: XC_MGGA_XC_VCML_RVV10
+    role: XC
+    short_name: XC_VCML_RVV10
+  XC_MGGA_XC_ZLP:
+    description: Zhao, Levy & Parr, Eq. (21)
+    family: MGGA
+    id: 42
+    macro: XC_MGGA_XC_ZLP
+    role: XC
+    short_name: XC_ZLP
+  XC_MGGA_X_2D_JS17:
+    description: JS17 meta-GGA for 2D
+    family: MGGA
+    id: 609
+    macro: XC_MGGA_X_2D_JS17
+    role: X
+    short_name: X_2D_JS17
+  XC_MGGA_X_2D_PRHG07:
+    description: Pittalis-Rasanen-Helbig-Gross 2007
+    family: MGGA
+    id: 210
+    macro: XC_MGGA_X_2D_PRHG07
+    role: X
+    short_name: X_2D_PRHG07
+  XC_MGGA_X_2D_PRHG07_PRP10:
+    description: PRHG07 with Pittalis-Rasanen-Proetto 2010 correction
+    family: MGGA
+    id: 211
+    macro: XC_MGGA_X_2D_PRHG07_PRP10
+    role: X
+    short_name: X_2D_PRHG07_PRP10
+  XC_MGGA_X_B00:
+    description: Becke 2000
+    family: MGGA
+    id: 284
+    macro: XC_MGGA_X_B00
+    role: X
+    short_name: X_B00
+  XC_MGGA_X_BJ06:
+    description: Becke & Johnson 06
+    family: MGGA
+    id: 207
+    macro: XC_MGGA_X_BJ06
+    role: X
+    short_name: X_BJ06
+  XC_MGGA_X_BLOC:
+    description: functional with balanced localization
+    family: MGGA
+    id: 244
+    macro: XC_MGGA_X_BLOC
+    role: X
+    short_name: X_BLOC
+  XC_MGGA_X_BR89:
+    description: Becke-Roussel 89, gamma = 0.8
+    family: MGGA
+    id: 206
+    macro: XC_MGGA_X_BR89
+    role: X
+    short_name: X_BR89
+  XC_MGGA_X_BR89_1:
+    description: Becke-Roussel 89, gamma = 1.0
+    family: MGGA
+    id: 214
+    macro: XC_MGGA_X_BR89_1
+    role: X
+    short_name: X_BR89_1
+  XC_MGGA_X_BR89_EXPLICIT:
+    description: Becke-Roussel 89 with an explicit inversion of x(y), gamma = 0.8
+    family: MGGA
+    id: 586
+    macro: XC_MGGA_X_BR89_EXPLICIT
+    role: X
+    short_name: X_BR89_EXPLICIT
+  XC_MGGA_X_BR89_EXPLICIT_1:
+    description: Becke-Roussel 89 with an explicit inversion of x(y), gamma = 1.0
+    family: MGGA
+    id: 602
+    macro: XC_MGGA_X_BR89_EXPLICIT_1
+    role: X
+    short_name: X_BR89_EXPLICIT_1
+  XC_MGGA_X_EDMGGA:
+    description: Tao 2001
+    family: MGGA
+    id: 686
+    macro: XC_MGGA_X_EDMGGA
+    role: X
+    short_name: X_EDMGGA
+  XC_MGGA_X_EEL:
+    description: Exact exchange-like exchange of Aschebrock et al
+    family: MGGA
+    id: 326
+    macro: XC_MGGA_X_EEL
+    role: X
+    short_name: X_EEL
+  XC_MGGA_X_FT98:
+    description: Filatov and Thiel 1998 meta-GGA exchange
+    family: MGGA
+    id: 319
+    macro: XC_MGGA_X_FT98
+    role: X
+    short_name: X_FT98
+  XC_MGGA_X_GDME_0:
+    description: Generalized density-matrix with a=0
+    family: MGGA
+    id: 689
+    macro: XC_MGGA_X_GDME_0
+    role: X
+    short_name: X_GDME_0
+  XC_MGGA_X_GDME_KOS:
+    description: Generalized density-matrix with a=0.00638
+    family: MGGA
+    id: 690
+    macro: XC_MGGA_X_GDME_KOS
+    role: X
+    short_name: X_GDME_KOS
+  XC_MGGA_X_GDME_NV:
+    description: Generalized density-matrix with a=1/2
+    family: MGGA
+    id: 687
+    macro: XC_MGGA_X_GDME_NV
+    role: X
+    short_name: X_GDME_NV
+  XC_MGGA_X_GDME_VT:
+    description: Varied-terms (VT) mGGA of Koehl, Odom, and Scuseria
+    family: MGGA
+    id: 691
+    macro: XC_MGGA_X_GDME_VT
+    role: X
+    short_name: X_GDME_VT
+  XC_MGGA_X_GVT4:
+    description: GVT4 (X part of VSXC)
+    family: MGGA
+    id: 204
+    macro: XC_MGGA_X_GVT4
+    role: X
+    short_name: X_GVT4
+  XC_MGGA_X_GX:
+    description: GX functional of Loos
+    family: MGGA
+    id: 575
+    macro: XC_MGGA_X_GX
+    role: X
+    short_name: X_GX
+  XC_MGGA_X_HLTA:
+    description: Half-and-half meta-LDAized LDA exchange by Lehtola and Marques
+    family: MGGA
+    id: 698
+    macro: XC_MGGA_X_HLTA
+    role: X
+    short_name: X_HLTA
+  XC_MGGA_X_JK:
+    description: Jemmer-Knowles meta-GGA exchange
+    family: MGGA
+    id: 256
+    macro: XC_MGGA_X_JK
+    role: X
+    short_name: X_JK
+  XC_MGGA_X_KTBM_0:
+    description: KTBM learned exchange - 0
+    family: MGGA
+    id: 735
+    macro: XC_MGGA_X_KTBM_0
+    role: X
+    short_name: X_KTBM_0
+  XC_MGGA_X_KTBM_1:
+    description: KTBM learned exchange - 1
+    family: MGGA
+    id: 736
+    macro: XC_MGGA_X_KTBM_1
+    role: X
+    short_name: X_KTBM_1
+  XC_MGGA_X_KTBM_10:
+    description: KTBM learned exchange - 10
+    family: MGGA
+    id: 745
+    macro: XC_MGGA_X_KTBM_10
+    role: X
+    short_name: X_KTBM_10
+  XC_MGGA_X_KTBM_11:
+    description: KTBM learned exchange - 11
+    family: MGGA
+    id: 746
+    macro: XC_MGGA_X_KTBM_11
+    role: X
+    short_name: X_KTBM_11
+  XC_MGGA_X_KTBM_12:
+    description: KTBM learned exchange - 12
+    family: MGGA
+    id: 747
+    macro: XC_MGGA_X_KTBM_12
+    role: X
+    short_name: X_KTBM_12
+  XC_MGGA_X_KTBM_13:
+    description: KTBM learned exchange - 13
+    family: MGGA
+    id: 748
+    macro: XC_MGGA_X_KTBM_13
+    role: X
+    short_name: X_KTBM_13
+  XC_MGGA_X_KTBM_14:
+    description: KTBM learned exchange - 14
+    family: MGGA
+    id: 749
+    macro: XC_MGGA_X_KTBM_14
+    role: X
+    short_name: X_KTBM_14
+  XC_MGGA_X_KTBM_15:
+    description: KTBM learned exchange - 15
+    family: MGGA
+    id: 750
+    macro: XC_MGGA_X_KTBM_15
+    role: X
+    short_name: X_KTBM_15
+  XC_MGGA_X_KTBM_16:
+    description: KTBM learned exchange - 16
+    family: MGGA
+    id: 751
+    macro: XC_MGGA_X_KTBM_16
+    role: X
+    short_name: X_KTBM_16
+  XC_MGGA_X_KTBM_17:
+    description: KTBM learned exchange - 17
+    family: MGGA
+    id: 752
+    macro: XC_MGGA_X_KTBM_17
+    role: X
+    short_name: X_KTBM_17
+  XC_MGGA_X_KTBM_18:
+    description: KTBM learned exchange - 18
+    family: MGGA
+    id: 753
+    macro: XC_MGGA_X_KTBM_18
+    role: X
+    short_name: X_KTBM_18
+  XC_MGGA_X_KTBM_19:
+    description: KTBM learned exchange - 19
+    family: MGGA
+    id: 754
+    macro: XC_MGGA_X_KTBM_19
+    role: X
+    short_name: X_KTBM_19
+  XC_MGGA_X_KTBM_2:
+    description: KTBM learned exchange - 2
+    family: MGGA
+    id: 737
+    macro: XC_MGGA_X_KTBM_2
+    role: X
+    short_name: X_KTBM_2
+  XC_MGGA_X_KTBM_20:
+    description: KTBM learned exchange - 20
+    family: MGGA
+    id: 755
+    macro: XC_MGGA_X_KTBM_20
+    role: X
+    short_name: X_KTBM_20
+  XC_MGGA_X_KTBM_21:
+    description: KTBM learned exchange - 21
+    family: MGGA
+    id: 756
+    macro: XC_MGGA_X_KTBM_21
+    role: X
+    short_name: X_KTBM_21
+  XC_MGGA_X_KTBM_22:
+    description: KTBM learned exchange - 22
+    family: MGGA
+    id: 757
+    macro: XC_MGGA_X_KTBM_22
+    role: X
+    short_name: X_KTBM_22
+  XC_MGGA_X_KTBM_23:
+    description: KTBM learned exchange - 23
+    family: MGGA
+    id: 758
+    macro: XC_MGGA_X_KTBM_23
+    role: X
+    short_name: X_KTBM_23
+  XC_MGGA_X_KTBM_24:
+    description: KTBM learned exchange - 24
+    family: MGGA
+    id: 759
+    macro: XC_MGGA_X_KTBM_24
+    role: X
+    short_name: X_KTBM_24
+  XC_MGGA_X_KTBM_3:
+    description: KTBM learned exchange - 3
+    family: MGGA
+    id: 738
+    macro: XC_MGGA_X_KTBM_3
+    role: X
+    short_name: X_KTBM_3
+  XC_MGGA_X_KTBM_4:
+    description: KTBM learned exchange - 4
+    family: MGGA
+    id: 739
+    macro: XC_MGGA_X_KTBM_4
+    role: X
+    short_name: X_KTBM_4
+  XC_MGGA_X_KTBM_5:
+    description: KTBM learned exchange - 5
+    family: MGGA
+    id: 740
+    macro: XC_MGGA_X_KTBM_5
+    role: X
+    short_name: X_KTBM_5
+  XC_MGGA_X_KTBM_6:
+    description: KTBM learned exchange - 6
+    family: MGGA
+    id: 741
+    macro: XC_MGGA_X_KTBM_6
+    role: X
+    short_name: X_KTBM_6
+  XC_MGGA_X_KTBM_7:
+    description: KTBM learned exchange - 7
+    family: MGGA
+    id: 742
+    macro: XC_MGGA_X_KTBM_7
+    role: X
+    short_name: X_KTBM_7
+  XC_MGGA_X_KTBM_8:
+    description: KTBM learned exchange - 8
+    family: MGGA
+    id: 743
+    macro: XC_MGGA_X_KTBM_8
+    role: X
+    short_name: X_KTBM_8
+  XC_MGGA_X_KTBM_9:
+    description: KTBM learned exchange - 9
+    family: MGGA
+    id: 744
+    macro: XC_MGGA_X_KTBM_9
+    role: X
+    short_name: X_KTBM_9
+  XC_MGGA_X_KTBM_GAP:
+    description: KTBM learned exchange - GAP
+    family: MGGA
+    id: 760
+    macro: XC_MGGA_X_KTBM_GAP
+    role: X
+    short_name: X_KTBM_GAP
+  XC_MGGA_X_LAK:
+    description: Lebeda-Aschebrock-Kummel meta-GGA exchange
+    family: MGGA
+    id: 342
+    macro: XC_MGGA_X_LAK
+    role: X
+    short_name: X_LAK
+  XC_MGGA_X_LTA:
+    description: Local tau approximation
+    family: MGGA
+    id: 201
+    macro: XC_MGGA_X_LTA
+    role: X
+    short_name: X_LTA
+  XC_MGGA_X_M06_L:
+    description: Minnesota M06-L exchange functional
+    family: MGGA
+    id: 203
+    macro: XC_MGGA_X_M06_L
+    role: X
+    short_name: X_M06_L
+  XC_MGGA_X_M11_L:
+    description: Minnesota M11-L exchange functional
+    family: MGGA
+    id: 226
+    macro: XC_MGGA_X_M11_L
+    role: X
+    short_name: X_M11_L
+  XC_MGGA_X_MBEEF:
+    description: mBEEF exchange
+    family: MGGA
+    id: 249
+    macro: XC_MGGA_X_MBEEF
+    role: X
+    short_name: X_MBEEF
+  XC_MGGA_X_MBEEFVDW:
+    description: mBEEF-vdW exchange
+    family: MGGA
+    id: 250
+    macro: XC_MGGA_X_MBEEFVDW
+    role: X
+    short_name: X_MBEEFVDW
+  XC_MGGA_X_MBR:
+    description: modified Becke-Roussel by Patra et al
+    family: MGGA
+    id: 716
+    macro: XC_MGGA_X_MBR
+    role: X
+    short_name: X_MBR
+  XC_MGGA_X_MBRXC_BG:
+    description: Modified Becke-Roussel for band gaps - cuspless hole
+    family: MGGA
+    id: 696
+    macro: XC_MGGA_X_MBRXC_BG
+    role: X
+    short_name: X_MBRXC_BG
+  XC_MGGA_X_MBRXH_BG:
+    description: Modified Becke-Roussel for band gaps - hydrogen hole
+    family: MGGA
+    id: 697
+    macro: XC_MGGA_X_MBRXH_BG
+    role: X
+    short_name: X_MBRXH_BG
+  XC_MGGA_X_MCML:
+    description: MCML exchange
+    family: MGGA
+    id: 644
+    macro: XC_MGGA_X_MCML
+    role: X
+    short_name: X_MCML
+  XC_MGGA_X_MGGAC:
+    description: MGGAC exchange of Patra et al
+    family: MGGA
+    id: 711
+    macro: XC_MGGA_X_MGGAC
+    role: X
+    short_name: X_MGGAC
+  XC_MGGA_X_MK00:
+    description: Exchange for accurate virtual orbital energies
+    family: MGGA
+    id: 230
+    macro: XC_MGGA_X_MK00
+    role: X
+    short_name: X_MK00
+  XC_MGGA_X_MK00B:
+    description: Exchange for accurate virtual orbital energies (v. B)
+    family: MGGA
+    id: 243
+    macro: XC_MGGA_X_MK00B
+    role: X
+    short_name: X_MK00B
+  XC_MGGA_X_MN12_L:
+    description: Minnesota MN12-L exchange functional
+    family: MGGA
+    id: 227
+    macro: XC_MGGA_X_MN12_L
+    role: X
+    short_name: X_MN12_L
+  XC_MGGA_X_MN15_L:
+    description: Minnesota MN15-L exchange functional
+    family: MGGA
+    id: 260
+    macro: XC_MGGA_X_MN15_L
+    role: X
+    short_name: X_MN15_L
+  XC_MGGA_X_MODTPSS:
+    description: Modified Tao, Perdew, Staroverov & Scuseria
+    family: MGGA
+    id: 245
+    macro: XC_MGGA_X_MODTPSS
+    role: X
+    short_name: X_MODTPSS
+  XC_MGGA_X_MS0:
+    description: MS exchange of Sun, Xiao, and Ruzsinszky
+    family: MGGA
+    id: 221
+    macro: XC_MGGA_X_MS0
+    role: X
+    short_name: X_MS0
+  XC_MGGA_X_MS1:
+    description: MS1 exchange of Sun, et al
+    family: MGGA
+    id: 222
+    macro: XC_MGGA_X_MS1
+    role: X
+    short_name: X_MS1
+  XC_MGGA_X_MS2:
+    description: MS2 exchange of Sun, et al
+    family: MGGA
+    id: 223
+    macro: XC_MGGA_X_MS2
+    role: X
+    short_name: X_MS2
+  XC_MGGA_X_MS2B:
+    description: MS2beta exchange of Furness and Sun
+    family: MGGA
+    id: 300
+    macro: XC_MGGA_X_MS2B
+    role: X
+    short_name: X_MS2B
+  XC_MGGA_X_MS2BS:
+    description: MS2beta* exchange of Furness and Sun
+    family: MGGA
+    id: 301
+    macro: XC_MGGA_X_MS2BS
+    role: X
+    short_name: X_MS2BS
+  XC_MGGA_X_MS2_REV:
+    description: MS2 exchange of Sun, et al with revised value for c
+    family: MGGA
+    id: 228
+    macro: XC_MGGA_X_MS2_REV
+    role: X
+    short_name: X_MS2_REV
+  XC_MGGA_X_MSB86BL:
+    description: MS-B86bl, a B86b-like meta-GGA exchange
+    family: MGGA
+    id: 765
+    macro: XC_MGGA_X_MSB86BL
+    role: X
+    short_name: X_MSB86BL
+  XC_MGGA_X_MSPBEL:
+    description: MS-PBEl, a PBE-like meta-GGA exchange
+    family: MGGA
+    id: 761
+    macro: XC_MGGA_X_MSPBEL
+    role: X
+    short_name: X_MSPBEL
+  XC_MGGA_X_MSRPBEL:
+    description: MS-RPBEl, a RPBE-like meta-GGA exchange
+    family: MGGA
+    id: 763
+    macro: XC_MGGA_X_MSRPBEL
+    role: X
+    short_name: X_MSRPBEL
+  XC_MGGA_X_MTASK:
+    description: modified TASK exchange
+    family: MGGA
+    id: 724
+    macro: XC_MGGA_X_MTASK
+    role: X
+    short_name: X_MTASK
+  XC_MGGA_X_MVS:
+    description: MVS exchange of Sun, Perdew, and Ruzsinszky
+    family: MGGA
+    id: 257
+    macro: XC_MGGA_X_MVS
+    role: X
+    short_name: X_MVS
+  XC_MGGA_X_MVSB:
+    description: MVSbeta exchange by Furness and Sun
+    family: MGGA
+    id: 302
+    macro: XC_MGGA_X_MVSB
+    role: X
+    short_name: X_MVSB
+  XC_MGGA_X_MVSBS:
+    description: MVSbeta* exchange by Furness and Sun
+    family: MGGA
+    id: 303
+    macro: XC_MGGA_X_MVSBS
+    role: X
+    short_name: X_MVSBS
+  XC_MGGA_X_PBE_GX:
+    description: PBE-GX functional of Loos
+    family: MGGA
+    id: 576
+    macro: XC_MGGA_X_PBE_GX
+    role: X
+    short_name: X_PBE_GX
+  XC_MGGA_X_PKZB:
+    description: Perdew, Kurth, Zupan, and Blaha
+    family: MGGA
+    id: 213
+    macro: XC_MGGA_X_PKZB
+    role: X
+    short_name: X_PKZB
+  XC_MGGA_X_R2SCAN:
+    description: Re-regularized SCAN exchange by Furness et al
+    family: MGGA
+    id: 497
+    macro: XC_MGGA_X_R2SCAN
+    role: X
+    short_name: X_R2SCAN
+  XC_MGGA_X_R2SCAN01:
+    description: Re-regularized SCAN exchange by Furness et al with larger value for
+      eta
+    family: MGGA
+    id: 645
+    macro: XC_MGGA_X_R2SCAN01
+    role: X
+    short_name: X_R2SCAN01
+  XC_MGGA_X_R2SCANL:
+    description: Deorbitalized re-regularized SCAN (r2SCAN-L) exchange
+    family: MGGA
+    id: 718
+    macro: XC_MGGA_X_R2SCANL
+    role: X
+    short_name: X_R2SCANL
+  XC_MGGA_X_R4SCAN:
+    description: r$^{4}$SCAN, a functional that satisfies the same exact constraints
+      that SCAN does
+    family: MGGA
+    id: 650
+    macro: XC_MGGA_X_R4SCAN
+    role: X
+    short_name: X_R4SCAN
+  XC_MGGA_X_REGTM:
+    description: Regularized Tao and Mo exchange
+    family: MGGA
+    id: 626
+    macro: XC_MGGA_X_REGTM
+    role: X
+    short_name: X_REGTM
+  XC_MGGA_X_REGTPSS:
+    description: Regularized TPSS
+    family: MGGA
+    id: 603
+    macro: XC_MGGA_X_REGTPSS
+    role: X
+    short_name: X_REGTPSS
+  XC_MGGA_X_REVM06_L:
+    description: Minnesota revM06-L exchange functional
+    family: MGGA
+    id: 293
+    macro: XC_MGGA_X_REVM06_L
+    role: X
+    short_name: X_REVM06_L
+  XC_MGGA_X_REVSCAN:
+    description: revised SCAN
+    family: MGGA
+    id: 581
+    macro: XC_MGGA_X_REVSCAN
+    role: X
+    short_name: X_REVSCAN
+  XC_MGGA_X_REVSCANL:
+    description: Deorbitalized revised SCAN (revSCAN-L) exchange
+    family: MGGA
+    id: 701
+    macro: XC_MGGA_X_REVSCANL
+    role: X
+    short_name: X_REVSCANL
+  XC_MGGA_X_REVTM:
+    description: revised Tao and Mo 2016 exchange
+    family: MGGA
+    id: 693
+    macro: XC_MGGA_X_REVTM
+    role: X
+    short_name: X_REVTM
+  XC_MGGA_X_REVTPSS:
+    description: revised Tao, Perdew, Staroverov & Scuseria
+    family: MGGA
+    id: 212
+    macro: XC_MGGA_X_REVTPSS
+    role: X
+    short_name: X_REVTPSS
+  XC_MGGA_X_RLDA:
+    description: Reparametrized local-density approximation
+    family: MGGA
+    id: 688
+    macro: XC_MGGA_X_RLDA
+    role: X
+    short_name: X_RLDA
+  XC_MGGA_X_RMSB86BL:
+    description: regularized MS-B86bl
+    family: MGGA
+    id: 766
+    macro: XC_MGGA_X_RMSB86BL
+    role: X
+    short_name: X_RMSB86BL
+  XC_MGGA_X_RMSPBEL:
+    description: regularized MS-PBEl
+    family: MGGA
+    id: 762
+    macro: XC_MGGA_X_RMSPBEL
+    role: X
+    short_name: X_RMSPBEL
+  XC_MGGA_X_RMSRPBEL:
+    description: regularized MS-RPBEl
+    family: MGGA
+    id: 764
+    macro: XC_MGGA_X_RMSRPBEL
+    role: X
+    short_name: X_RMSRPBEL
+  XC_MGGA_X_RPP09:
+    description: Rasanen, Pittalis & Proetto 09
+    family: MGGA
+    id: 209
+    macro: XC_MGGA_X_RPP09
+    role: X
+    short_name: X_RPP09
+  XC_MGGA_X_RPPSCAN:
+    description: 'r++SCAN: rSCAN with uniform density limit and coordinate scaling
+      behavior'
+    family: MGGA
+    id: 648
+    macro: XC_MGGA_X_RPPSCAN
+    role: X
+    short_name: X_RPPSCAN
+  XC_MGGA_X_RSCAN:
+    description: Regularized SCAN exchange by Bartok and Yates
+    family: MGGA
+    id: 493
+    macro: XC_MGGA_X_RSCAN
+    role: X
+    short_name: X_RSCAN
+  XC_MGGA_X_RTPSS:
+    description: TPSS for surface adsorption
+    family: MGGA
+    id: 299
+    macro: XC_MGGA_X_RTPSS
+    role: X
+    short_name: X_RTPSS
+  XC_MGGA_X_SA_TPSS:
+    description: TPSS with correct surface asymptotics
+    family: MGGA
+    id: 542
+    macro: XC_MGGA_X_SA_TPSS
+    role: X
+    short_name: X_SA_TPSS
+  XC_MGGA_X_SCAN:
+    description: SCAN exchange of Sun, Ruzsinszky, and Perdew
+    family: MGGA
+    id: 263
+    macro: XC_MGGA_X_SCAN
+    role: X
+    short_name: X_SCAN
+  XC_MGGA_X_SCANL:
+    description: Deorbitalized SCAN (SCAN-L) exchange
+    family: MGGA
+    id: 700
+    macro: XC_MGGA_X_SCANL
+    role: X
+    short_name: X_SCANL
+  XC_MGGA_X_TASK:
+    description: TASK exchange of Aschebrock and Kuemmel
+    family: MGGA
+    id: 707
+    macro: XC_MGGA_X_TASK
+    role: X
+    short_name: X_TASK
+  XC_MGGA_X_TAU_HCTH:
+    description: tau-HCTH from Boese and Handy
+    family: MGGA
+    id: 205
+    macro: XC_MGGA_X_TAU_HCTH
+    role: X
+    short_name: X_TAU_HCTH
+  XC_MGGA_X_TB09:
+    description: Tran & Blaha 09
+    family: MGGA
+    id: 208
+    macro: XC_MGGA_X_TB09
+    role: X
+    short_name: X_TB09
+  XC_MGGA_X_TH:
+    description: Tsuneda and Hirao
+    family: MGGA
+    id: 225
+    macro: XC_MGGA_X_TH
+    role: X
+    short_name: X_TH
+  XC_MGGA_X_TLDA:
+    description: LDA-type exchange with tau-dependent potential
+    family: MGGA
+    id: 685
+    macro: XC_MGGA_X_TLDA
+    role: X
+    short_name: X_TLDA
+  XC_MGGA_X_TM:
+    description: Tao and Mo 2016 exchange
+    family: MGGA
+    id: 540
+    macro: XC_MGGA_X_TM
+    role: X
+    short_name: X_TM
+  XC_MGGA_X_TPSS:
+    description: Tao, Perdew, Staroverov & Scuseria
+    family: MGGA
+    id: 202
+    macro: XC_MGGA_X_TPSS
+    role: X
+    short_name: X_TPSS
+  XC_MGGA_X_VCML:
+    description: Exchange part of VCML-rVV10 by Trepte and Voss
+    family: MGGA
+    id: 651
+    macro: XC_MGGA_X_VCML
+    role: X
+    short_name: X_VCML
+  XC_MGGA_X_VT84:
+    description: meta-GGA version of VT{8,4} GGA
+    family: MGGA
+    id: 541
+    macro: XC_MGGA_X_VT84
+    role: X
+    short_name: X_VT84
+generated_by: generate_xc_functional_list.py
+source_file: /Users/bsuo/bdf/BDFAutoTest/bdf-pkg-full/build/include/xc_funcs.h
+total_functionals: 678

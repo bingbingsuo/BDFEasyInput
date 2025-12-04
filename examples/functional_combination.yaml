@@ -1,0 +1,37 @@
+# 组合泛函示例
+# 使用交换 + 相关 组合泛函
+
+task:
+  type: energy
+  description: "H2O single point energy with PBE exchange and LYP correlation"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    # 格式: ATOM X Y Z (单位: angstrom)
+    - O 0.0000 0.0000 0.1173
+    - H 0.0000 0.7572 -0.4692
+    - H 0.0000 -0.7572 -0.4692
+  units: angstrom  # 可选: angstrom 或 bohr，默认为 angstrom
+
+method:
+  type: dft
+  # 方式 1：字符串形式（推荐）
+  functional: "PBE LYP"  # PBE 交换 + LYP 相关
+  # 方式 2：结构化形式（也支持）
+  # functional:
+  #   x: PBE
+  #   c: LYP
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+
+output:
+  file: h2o_pbe_lyp_output.inp
+  verbose: false
+

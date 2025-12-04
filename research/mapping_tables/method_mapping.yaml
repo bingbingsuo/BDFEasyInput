@@ -1,0 +1,121 @@
+# BDF 方法映射表
+# 格式: YAML方法名 -> BDF关键词
+
+methods:
+  # DFT 方法
+  pbe:
+    bdf_keyword: "PBE"
+    type: "dft"
+    description: "Perdew-Burke-Ernzerhof functional"
+  
+  pbe0:
+    bdf_keyword: "PBE0"
+    type: "hybrid_dft"
+    description: "PBE0 hybrid functional"
+  
+  b3lyp:
+    bdf_keyword: "B3LYP"
+    type: "hybrid_dft"
+    description: "B3LYP hybrid functional"
+  
+  m06-2x:
+    bdf_keyword: "M06-2X"
+    type: "hybrid_dft"
+    description: "M06-2X meta-hybrid functional"
+  
+  # Hartree-Fock
+  hf:
+    bdf_keyword: "HF"
+    type: "wavefunction"
+    description: "Hartree-Fock method"
+  
+  # 后 HF 方法
+  mp2:
+    bdf_keyword: "MP2"
+    type: "post_hf"
+    description: "Møller-Plesset perturbation theory (second order)"
+  
+  ccsd:
+    bdf_keyword: "CCSD"
+    type: "post_hf"
+    description: "Coupled Cluster Singles and Doubles"
+  
+  # 待补充：根据实际 BDF 支持的方法添加
+
+# SCF 方法类型映射
+scf_methods:
+  rhf:
+    bdf_keyword: "RHF"
+    type: "wavefunction"
+    description: "限制性 Hartree-Fock"
+    requires: ["multiplicity == 1"]
+  
+  uhf:
+    bdf_keyword: "UHF"
+    type: "wavefunction"
+    description: "非限制性 Hartree-Fock"
+    requires: ["multiplicity > 1"]
+  
+  rks:
+    bdf_keyword: "RKS"
+    type: "dft"
+    description: "限制性 Kohn-Sham (DFT)"
+    requires: ["multiplicity == 1", "functional specified"]
+  
+  uks:
+    bdf_keyword: "UKS"
+    type: "dft"
+    description: "非限制性 Kohn-Sham (DFT)"
+    requires: ["multiplicity > 1", "functional specified"]
+
+# DFT 泛函处理说明
+dft_functional:
+  processing: "direct_match"
+  description: "BDF 根据用户输入的泛函名直接匹配 libxc 的泛函，不做映射或重命名"
+  
+  input_formats:
+    single:
+      description: "单一交换相关泛函"
+      examples:
+        - "B3LYP"
+        - "PBE0"
+        - "SCAN"
+      yaml_format: "functional: B3LYP"
+      bdf_output: "dft functional\n B3LYP"
+    
+    combination:
+      description: "交换 + 相关 组合泛函"
+      format: '"Xfun Cfun"（两个泛函名用空格分隔）'
+      examples:
+        - "PBE LYP"
+        - "B88 LYP"
+        - "PBE PBE"
+      yaml_format_string: 'functional: "PBE LYP"'
+      yaml_format_structured: |
+        functional:
+          x: PBE
+          c: LYP
+      bdf_output: "dft functional\n PBE LYP"
+  
+  validation:
+    optional: true
+    description: "可选地使用 libxc 列表验证泛函名（仅警告，不阻止）"
+    single_functional: "检查是否在 libxc XC 泛函列表中（role=XC）"
+    combination_functional: "检查交换泛函（role=X/XC）和相关泛函（role=C/XC）"
+  
+  notes:
+    - "泛函名原样传递给 BDF，不做任何转换"
+    - "泛函名必须与 libxc 中定义的名称匹配"
+    - "大小写可能不敏感，但建议使用标准大小写"
+    - "组合泛函中，交换和相关泛函名之间用单个空格分隔"
+    - "完整的 libxc 泛函列表见：research/mapping_tables/xc_functionals.yaml"
+
+# 注意事项
+notes:
+  - "方法名称可能需要根据 BDF 版本调整"
+  - "某些方法可能需要额外的参数"
+  - "混合泛函可能需要指定交换相关比例"
+  - "RHF/UHF 不需要 'dft functional' 关键词"
+  - "RKS/UKS 需要 'dft functional' 关键词指定泛函"
+  - "泛函名称直接匹配 libxc，不做映射"
+

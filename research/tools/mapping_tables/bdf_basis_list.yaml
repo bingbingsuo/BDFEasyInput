@@ -1,0 +1,1965 @@
+basis_sets:
+  name(_star32):
+    bdf_name: name(*32)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: name(*32)'
+  sto_3g:
+    bdf_name: STO-3G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: STO-3G'
+  sto_6g:
+    bdf_name: STO-6G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: STO-6G'
+  3_21g:
+    bdf_name: 3-21G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 3-21G'
+  3_21++g:
+    bdf_name: 3-21++G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 3-21++G'
+  6_31++g:
+    bdf_name: 6-31++G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31++G'
+  6_31++gp:
+    bdf_name: 6-31++GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31++GP'
+  6_31++gpp:
+    bdf_name: 6-31++GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31++GPP'
+  6_31++gpp_j:
+    bdf_name: 6-31++GPP-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31++GPP-J'
+  6_31+g:
+    bdf_name: 6-31+G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31+G'
+  6_31+gp:
+    bdf_name: 6-31+GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31+GP'
+  6_31+gpp:
+    bdf_name: 6-31+GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31+GPP'
+  6_31+gp_j:
+    bdf_name: 6-31+GP-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31+GP-J'
+  6_311++g:
+    bdf_name: 6-311++G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++G'
+  6_311++g(2d,2p):
+    bdf_name: 6-311++G(2d,2p)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++G(2d,2p)'
+  6_311++g(3df,3pd):
+    bdf_name: 6-311++G(3df,3pd)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++G(3df,3pd)'
+  6_311++gp:
+    bdf_name: 6-311++GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++GP'
+  6_311++gpp:
+    bdf_name: 6-311++GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++GPP'
+  6_311++gpp_j:
+    bdf_name: 6-311++GPP-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311++GPP-J'
+  6_311+g:
+    bdf_name: 6-311+G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311+G'
+  6_311+g(2d,p):
+    bdf_name: 6-311+G(2d,p)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311+G(2d,p)'
+  6_311+gp:
+    bdf_name: 6-311+GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311+GP'
+  6_311+gp_j:
+    bdf_name: 6-311+GP-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311+GP-J'
+  6_311+gpp:
+    bdf_name: 6-311+GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311+GPP'
+  6_311g:
+    bdf_name: 6-311G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311G'
+  6_311g(2df,2pd):
+    bdf_name: 6-311G(2df,2pd)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311G(2df,2pd)'
+  6_311g(d,p):
+    bdf_name: 6-311G(d,p)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311G(d,p)'
+  6_311g_j:
+    bdf_name: 6-311G-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311G-J'
+  6_311gp:
+    bdf_name: 6-311GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311GP'
+  6_311gpp:
+    bdf_name: 6-311GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-311GPP'
+  6_31g:
+    bdf_name: 6-31G
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31G'
+  6_31g(2df,p):
+    bdf_name: 6-31G(2df,p)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31G(2df,p)'
+  6_31g(3df,3pd):
+    bdf_name: 6-31G(3df,3pd)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31G(3df,3pd)'
+  6_31g(d,p):
+    bdf_name: 6-31G(d,p)
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31G(d,p)'
+  6_31g_j:
+    bdf_name: 6-31G-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31G-J'
+  6_31gp:
+    bdf_name: 6-31GP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31GP'
+  6_31gpp:
+    bdf_name: 6-31GPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: 6-31GPP'
+  aug_cc_pcvdz:
+    bdf_name: aug-cc-pCVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVDZ'
+  aug_cc_pcvtz:
+    bdf_name: aug-cc-pCVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVTZ'
+  aug_cc_pcvqz:
+    bdf_name: aug-cc-pCVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVQZ'
+  aug_cc_pcv5z:
+    bdf_name: aug-cc-pCV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCV5Z'
+  aug_cc_pcv6z:
+    bdf_name: aug-cc-pCV6Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCV6Z'
+  aug_cc_pvdz:
+    bdf_name: aug-cc-pVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVDZ'
+  aug_cc_pvtz:
+    bdf_name: aug-cc-pVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ'
+  aug_cc_pvqz:
+    bdf_name: aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVQZ'
+  aug_cc_pv5z:
+    bdf_name: aug-cc-pV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV5Z'
+  aug_cc_pv6z:
+    bdf_name: aug-cc-pV6Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV6Z'
+  aug_cc_pv7z:
+    bdf_name: aug-cc-pV7Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV7Z'
+  aug_cc_pwcvdz:
+    bdf_name: aug-cc-pwCVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVDZ'
+  aug_cc_pwcvtz:
+    bdf_name: aug-cc-pwCVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVTZ'
+  aug_cc_pwcvqz:
+    bdf_name: aug-cc-pwCVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVQZ'
+  aug_cc_pwcv5z:
+    bdf_name: aug-cc-pwCV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCV5Z'
+  aug_cc_pcvdz_dk:
+    bdf_name: aug-cc-pCVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVDZ-DK'
+  aug_cc_pcvtz_dk:
+    bdf_name: aug-cc-pCVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVTZ-DK'
+  aug_cc_pcvqz_dk:
+    bdf_name: aug-cc-pCVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVQZ-DK'
+  aug_cc_pcv5z_dk:
+    bdf_name: aug-cc-pCV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCV5Z-DK'
+  aug_cc_pvdz_dk:
+    bdf_name: aug-cc-pVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVDZ-DK'
+  aug_cc_pvtz_dk:
+    bdf_name: aug-cc-pVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ-DK'
+  aug_cc_pvqz_dk:
+    bdf_name: aug-cc-pVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVQZ-DK'
+  aug_cc_pv5z_dk:
+    bdf_name: aug-cc-pV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV5Z-DK'
+  aug_cc_pwcvdz_dk:
+    bdf_name: aug-cc-pwCVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVDZ-DK'
+  aug_cc_pwcvtz_dk:
+    bdf_name: aug-cc-pwCVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVTZ-DK'
+  aug_cc_pwcvqz_dk:
+    bdf_name: aug-cc-pwCVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVQZ-DK'
+  aug_cc_pwcv5z_dk:
+    bdf_name: aug-cc-pwCV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCV5Z-DK'
+  aug_cc_pvdz_dk3:
+    bdf_name: aug-cc-pVDZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVDZ-DK3'
+  aug_cc_pvtz_dk3:
+    bdf_name: aug-cc-pVTZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ-DK3'
+  aug_cc_pvqz_dk3:
+    bdf_name: aug-cc-pVQZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVQZ-DK3'
+  aug_cc_pwcvdz_dk3:
+    bdf_name: aug-cc-pwCVDZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVDZ-DK3'
+  aug_cc_pwcvtz_dk3:
+    bdf_name: aug-cc-pwCVTZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVTZ-DK3'
+  aug_cc_pwcvqz_dk3:
+    bdf_name: aug-cc-pwCVQZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVQZ-DK3'
+  aug_cc_pcvdz_x2c:
+    bdf_name: aug-cc-pCVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVDZ-X2C'
+  aug_cc_pcvtz_x2c:
+    bdf_name: aug-cc-pCVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVTZ-X2C'
+  aug_cc_pcvqz_x2c:
+    bdf_name: aug-cc-pCVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCVQZ-X2C'
+  aug_cc_pcv5z_x2c:
+    bdf_name: aug-cc-pCV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCV5Z-X2C'
+  aug_cc_pcv6z_x2c:
+    bdf_name: aug-cc-pCV6Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pCV6Z-X2C'
+  aug_cc_pvdz_x2c:
+    bdf_name: aug-cc-pVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVDZ-X2C'
+  aug_cc_pvtz_x2c:
+    bdf_name: aug-cc-pVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ-X2C'
+  aug_cc_pvqz_x2c:
+    bdf_name: aug-cc-pVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVQZ-X2C'
+  aug_cc_pv5z_x2c:
+    bdf_name: aug-cc-pV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV5Z-X2C'
+  aug_cc_pv6z_x2c:
+    bdf_name: aug-cc-pV6Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV6Z-X2C'
+  aug_cc_pwcvdz_x2c:
+    bdf_name: aug-cc-pwCVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVDZ-X2C'
+  aug_cc_pwcvtz_x2c:
+    bdf_name: aug-cc-pwCVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVTZ-X2C'
+  aug_cc_pwcvqz_x2c:
+    bdf_name: aug-cc-pwCVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCVQZ-X2C'
+  aug_cc_pwcv5z_x2c:
+    bdf_name: aug-cc-pwCV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: aug-cc-pwCV5Z-X2C'
+  aug_cc_pv(5+d)z:
+    bdf_name: aug-cc-pV(5+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV(5+d)Z'
+  aug_cc_pv(d+d)z:
+    bdf_name: aug-cc-pV(D+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV(D+d)Z'
+  aug_cc_pv(q+d)z:
+    bdf_name: aug-cc-pV(Q+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV(Q+d)Z'
+  aug_cc_pv(t+d)z:
+    bdf_name: aug-cc-pV(T+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV(T+d)Z'
+  aug_cc_pv5z_rifit:
+    bdf_name: aug-cc-pV5Z-RIFIT
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV5Z-RIFIT'
+  aug_cc_pv6z_rifit:
+    bdf_name: aug-cc-pV6Z-RIFIT
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pV6Z-RIFIT'
+  aug_cc_pvdz_rifit:
+    bdf_name: aug-cc-pVDZ-RIFIT
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVDZ-RIFIT'
+  aug_cc_pvqz_rifit:
+    bdf_name: aug-cc-pVQZ-RIFIT
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVQZ-RIFIT'
+  aug_cc_pvtz_j:
+    bdf_name: aug-cc-pVTZ-J
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ-J'
+  aug_cc_pvtz_rifit:
+    bdf_name: aug-cc-pVTZ-RIFIT
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: aug-cc-pVTZ-RIFIT'
+  cc_pwcvdz:
+    bdf_name: cc-pwCVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pwCVDZ'
+  cc_pwcvtz:
+    bdf_name: cc-pwCVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pwCVTZ'
+  cc_pwcvqz:
+    bdf_name: cc-pwCVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pwCVQZ'
+  cc_pwcv5z:
+    bdf_name: cc-pwCV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pwCV5Z'
+  cc_pcvdz:
+    bdf_name: cc-pCVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pCVDZ'
+  cc_pcvtz:
+    bdf_name: cc-pCVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pCVTZ'
+  cc_pcvqz:
+    bdf_name: cc-pCVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pCVQZ'
+  cc_pcv5z:
+    bdf_name: cc-pCV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pCV5Z'
+  cc_pcv6z:
+    bdf_name: cc-pCV6Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pCV6Z'
+  cc_pvdz:
+    bdf_name: cc-pVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ'
+  cc_pvtz:
+    bdf_name: cc-pVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ'
+  cc_pvqz:
+    bdf_name: cc-pVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ'
+  cc_pv5z:
+    bdf_name: cc-pV5Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV5Z'
+  cc_pv6z:
+    bdf_name: cc-pV6Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV6Z'
+  cc_pv7z:
+    bdf_name: cc-pV7Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV7Z'
+  cc_pv(d+d)z:
+    bdf_name: cc-pV(D+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV(D+d)Z'
+  cc_pv(t+d)z:
+    bdf_name: cc-pV(T+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV(T+d)Z'
+  cc_pv(q+d)z:
+    bdf_name: cc-pV(Q+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV(Q+d)Z'
+  cc_pv(5+d)z:
+    bdf_name: cc-pV(5+d)Z
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: cc-pV(5+d)Z'
+  cc_pvdz_dk:
+    bdf_name: cc-pVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ-DK'
+  cc_pvtz_dk:
+    bdf_name: cc-pVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ-DK'
+  cc_pvqz_dk:
+    bdf_name: cc-pVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ-DK'
+  cc_pv5z_dk:
+    bdf_name: cc-pV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pV5Z-DK'
+  cc_pcvdz_dk:
+    bdf_name: cc-pCVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVDZ-DK'
+  cc_pcvtz_dk:
+    bdf_name: cc-pCVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVTZ-DK'
+  cc_pcvqz_dk:
+    bdf_name: cc-pCVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVQZ-DK'
+  cc_pcv5z_dk:
+    bdf_name: cc-pCV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCV5Z-DK'
+  cc_pwcvdz_dk:
+    bdf_name: cc-pwCVDZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVDZ-DK'
+  cc_pwcvtz_dk:
+    bdf_name: cc-pwCVTZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVTZ-DK'
+  cc_pwcvqz_dk:
+    bdf_name: cc-pwCVQZ-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVQZ-DK'
+  cc_pwcv5z_dk:
+    bdf_name: cc-pwCV5Z-DK
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCV5Z-DK'
+  cc_pvdz_dk3:
+    bdf_name: cc-pVDZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ-DK3'
+  cc_pvtz_dk3:
+    bdf_name: cc-pVTZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ-DK3'
+  cc_pvqz_dk3:
+    bdf_name: cc-pVQZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ-DK3'
+  cc_pwcvdz_dk3:
+    bdf_name: cc-pwCVDZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVDZ-DK3'
+  cc_pwcvtz_dk3:
+    bdf_name: cc-pwCVTZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVTZ-DK3'
+  cc_pwcvqz_dk3:
+    bdf_name: cc-pwCVQZ-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVQZ-DK3'
+  cc_pvdz_x2c:
+    bdf_name: cc-pVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ-X2C'
+  cc_pvtz_x2c:
+    bdf_name: cc-pVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ-X2C'
+  cc_pvqz_x2c:
+    bdf_name: cc-pVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ-X2C'
+  cc_pv5z_x2c:
+    bdf_name: cc-pV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pV5Z-X2C'
+  cc_pv6z_x2c:
+    bdf_name: cc-pV6Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pV6Z-X2C'
+  cc_pcvdz_x2c:
+    bdf_name: cc-pCVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVDZ-X2C'
+  cc_pcvtz_x2c:
+    bdf_name: cc-pCVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVTZ-X2C'
+  cc_pcvqz_x2c:
+    bdf_name: cc-pCVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCVQZ-X2C'
+  cc_pcv5z_x2c:
+    bdf_name: cc-pCV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCV5Z-X2C'
+  cc_pcv6z_x2c:
+    bdf_name: cc-pCV6Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pCV6Z-X2C'
+  cc_pwcvdz_x2c:
+    bdf_name: cc-pwCVDZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVDZ-X2C'
+  cc_pwcvtz_x2c:
+    bdf_name: cc-pwCVTZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVTZ-X2C'
+  cc_pwcvqz_x2c:
+    bdf_name: cc-pwCVQZ-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCVQZ-X2C'
+  cc_pwcv5z_x2c:
+    bdf_name: cc-pwCV5Z-X2C
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pwCV5Z-X2C'
+  cc_pvdz_fw_fi:
+    bdf_name: cc-pVDZ-FW_fi
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ-FW_fi'
+  cc_pvtz_fw_fi:
+    bdf_name: cc-pVTZ-FW_fi
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ-FW_fi'
+  cc_pvqz_fw_fi:
+    bdf_name: cc-pVQZ-FW_fi
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ-FW_fi'
+  cc_pv5z_fw_fi:
+    bdf_name: cc-pV5Z-FW_fi
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pV5Z-FW_fi'
+  cc_pvdz_fw_pt:
+    bdf_name: cc-pVDZ-FW_pt
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVDZ-FW_pt'
+  cc_pvtz_fw_pt:
+    bdf_name: cc-pVTZ-FW_pt
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVTZ-FW_pt'
+  cc_pvqz_fw_pt:
+    bdf_name: cc-pVQZ-FW_pt
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pVQZ-FW_pt'
+  cc_pv5z_fw_pt:
+    bdf_name: cc-pV5Z-FW_pt
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: cc-pV5Z-FW_pt'
+  d_aug_cc_pvqz:
+    bdf_name: d-aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: d-aug-cc-pVQZ'
+  t_aug_cc_pvdz:
+    bdf_name: t-aug-cc-pVDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: t-aug-cc-pVDZ'
+  t_aug_cc_pvtz:
+    bdf_name: t-aug-cc-pVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: t-aug-cc-pVTZ'
+  t_aug_cc_pvqz:
+    bdf_name: t-aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: t-aug-cc-pVQZ'
+  wachters+f:
+    bdf_name: Wachters+f
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: Wachters+f'
+  x2c_sv(p)all:
+    bdf_name: x2c-SV(P)all
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-SV(P)all'
+  x2c_svpall:
+    bdf_name: x2c-SVPall
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-SVPall'
+  x2c_vtzp:
+    bdf_name: x2c-VTZP
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-VTZP'
+  x2c_tzvpall:
+    bdf_name: x2c-TZVPall
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPall'
+  x2c_tzvpall_f:
+    bdf_name: x2c-TZVPall-f
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPall-f'
+  x2c_tzvppall:
+    bdf_name: x2c-TZVPPall
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall'
+  x2c_tzvppall_f:
+    bdf_name: x2c-TZVPPall-f
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall-f'
+  x2c_qzvpall:
+    bdf_name: x2c-QZVPall
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-QZVPall'
+  x2c_qzvppall:
+    bdf_name: x2c-QZVPPall
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-QZVPPall'
+  x2c_large:
+    bdf_name: x2c-LARGE
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-LARGE'
+  x2c_sv(p)all_2c:
+    bdf_name: x2c-SV(P)all-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-SV(P)all-2c'
+  x2c_svpall_2c:
+    bdf_name: x2c-SVPall-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-SVPall-2c'
+  x2c_tzvpall_2c:
+    bdf_name: x2c-TZVPall-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPall-2c'
+  x2c_tzvppall_2c:
+    bdf_name: x2c-TZVPPall-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall-2c'
+  x2c_qzvpall_2c:
+    bdf_name: x2c-QZVPall-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-QZVPall-2c'
+  x2c_qzvppall_2c:
+    bdf_name: x2c-QZVPPall-2c
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-QZVPPall-2c'
+  x2c_tzvppall_cd:
+    bdf_name: x2c-TZVPPall-CD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall-CD'
+  x2c_tzvppall_cdefg:
+    bdf_name: x2c-TZVPPall-CDEFG
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall-CDEFG'
+  x2c_tzvppall_efg:
+    bdf_name: x2c-TZVPPall-EFG
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: x2c-TZVPPall-EFG'
+  sarc_dkh2:
+    bdf_name: SARC-DKH2
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: SARC-DKH2'
+  sarc2_qzv_dkh2:
+    bdf_name: SARC2-QZV-DKH2
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: SARC2-QZV-DKH2'
+  sarc2_qzvp_dkh2:
+    bdf_name: SARC2-QZVP-DKH2
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: SARC2-QZVP-DKH2'
+  jorge_dzp:
+    bdf_name: jorge-DZP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: jorge-DZP'
+  jorge_tzp:
+    bdf_name: jorge-TZP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: jorge-TZP'
+  jorge_qzp:
+    bdf_name: jorge-QZP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: jorge-QZP'
+  jorge_dzp_dkh:
+    bdf_name: jorge-DZP-DKH
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: jorge-DZP-DKH'
+  jorge_tzp_dkh:
+    bdf_name: jorge-TZP-DKH
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: jorge-TZP-DKH'
+  jorge_qzp_dkh:
+    bdf_name: jorge-QZP-DKH
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: jorge-QZP-DKH'
+  sapporo_dzp:
+    bdf_name: sapporo-dzp
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-dzp'
+  sapporo_dzp_dif:
+    bdf_name: sapporo-dzp-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-dzp-dif'
+  sapporo_tzp:
+    bdf_name: sapporo-tzp
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-tzp'
+  sapporo_tzp_dif:
+    bdf_name: sapporo-tzp-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-tzp-dif'
+  sapporo_qzp:
+    bdf_name: sapporo-qzp
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-qzp'
+  sapporo_qzp_dif:
+    bdf_name: sapporo-qzp-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-qzp-dif'
+  sapporo_dzp_2012:
+    bdf_name: sapporo-dzp-2012
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-dzp-2012'
+  sapporo_dzp_2012_dif:
+    bdf_name: sapporo-dzp-2012-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-dzp-2012-dif'
+  sapporo_tzp_2012:
+    bdf_name: sapporo-tzp-2012
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-tzp-2012'
+  sapporo_tzp_2012_dif:
+    bdf_name: sapporo-tzp-2012-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-tzp-2012-dif'
+  sapporo_qzp_2012:
+    bdf_name: sapporo-qzp-2012
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-qzp-2012'
+  sapporo_qzp_2012_dif:
+    bdf_name: sapporo-qzp-2012-dif
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: sapporo-qzp-2012-dif'
+  sapporo_dkh3_dzp:
+    bdf_name: sapporo-dkh3-dzp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-dzp'
+  sapporo_dkh3_dzp_dif:
+    bdf_name: sapporo-dkh3-dzp-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-dzp-dif'
+  sapporo_dkh3_tzp:
+    bdf_name: sapporo-dkh3-tzp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-tzp'
+  sapporo_dkh3_tzp_dif:
+    bdf_name: sapporo-dkh3-tzp-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-tzp-dif'
+  sapporo_dkh3_qzp:
+    bdf_name: sapporo-dkh3-qzp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-qzp'
+  sapporo_dkh3_qzp_dif:
+    bdf_name: sapporo-dkh3-qzp-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-qzp-dif'
+  sapporo_dkh3_dzp_2012:
+    bdf_name: sapporo-dkh3-dzp-2012
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-dzp-2012'
+  sapporo_dkh3_dzp_2012_dif:
+    bdf_name: sapporo-dkh3-dzp-2012-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-dzp-2012-dif'
+  sapporo_dkh3_tzp_2012:
+    bdf_name: sapporo-dkh3-tzp-2012
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-tzp-2012'
+  sapporo_dkh3_tzp_2012_dif:
+    bdf_name: sapporo-dkh3-tzp-2012-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-tzp-2012-dif'
+  sapporo_dkh3_qzp_2012:
+    bdf_name: sapporo-dkh3-qzp-2012
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-qzp-2012'
+  sapporo_dkh3_qzp_2012_dif:
+    bdf_name: sapporo-dkh3-qzp-2012-dif
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: sapporo-dkh3-qzp-2012-dif'
+  adzp_ano:
+    bdf_name: ADZP-ANO
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: ADZP-ANO'
+  iglo_ii:
+    bdf_name: IGLO-II
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: IGLO-II'
+  iglo_iii:
+    bdf_name: IGLO-III
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: IGLO-III'
+  svp_bsex:
+    bdf_name: SVP-BSEX
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: SVP-BSEX'
+  svp:
+    bdf_name: SVP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: SVP'
+  dzp:
+    bdf_name: DZP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: DZP'
+  dzvp:
+    bdf_name: DZVP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: DZVP'
+  vdz:
+    bdf_name: VDZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: VDZ'
+  sadlej_pvtz:
+    bdf_name: Sadlej-pVTZ
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: Sadlej-pVTZ'
+  tzvpp:
+    bdf_name: TZVPP
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: TZVPP'
+  ano_dk3:
+    bdf_name: ANO-DK3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-DK3'
+  ano_r:
+    bdf_name: ANO-R
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R'
+  ano_r0:
+    bdf_name: ANO-R0
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R0'
+  ano_r1:
+    bdf_name: ANO-R1
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R1'
+  ano_r2:
+    bdf_name: ANO-R2
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R2'
+  ano_r3:
+    bdf_name: ANO-R3
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R3'
+  ano_r_old:
+    bdf_name: ANO-R-OLD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R-OLD'
+  ano_r0_old:
+    bdf_name: ANO-R0-OLD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R0-OLD'
+  ano_r1_old:
+    bdf_name: ANO-R1-OLD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R1-OLD'
+  ano_r2_old:
+    bdf_name: ANO-R2-OLD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R2-OLD'
+  ano_r3_old:
+    bdf_name: ANO-R3-OLD
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-R3-OLD'
+  ano_rcc:
+    bdf_name: ANO-RCC
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: ANO-RCC'
+  relbas:
+    bdf_name: RELBAS
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: RELBAS'
+  relbas.mine:
+    bdf_name: RELBAS.mine
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: RELBAS.mine'
+  relbas.r315:
+    bdf_name: RELBAS.r315
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: RELBAS.r315'
+  relbas.r324:
+    bdf_name: RELBAS.r324
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: RELBAS.r324'
+  relbas_vtz:
+    bdf_name: RELBAS_VTZ
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: RELBAS_VTZ'
+  dyall_fw_tz:
+    bdf_name: DYALL-FW-TZ
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: DYALL-FW-TZ'
+  dyallqz:
+    bdf_name: DYALLQZ
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: DYALLQZ'
+  dyalltzp:
+    bdf_name: DYALLTZP
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: DYALLTZP'
+  ugbs:
+    bdf_name: UGBS
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: UGBS'
+  aug_cc_pvdz_pp:
+    bdf_name: aug-cc-pVDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVDZ-PP'
+  aug_cc_pvtz_pp:
+    bdf_name: aug-cc-pVTZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVTZ-PP'
+  aug_cc_pvqz_pp:
+    bdf_name: aug-cc-pVQZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVQZ-PP'
+  aug_cc_pv5z_pp:
+    bdf_name: aug-cc-pV5Z-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pV5Z-PP'
+  aug_cc_pwcvdz_pp:
+    bdf_name: aug-cc-pwCVDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pwCVDZ-PP'
+  aug_cc_pwcvtz_pp:
+    bdf_name: aug-cc-pwCVTZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pwCVTZ-PP'
+  aug_cc_pwcvqz_pp:
+    bdf_name: aug-cc-pwCVQZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pwCVQZ-PP'
+  aug_cc_pwcv5z_pp:
+    bdf_name: aug-cc-pwCV5Z-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pwCV5Z-PP'
+  cc_pvdz_pp:
+    bdf_name: cc-pVDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVDZ-PP'
+  cc_pvtz_pp:
+    bdf_name: cc-pVTZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVTZ-PP'
+  cc_pvqz_pp:
+    bdf_name: cc-pVQZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVQZ-PP'
+  cc_pv5z_pp:
+    bdf_name: cc-pV5Z-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pV5Z-PP'
+  cc_pwcvdz_pp:
+    bdf_name: cc-pwCVDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pwCVDZ-PP'
+  cc_pwcvtz_pp:
+    bdf_name: cc-pwCVTZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pwCVTZ-PP'
+  cc_pwcvqz_pp:
+    bdf_name: cc-pwCVQZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pwCVQZ-PP'
+  cc_pwcv5z_pp:
+    bdf_name: cc-pwCV5Z-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pwCV5Z-PP'
+  aug_cc_pcvdz_ccecp:
+    bdf_name: aug-cc-pCVDZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pCVDZ-ccECP'
+  aug_cc_pcvtz_ccecp:
+    bdf_name: aug-cc-pCVTZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pCVTZ-ccECP'
+  aug_cc_pcvqz_ccecp:
+    bdf_name: aug-cc-pCVQZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pCVQZ-ccECP'
+  aug_cc_pcv5z_ccecp:
+    bdf_name: aug-cc-pCV5Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pCV5Z-ccECP'
+  aug_cc_pvdz_ccecp:
+    bdf_name: aug-cc-pVDZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVDZ-ccECP'
+  aug_cc_pvtz_ccecp:
+    bdf_name: aug-cc-pVTZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVTZ-ccECP'
+  aug_cc_pvqz_ccecp:
+    bdf_name: aug-cc-pVQZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pVQZ-ccECP'
+  aug_cc_pv5z_ccecp:
+    bdf_name: aug-cc-pV5Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pV5Z-ccECP'
+  aug_cc_pv6z_ccecp:
+    bdf_name: aug-cc-pV6Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: aug-cc-pV6Z-ccECP'
+  cc_pcvdz_ccecp:
+    bdf_name: cc-pCVDZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pCVDZ-ccECP'
+  cc_pcvtz_ccecp:
+    bdf_name: cc-pCVTZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pCVTZ-ccECP'
+  cc_pcvqz_ccecp:
+    bdf_name: cc-pCVQZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pCVQZ-ccECP'
+  cc_pcv5z_ccecp:
+    bdf_name: cc-pCV5Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pCV5Z-ccECP'
+  cc_pvdz_ccecp:
+    bdf_name: cc-pVDZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVDZ-ccECP'
+  cc_pvtz_ccecp:
+    bdf_name: cc-pVTZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVTZ-ccECP'
+  cc_pvqz_ccecp:
+    bdf_name: cc-pVQZ-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pVQZ-ccECP'
+  cc_pv5z_ccecp:
+    bdf_name: cc-pV5Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pV5Z-ccECP'
+  cc_pv6z_ccecp:
+    bdf_name: cc-pV6Z-ccECP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: cc-pV6Z-ccECP'
+  crenbl:
+    bdf_name: CRENBL
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: CRENBL'
+  crenbs:
+    bdf_name: CRENBS
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: CRENBS'
+  def2_sv(p):
+    bdf_name: DEF2-SV(P)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SV(P)'
+  def2_svp:
+    bdf_name: DEF2-SVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SVP'
+  def2_svpd:
+    bdf_name: DEF2-SVPD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SVPD'
+  def2_tzvp:
+    bdf_name: DEF2-TZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVP'
+  def2_tzvp_f:
+    bdf_name: DEF2-TZVP-F
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVP-F'
+  def2_tzvpp:
+    bdf_name: DEF2-TZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPP'
+  def2_tzvpp_f:
+    bdf_name: DEF2-TZVPP-F
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPP-F'
+  def2_tzvpd:
+    bdf_name: DEF2-TZVPD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPD'
+  def2_tzvppd:
+    bdf_name: DEF2-TZVPPD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPPD'
+  def2_qzvp:
+    bdf_name: DEF2-QZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVP'
+  def2_qzvpp:
+    bdf_name: DEF2-QZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPP'
+  def2_qzvpd:
+    bdf_name: DEF2-QZVPD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPD'
+  def2_qzvppd:
+    bdf_name: DEF2-QZVPPD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPPD'
+  def2_sv(p)_g16:
+    bdf_name: DEF2-SV(P)-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SV(P)-G16'
+  def2_svp_g16:
+    bdf_name: DEF2-SVP-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SVP-G16'
+  def2_tzvp_g16:
+    bdf_name: DEF2-TZVP-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVP-G16'
+  def2_tzvpp_g16:
+    bdf_name: DEF2-TZVPP-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPP-G16'
+  def2_qzvp_g16:
+    bdf_name: DEF2-QZVP-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVP-G16'
+  def2_qzvpp_g16:
+    bdf_name: DEF2-QZVPP-G16
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPP-G16'
+  def2_sv(p)_old:
+    bdf_name: DEF2-SV(P)-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SV(P)-OLD'
+  def2_svp_old:
+    bdf_name: DEF2-SVP-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SVP-OLD'
+  def2_svpd_old:
+    bdf_name: DEF2-SVPD-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-SVPD-OLD'
+  def2_tzvp_old:
+    bdf_name: DEF2-TZVP-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVP-OLD'
+  def2_tzvp_f_old:
+    bdf_name: DEF2-TZVP-F-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVP-F-OLD'
+  def2_tzvpp_old:
+    bdf_name: DEF2-TZVPP-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPP-OLD'
+  def2_tzvpp_f_old:
+    bdf_name: DEF2-TZVPP-F-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPP-F-OLD'
+  def2_tzvpd_old:
+    bdf_name: DEF2-TZVPD-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPD-OLD'
+  def2_tzvppd_old:
+    bdf_name: DEF2-TZVPPD-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-TZVPPD-OLD'
+  def2_qzvp_old:
+    bdf_name: DEF2-QZVP-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVP-OLD'
+  def2_qzvpp_old:
+    bdf_name: DEF2-QZVPP-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPP-OLD'
+  def2_qzvpd_old:
+    bdf_name: DEF2-QZVPD-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPD-OLD'
+  def2_qzvppd_old:
+    bdf_name: DEF2-QZVPPD-OLD
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DEF2-QZVPPD-OLD'
+  ma_def2_qzvp:
+    bdf_name: MA-DEF2-QZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-QZVP'
+  ma_def2_qzvpp:
+    bdf_name: MA-DEF2-QZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-QZVPP'
+  ma_def2_svp:
+    bdf_name: MA-DEF2-SVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-SVP'
+  ma_def2_sv(p):
+    bdf_name: MA-DEF2-SV(P)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-SV(P)'
+  ma_def2_tzvp:
+    bdf_name: MA-DEF2-TZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-TZVP'
+  ma_def2_tzvpp:
+    bdf_name: MA-DEF2-TZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MA-DEF2-TZVPP'
+  dhf_qzvp:
+    bdf_name: DHF-QZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-QZVP'
+  dhf_qzvpp:
+    bdf_name: DHF-QZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-QZVPP'
+  dhf_svp:
+    bdf_name: DHF-SVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-SVP'
+  dhf_sv(p):
+    bdf_name: DHF-SV(P)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-SV(P)'
+  dhf_tzvp:
+    bdf_name: DHF-TZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-TZVP'
+  dhf_tzvpp:
+    bdf_name: DHF-TZVPP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: DHF-TZVPP'
+  lanl08:
+    bdf_name: LANL08
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL08'
+  lanl08+:
+    bdf_name: LANL08+
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL08+'
+  lanl08(d):
+    bdf_name: LANL08(D)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL08(D)'
+  lanl08(f):
+    bdf_name: LANL08(F)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL08(F)'
+  lanl2dz:
+    bdf_name: LANL2DZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL2DZ'
+  lanl2dzdp:
+    bdf_name: LANL2DZDP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL2DZDP'
+  lanl2tz:
+    bdf_name: LANL2TZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL2TZ'
+  lanl2tz+:
+    bdf_name: LANL2TZ+
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL2TZ+'
+  lanl2tz(f):
+    bdf_name: LANL2TZ(F)
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: LANL2TZ(F)'
+  mini:
+    bdf_name: MINI
+    relativistic: false
+    ecp: false
+    description: 'BDF 基组: MINI'
+  modified_lanl2dz:
+    bdf_name: MODIFIED-LANL2DZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MODIFIED-LANL2DZ'
+  pitzer_avdz_pp:
+    bdf_name: Pitzer-AVDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: Pitzer-AVDZ-PP'
+  pitzer_vdz_pp:
+    bdf_name: Pitzer-VDZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: Pitzer-VDZ-PP'
+  pitzer_vtz_pp:
+    bdf_name: Pitzer-VTZ-PP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: Pitzer-VTZ-PP'
+  psbkjc:
+    bdf_name: pSBKJC
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: pSBKJC'
+  sbkjc_polar:
+    bdf_name: SBKJC-POLAR
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SBKJC-POLAR'
+  sbkjc_vdz:
+    bdf_name: SBKJC-VDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SBKJC-VDZ'
+  stuttgart_rlc:
+    bdf_name: STUTTGART-RLC
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-RLC'
+  stuttgart_rsc_1997:
+    bdf_name: STUTTGART-RSC-1997
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-RSC-1997'
+  stuttgart_rsc_ano:
+    bdf_name: STUTTGART-RSC-ANO
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-RSC-ANO'
+  stuttgart_rsc_seg:
+    bdf_name: STUTTGART-RSC-SEG
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-RSC-SEG'
+  stuttgart_ecp92mdfq_dzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-DZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-ECP92MDFQ-DZVP'
+  stuttgart_ecp92mdfq_tzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-TZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-ECP92MDFQ-TZVP'
+  stuttgart_ecp92mdfq_qzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-QZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-ECP92MDFQ-QZVP'
+  stuttgart_ecpmdfso_qzvp:
+    bdf_name: STUTTGART-ECPMDFSO-QZVP
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: STUTTGART-ECPMDFSO-QZVP'
+  sdb_cc_pvtz:
+    bdf_name: SDB-cc-pVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SDB-cc-pVTZ'
+  sdb_cc_pvqz:
+    bdf_name: SDB-cc-pVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SDB-cc-pVQZ'
+  sdb_aug_cc_pvtz:
+    bdf_name: SDB-aug-cc-pVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SDB-aug-cc-pVTZ'
+  sdb_aug_cc_pvqz:
+    bdf_name: SDB-aug-cc-pVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: SDB-aug-cc-pVQZ'
+  mwb_fic:
+    bdf_name: MWB-FIC
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC'
+  mwb_fic_avdz:
+    bdf_name: MWB-FIC-AVDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC-AVDZ'
+  mwb_fic_avtz:
+    bdf_name: MWB-FIC-AVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC-AVTZ'
+  mwb_fic_avqz:
+    bdf_name: MWB-FIC-AVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC-AVQZ'
+  mwb_fic_i:
+    bdf_name: MWB-FIC-I
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC-I'
+  mwb_fic_ii:
+    bdf_name: MWB-FIC-II
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FIC-II'
+  mwb_ficm1_avdz:
+    bdf_name: MWB-FICm1-AVDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm1-AVDZ'
+  mwb_ficm1_avtz:
+    bdf_name: MWB-FICm1-AVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm1-AVTZ'
+  mwb_ficm1_avqz:
+    bdf_name: MWB-FICm1-AVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm1-AVQZ'
+  mwb_ficm2_avdz:
+    bdf_name: MWB-FICm2-AVDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm2-AVDZ'
+  mwb_ficm2_avtz:
+    bdf_name: MWB-FICm2-AVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm2-AVTZ'
+  mwb_ficm2_avqz:
+    bdf_name: MWB-FICm2-AVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm2-AVQZ'
+  mwb_ficm3_avdz:
+    bdf_name: MWB-FICm3-AVDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm3-AVDZ'
+  mwb_ficm3_avtz:
+    bdf_name: MWB-FICm3-AVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm3-AVTZ'
+  mwb_ficm3_avqz:
+    bdf_name: MWB-FICm3-AVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICm3-AVQZ'
+  mwb_ficp1:
+    bdf_name: MWB-FICp1
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICp1'
+  mwb_ficp1_avdz:
+    bdf_name: MWB-FICp1-AVDZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICp1-AVDZ'
+  mwb_ficp1_avtz:
+    bdf_name: MWB-FICp1-AVTZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICp1-AVTZ'
+  mwb_ficp1_avqz:
+    bdf_name: MWB-FICp1-AVQZ
+    relativistic: false
+    ecp: true
+    description: 'BDF 基组: MWB-FICp1-AVQZ'
+  dirac_dyall.2zp:
+    bdf_name: Dirac-Dyall.2zp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.2zp'
+  dirac_dyall.3zp:
+    bdf_name: Dirac-Dyall.3zp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.3zp'
+  dirac_dyall.4zp:
+    bdf_name: Dirac-Dyall.4zp
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.4zp'
+  dirac_dyall.aae2z:
+    bdf_name: Dirac-Dyall.aae2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.aae2z'
+  dirac_dyall.aae3z:
+    bdf_name: Dirac-Dyall.aae3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.aae3z'
+  dirac_dyall.aae4z:
+    bdf_name: Dirac-Dyall.aae4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.aae4z'
+  dirac_dyall.acv2z:
+    bdf_name: Dirac-Dyall.acv2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.acv2z'
+  dirac_dyall.acv3z:
+    bdf_name: Dirac-Dyall.acv3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.acv3z'
+  dirac_dyall.acv4z:
+    bdf_name: Dirac-Dyall.acv4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.acv4z'
+  dirac_dyall.ae2z:
+    bdf_name: Dirac-Dyall.ae2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.ae2z'
+  dirac_dyall.ae3z:
+    bdf_name: Dirac-Dyall.ae3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.ae3z'
+  dirac_dyall.ae4z:
+    bdf_name: Dirac-Dyall.ae4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.ae4z'
+  dirac_dyall.av2z:
+    bdf_name: Dirac-Dyall.av2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.av2z'
+  dirac_dyall.av3z:
+    bdf_name: Dirac-Dyall.av3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.av3z'
+  dirac_dyall.av4z:
+    bdf_name: Dirac-Dyall.av4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.av4z'
+  dirac_dyall.cv2z:
+    bdf_name: Dirac-Dyall.cv2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.cv2z'
+  dirac_dyall.cv3z:
+    bdf_name: Dirac-Dyall.cv3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.cv3z'
+  dirac_dyall.cv4z:
+    bdf_name: Dirac-Dyall.cv4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.cv4z'
+  dirac_dyall.v2z:
+    bdf_name: Dirac-Dyall.v2z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.v2z'
+  dirac_dyall.v3z:
+    bdf_name: Dirac-Dyall.v3z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.v3z'
+  dirac_dyall.v4z:
+    bdf_name: Dirac-Dyall.v4z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-Dyall.v4z'
+  dirac_rpf_4z:
+    bdf_name: Dirac-RPF-4Z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-RPF-4Z'
+  dirac_aug_rpf_4z:
+    bdf_name: Dirac-aug-RPF-4Z
+    relativistic: true
+    ecp: false
+    description: 'BDF 基组: Dirac-aug-RPF-4Z'
+metadata:
+  source: BDF basis_library/basisname
+  total_count: 392
+  generated_by: generate_basis_list.py

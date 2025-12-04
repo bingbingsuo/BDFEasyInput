@@ -1,0 +1,43 @@
+# BDF 执行配置文件示例
+# 复制此文件为 execution_config.yaml 并根据需要修改
+
+execution:
+  # BDFAutotest 配置
+  bdfautotest:
+    # BDFAutotest 工具路径（或设置环境变量 BDFAUTOTEST_PATH）
+    path: "${BDFAUTOTEST_PATH}"  # 或直接写路径: "/path/to/bdfautotest"
+    
+    # BDF 可执行文件路径（如果 BDFAutotest 需要）
+    bdf_executable: "${BDF_EXECUTABLE}"  # 可选
+    
+    # 默认超时时间（秒）
+    default_timeout: 3600  # 1 小时
+    
+    # 默认输出目录
+    default_output_dir: "./bdf_results"
+  
+  # 计算监控配置
+  monitoring:
+    # 状态检查间隔（秒）
+    check_interval: 5
+    
+    # 日志尾部行数（用于实时查看）
+    log_tail_lines: 50
+    
+    # 是否显示进度条
+    show_progress: true
+  
+  # 任务管理配置
+  job_management:
+    # 最大并发任务数
+    max_concurrent_jobs: 4
+    
+    # 任务队列大小
+    queue_size: 100
+    
+    # 任务重试次数
+    max_retries: 3
+    
+    # 重试间隔（秒）
+    retry_interval: 60
+

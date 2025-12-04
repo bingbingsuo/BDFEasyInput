@@ -1,0 +1,3021 @@
+version: '1.0'
+source: BDF basis library
+total_basis_sets: 391
+basis_sets:
+  sto_3g:
+    bdf_name: STO-3G
+    relativistic: false
+    ecp: false
+    aliases:
+    - STO-3G
+    notes: []
+  sto_6g:
+    bdf_name: STO-6G
+    relativistic: false
+    ecp: false
+    aliases:
+    - STO-6G
+    notes: []
+  3_21g:
+    bdf_name: 3-21G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 3-21G
+    notes: []
+  3_21++g:
+    bdf_name: 3-21++G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 3-21++G
+    notes: []
+  6_31++g:
+    bdf_name: 6-31++G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31++G
+    notes: []
+  6_31++gp:
+    bdf_name: 6-31++GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31++GP
+    notes: []
+  6_31++gpp:
+    bdf_name: 6-31++GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31++GPP
+    notes: []
+  6_31++gpp_j:
+    bdf_name: 6-31++GPP-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31++GPP-J
+    notes: []
+  6_31+g:
+    bdf_name: 6-31+G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31+G
+    notes: []
+  6_31+gp:
+    bdf_name: 6-31+GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31+GP
+    notes: []
+  6_31+gpp:
+    bdf_name: 6-31+GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31+GPP
+    notes: []
+  6_31+gp_j:
+    bdf_name: 6-31+GP-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31+GP-J
+    notes: []
+  6_311++g:
+    bdf_name: 6-311++G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++G
+    notes: []
+  6_311++g(2d,2p):
+    bdf_name: 6-311++G(2d,2p)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++G(2d,2p)
+    notes: []
+  6_311++g(3df,3pd):
+    bdf_name: 6-311++G(3df,3pd)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++G(3df,3pd)
+    notes: []
+  6_311++gp:
+    bdf_name: 6-311++GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++GP
+    notes: []
+  6_311++gpp:
+    bdf_name: 6-311++GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++GPP
+    notes: []
+  6_311++gpp_j:
+    bdf_name: 6-311++GPP-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311++GPP-J
+    notes: []
+  6_311+g:
+    bdf_name: 6-311+G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311+G
+    notes: []
+  6_311+g(2d,p):
+    bdf_name: 6-311+G(2d,p)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311+G(2d,p)
+    notes: []
+  6_311+gp:
+    bdf_name: 6-311+GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311+GP
+    notes: []
+  6_311+gp_j:
+    bdf_name: 6-311+GP-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311+GP-J
+    notes: []
+  6_311+gpp:
+    bdf_name: 6-311+GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311+GPP
+    notes: []
+  6_311g:
+    bdf_name: 6-311G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311G
+    notes: []
+  6_311g(2df,2pd):
+    bdf_name: 6-311G(2df,2pd)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311G(2df,2pd)
+    notes: []
+  6_311g(d,p):
+    bdf_name: 6-311G(d,p)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311G(d,p)
+    notes: []
+  6_311g_j:
+    bdf_name: 6-311G-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311G-J
+    notes: []
+  6_311gp:
+    bdf_name: 6-311GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311GP
+    notes: []
+  6_311gpp:
+    bdf_name: 6-311GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-311GPP
+    notes: []
+  6_31g:
+    bdf_name: 6-31G
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31G
+    notes: []
+  6_31g(2df,p):
+    bdf_name: 6-31G(2df,p)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31G(2df,p)
+    notes: []
+  6_31g(3df,3pd):
+    bdf_name: 6-31G(3df,3pd)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31G(3df,3pd)
+    notes: []
+  6_31g(d,p):
+    bdf_name: 6-31G(d,p)
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31G(d,p)
+    notes: []
+  6_31g_j:
+    bdf_name: 6-31G-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31G-J
+    notes: []
+  6_31gp:
+    bdf_name: 6-31GP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31GP
+    notes: []
+  6_31gpp:
+    bdf_name: 6-31GPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - 6-31GPP
+    notes: []
+  aug_cc_pcvdz:
+    bdf_name: aug-cc-pCVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pCVDZ
+    notes: []
+  aug_cc_pcvtz:
+    bdf_name: aug-cc-pCVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pCVTZ
+    notes: []
+  aug_cc_pcvqz:
+    bdf_name: aug-cc-pCVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pCVQZ
+    notes: []
+  aug_cc_pcv5z:
+    bdf_name: aug-cc-pCV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pCV5Z
+    notes: []
+  aug_cc_pcv6z:
+    bdf_name: aug-cc-pCV6Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pCV6Z
+    notes: []
+  aug_cc_pvdz:
+    bdf_name: aug-cc-pVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVDZ
+    notes: []
+  aug_cc_pvtz:
+    bdf_name: aug-cc-pVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ
+    notes: []
+  aug_cc_pvqz:
+    bdf_name: aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVQZ
+    notes: []
+  aug_cc_pv5z:
+    bdf_name: aug-cc-pV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV5Z
+    notes: []
+  aug_cc_pv6z:
+    bdf_name: aug-cc-pV6Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV6Z
+    notes: []
+  aug_cc_pv7z:
+    bdf_name: aug-cc-pV7Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV7Z
+    notes: []
+  aug_cc_pwcvdz:
+    bdf_name: aug-cc-pwCVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pwCVDZ
+    notes: []
+  aug_cc_pwcvtz:
+    bdf_name: aug-cc-pwCVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pwCVTZ
+    notes: []
+  aug_cc_pwcvqz:
+    bdf_name: aug-cc-pwCVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pwCVQZ
+    notes: []
+  aug_cc_pwcv5z:
+    bdf_name: aug-cc-pwCV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pwCV5Z
+    notes: []
+  aug_cc_pcvdz_dk:
+    bdf_name: aug-cc-pCVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVDZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pcvtz_dk:
+    bdf_name: aug-cc-pCVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVTZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pcvqz_dk:
+    bdf_name: aug-cc-pCVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVQZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pcv5z_dk:
+    bdf_name: aug-cc-pCV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCV5Z-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pvdz_dk:
+    bdf_name: aug-cc-pVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVDZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pvtz_dk:
+    bdf_name: aug-cc-pVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pvqz_dk:
+    bdf_name: aug-cc-pVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVQZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pv5z_dk:
+    bdf_name: aug-cc-pV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pV5Z-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvdz_dk:
+    bdf_name: aug-cc-pwCVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVDZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvtz_dk:
+    bdf_name: aug-cc-pwCVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVTZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvqz_dk:
+    bdf_name: aug-cc-pwCVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVQZ-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcv5z_dk:
+    bdf_name: aug-cc-pwCV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCV5Z-DK
+    notes:
+    - 相对论优化基组
+  aug_cc_pvdz_dk3:
+    bdf_name: aug-cc-pVDZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVDZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pvtz_dk3:
+    bdf_name: aug-cc-pVTZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pvqz_dk3:
+    bdf_name: aug-cc-pVQZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVQZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvdz_dk3:
+    bdf_name: aug-cc-pwCVDZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVDZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvtz_dk3:
+    bdf_name: aug-cc-pwCVTZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVTZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvqz_dk3:
+    bdf_name: aug-cc-pwCVQZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVQZ-DK3
+    notes:
+    - 相对论优化基组
+  aug_cc_pcvdz_x2c:
+    bdf_name: aug-cc-pCVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVDZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pcvtz_x2c:
+    bdf_name: aug-cc-pCVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVTZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pcvqz_x2c:
+    bdf_name: aug-cc-pCVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCVQZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pcv5z_x2c:
+    bdf_name: aug-cc-pCV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCV5Z-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pcv6z_x2c:
+    bdf_name: aug-cc-pCV6Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pCV6Z-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pvdz_x2c:
+    bdf_name: aug-cc-pVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVDZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pvtz_x2c:
+    bdf_name: aug-cc-pVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pvqz_x2c:
+    bdf_name: aug-cc-pVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pVQZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pv5z_x2c:
+    bdf_name: aug-cc-pV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pV5Z-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pv6z_x2c:
+    bdf_name: aug-cc-pV6Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pV6Z-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvdz_x2c:
+    bdf_name: aug-cc-pwCVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVDZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvtz_x2c:
+    bdf_name: aug-cc-pwCVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVTZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcvqz_x2c:
+    bdf_name: aug-cc-pwCVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCVQZ-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pwcv5z_x2c:
+    bdf_name: aug-cc-pwCV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - aug-cc-pwCV5Z-X2C
+    notes:
+    - 相对论优化基组
+  aug_cc_pv(5+d)z:
+    bdf_name: aug-cc-pV(5+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV(5+d)Z
+    notes: []
+  aug_cc_pv(d+d)z:
+    bdf_name: aug-cc-pV(D+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV(D+d)Z
+    notes: []
+  aug_cc_pv(q+d)z:
+    bdf_name: aug-cc-pV(Q+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV(Q+d)Z
+    notes: []
+  aug_cc_pv(t+d)z:
+    bdf_name: aug-cc-pV(T+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV(T+d)Z
+    notes: []
+  aug_cc_pv5z_rifit:
+    bdf_name: aug-cc-pV5Z-RIFIT
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV5Z-RIFIT
+    notes: []
+  aug_cc_pv6z_rifit:
+    bdf_name: aug-cc-pV6Z-RIFIT
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pV6Z-RIFIT
+    notes: []
+  aug_cc_pvdz_rifit:
+    bdf_name: aug-cc-pVDZ-RIFIT
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVDZ-RIFIT
+    notes: []
+  aug_cc_pvqz_rifit:
+    bdf_name: aug-cc-pVQZ-RIFIT
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVQZ-RIFIT
+    notes: []
+  aug_cc_pvtz_j:
+    bdf_name: aug-cc-pVTZ-J
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ-J
+    notes: []
+  aug_cc_pvtz_rifit:
+    bdf_name: aug-cc-pVTZ-RIFIT
+    relativistic: false
+    ecp: false
+    aliases:
+    - aug-cc-pVTZ-RIFIT
+    notes: []
+  cc_pwcvdz:
+    bdf_name: cc-pwCVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pwCVDZ
+    notes: []
+  cc_pwcvtz:
+    bdf_name: cc-pwCVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pwCVTZ
+    notes: []
+  cc_pwcvqz:
+    bdf_name: cc-pwCVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pwCVQZ
+    notes: []
+  cc_pwcv5z:
+    bdf_name: cc-pwCV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pwCV5Z
+    notes: []
+  cc_pcvdz:
+    bdf_name: cc-pCVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pCVDZ
+    notes: []
+  cc_pcvtz:
+    bdf_name: cc-pCVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pCVTZ
+    notes: []
+  cc_pcvqz:
+    bdf_name: cc-pCVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pCVQZ
+    notes: []
+  cc_pcv5z:
+    bdf_name: cc-pCV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pCV5Z
+    notes: []
+  cc_pcv6z:
+    bdf_name: cc-pCV6Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pCV6Z
+    notes: []
+  cc_pvdz:
+    bdf_name: cc-pVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pVDZ
+    notes: []
+  cc_pvtz:
+    bdf_name: cc-pVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pVTZ
+    notes: []
+  cc_pvqz:
+    bdf_name: cc-pVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pVQZ
+    notes: []
+  cc_pv5z:
+    bdf_name: cc-pV5Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV5Z
+    notes: []
+  cc_pv6z:
+    bdf_name: cc-pV6Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV6Z
+    notes: []
+  cc_pv7z:
+    bdf_name: cc-pV7Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV7Z
+    notes: []
+  cc_pv(d+d)z:
+    bdf_name: cc-pV(D+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV(D+d)Z
+    notes: []
+  cc_pv(t+d)z:
+    bdf_name: cc-pV(T+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV(T+d)Z
+    notes: []
+  cc_pv(q+d)z:
+    bdf_name: cc-pV(Q+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV(Q+d)Z
+    notes: []
+  cc_pv(5+d)z:
+    bdf_name: cc-pV(5+d)Z
+    relativistic: false
+    ecp: false
+    aliases:
+    - cc-pV(5+d)Z
+    notes: []
+  cc_pvdz_dk:
+    bdf_name: cc-pVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVDZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pvtz_dk:
+    bdf_name: cc-pVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVTZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pvqz_dk:
+    bdf_name: cc-pVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVQZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pv5z_dk:
+    bdf_name: cc-pV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pV5Z-DK
+    notes:
+    - 相对论优化基组
+  cc_pcvdz_dk:
+    bdf_name: cc-pCVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVDZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pcvtz_dk:
+    bdf_name: cc-pCVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVTZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pcvqz_dk:
+    bdf_name: cc-pCVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVQZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pcv5z_dk:
+    bdf_name: cc-pCV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCV5Z-DK
+    notes:
+    - 相对论优化基组
+  cc_pwcvdz_dk:
+    bdf_name: cc-pwCVDZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVDZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pwcvtz_dk:
+    bdf_name: cc-pwCVTZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVTZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pwcvqz_dk:
+    bdf_name: cc-pwCVQZ-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVQZ-DK
+    notes:
+    - 相对论优化基组
+  cc_pwcv5z_dk:
+    bdf_name: cc-pwCV5Z-DK
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCV5Z-DK
+    notes:
+    - 相对论优化基组
+  cc_pvdz_dk3:
+    bdf_name: cc-pVDZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVDZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pvtz_dk3:
+    bdf_name: cc-pVTZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVTZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pvqz_dk3:
+    bdf_name: cc-pVQZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVQZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pwcvdz_dk3:
+    bdf_name: cc-pwCVDZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVDZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pwcvtz_dk3:
+    bdf_name: cc-pwCVTZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVTZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pwcvqz_dk3:
+    bdf_name: cc-pwCVQZ-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVQZ-DK3
+    notes:
+    - 相对论优化基组
+  cc_pvdz_x2c:
+    bdf_name: cc-pVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVDZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pvtz_x2c:
+    bdf_name: cc-pVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVTZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pvqz_x2c:
+    bdf_name: cc-pVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVQZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pv5z_x2c:
+    bdf_name: cc-pV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pV5Z-X2C
+    notes:
+    - 相对论优化基组
+  cc_pv6z_x2c:
+    bdf_name: cc-pV6Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pV6Z-X2C
+    notes:
+    - 相对论优化基组
+  cc_pcvdz_x2c:
+    bdf_name: cc-pCVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVDZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pcvtz_x2c:
+    bdf_name: cc-pCVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVTZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pcvqz_x2c:
+    bdf_name: cc-pCVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCVQZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pcv5z_x2c:
+    bdf_name: cc-pCV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCV5Z-X2C
+    notes:
+    - 相对论优化基组
+  cc_pcv6z_x2c:
+    bdf_name: cc-pCV6Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pCV6Z-X2C
+    notes:
+    - 相对论优化基组
+  cc_pwcvdz_x2c:
+    bdf_name: cc-pwCVDZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVDZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pwcvtz_x2c:
+    bdf_name: cc-pwCVTZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVTZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pwcvqz_x2c:
+    bdf_name: cc-pwCVQZ-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCVQZ-X2C
+    notes:
+    - 相对论优化基组
+  cc_pwcv5z_x2c:
+    bdf_name: cc-pwCV5Z-X2C
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pwCV5Z-X2C
+    notes:
+    - 相对论优化基组
+  cc_pvdz_fw_fi:
+    bdf_name: cc-pVDZ-FW_fi
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVDZ-FW_fi
+    notes:
+    - 相对论优化基组
+  cc_pvtz_fw_fi:
+    bdf_name: cc-pVTZ-FW_fi
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVTZ-FW_fi
+    notes:
+    - 相对论优化基组
+  cc_pvqz_fw_fi:
+    bdf_name: cc-pVQZ-FW_fi
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVQZ-FW_fi
+    notes:
+    - 相对论优化基组
+  cc_pv5z_fw_fi:
+    bdf_name: cc-pV5Z-FW_fi
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pV5Z-FW_fi
+    notes:
+    - 相对论优化基组
+  cc_pvdz_fw_pt:
+    bdf_name: cc-pVDZ-FW_pt
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVDZ-FW_pt
+    notes:
+    - 相对论优化基组
+  cc_pvtz_fw_pt:
+    bdf_name: cc-pVTZ-FW_pt
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVTZ-FW_pt
+    notes:
+    - 相对论优化基组
+  cc_pvqz_fw_pt:
+    bdf_name: cc-pVQZ-FW_pt
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pVQZ-FW_pt
+    notes:
+    - 相对论优化基组
+  cc_pv5z_fw_pt:
+    bdf_name: cc-pV5Z-FW_pt
+    relativistic: true
+    ecp: false
+    aliases:
+    - cc-pV5Z-FW_pt
+    notes:
+    - 相对论优化基组
+  d_aug_cc_pvqz:
+    bdf_name: d-aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - d-aug-cc-pVQZ
+    notes: []
+  t_aug_cc_pvdz:
+    bdf_name: t-aug-cc-pVDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - t-aug-cc-pVDZ
+    notes: []
+  t_aug_cc_pvtz:
+    bdf_name: t-aug-cc-pVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - t-aug-cc-pVTZ
+    notes: []
+  t_aug_cc_pvqz:
+    bdf_name: t-aug-cc-pVQZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - t-aug-cc-pVQZ
+    notes: []
+  wachters+f:
+    bdf_name: Wachters+f
+    relativistic: false
+    ecp: false
+    aliases:
+    - Wachters+f
+    notes: []
+  x2c_sv(p)all:
+    bdf_name: x2c-SV(P)all
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-SV(P)all
+    notes:
+    - 相对论优化基组
+  x2c_svpall:
+    bdf_name: x2c-SVPall
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-SVPall
+    notes:
+    - 相对论优化基组
+  x2c_vtzp:
+    bdf_name: x2c-VTZP
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-VTZP
+    notes:
+    - 相对论优化基组
+  x2c_tzvpall:
+    bdf_name: x2c-TZVPall
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPall
+    notes:
+    - 相对论优化基组
+  x2c_tzvpall_f:
+    bdf_name: x2c-TZVPall-f
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPall-f
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall:
+    bdf_name: x2c-TZVPPall
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall_f:
+    bdf_name: x2c-TZVPPall-f
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall-f
+    notes:
+    - 相对论优化基组
+  x2c_qzvpall:
+    bdf_name: x2c-QZVPall
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-QZVPall
+    notes:
+    - 相对论优化基组
+  x2c_qzvppall:
+    bdf_name: x2c-QZVPPall
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-QZVPPall
+    notes:
+    - 相对论优化基组
+  x2c_large:
+    bdf_name: x2c-LARGE
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-LARGE
+    notes:
+    - 相对论优化基组
+  x2c_sv(p)all_2c:
+    bdf_name: x2c-SV(P)all-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-SV(P)all-2c
+    notes:
+    - 相对论优化基组
+  x2c_svpall_2c:
+    bdf_name: x2c-SVPall-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-SVPall-2c
+    notes:
+    - 相对论优化基组
+  x2c_tzvpall_2c:
+    bdf_name: x2c-TZVPall-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPall-2c
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall_2c:
+    bdf_name: x2c-TZVPPall-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall-2c
+    notes:
+    - 相对论优化基组
+  x2c_qzvpall_2c:
+    bdf_name: x2c-QZVPall-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-QZVPall-2c
+    notes:
+    - 相对论优化基组
+  x2c_qzvppall_2c:
+    bdf_name: x2c-QZVPPall-2c
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-QZVPPall-2c
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall_cd:
+    bdf_name: x2c-TZVPPall-CD
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall-CD
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall_cdefg:
+    bdf_name: x2c-TZVPPall-CDEFG
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall-CDEFG
+    notes:
+    - 相对论优化基组
+  x2c_tzvppall_efg:
+    bdf_name: x2c-TZVPPall-EFG
+    relativistic: true
+    ecp: false
+    aliases:
+    - x2c-TZVPPall-EFG
+    notes:
+    - 相对论优化基组
+  sarc_dkh2:
+    bdf_name: SARC-DKH2
+    relativistic: true
+    ecp: false
+    aliases:
+    - SARC-DKH2
+    notes:
+    - 相对论优化基组
+  sarc2_qzv_dkh2:
+    bdf_name: SARC2-QZV-DKH2
+    relativistic: true
+    ecp: false
+    aliases:
+    - SARC2-QZV-DKH2
+    notes:
+    - 相对论优化基组
+  sarc2_qzvp_dkh2:
+    bdf_name: SARC2-QZVP-DKH2
+    relativistic: true
+    ecp: false
+    aliases:
+    - SARC2-QZVP-DKH2
+    notes:
+    - 相对论优化基组
+  jorge_dzp:
+    bdf_name: jorge-DZP
+    relativistic: false
+    ecp: false
+    aliases:
+    - jorge-DZP
+    notes: []
+  jorge_tzp:
+    bdf_name: jorge-TZP
+    relativistic: false
+    ecp: false
+    aliases:
+    - jorge-TZP
+    notes: []
+  jorge_qzp:
+    bdf_name: jorge-QZP
+    relativistic: false
+    ecp: false
+    aliases:
+    - jorge-QZP
+    notes: []
+  jorge_dzp_dkh:
+    bdf_name: jorge-DZP-DKH
+    relativistic: true
+    ecp: false
+    aliases:
+    - jorge-DZP-DKH
+    notes:
+    - 相对论优化基组
+  jorge_tzp_dkh:
+    bdf_name: jorge-TZP-DKH
+    relativistic: true
+    ecp: false
+    aliases:
+    - jorge-TZP-DKH
+    notes:
+    - 相对论优化基组
+  jorge_qzp_dkh:
+    bdf_name: jorge-QZP-DKH
+    relativistic: true
+    ecp: false
+    aliases:
+    - jorge-QZP-DKH
+    notes:
+    - 相对论优化基组
+  sapporo_dzp:
+    bdf_name: sapporo-dzp
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-dzp
+    notes: []
+  sapporo_dzp_dif:
+    bdf_name: sapporo-dzp-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-dzp-dif
+    notes: []
+  sapporo_tzp:
+    bdf_name: sapporo-tzp
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-tzp
+    notes: []
+  sapporo_tzp_dif:
+    bdf_name: sapporo-tzp-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-tzp-dif
+    notes: []
+  sapporo_qzp:
+    bdf_name: sapporo-qzp
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-qzp
+    notes: []
+  sapporo_qzp_dif:
+    bdf_name: sapporo-qzp-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-qzp-dif
+    notes: []
+  sapporo_dzp_2012:
+    bdf_name: sapporo-dzp-2012
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-dzp-2012
+    notes: []
+  sapporo_dzp_2012_dif:
+    bdf_name: sapporo-dzp-2012-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-dzp-2012-dif
+    notes: []
+  sapporo_tzp_2012:
+    bdf_name: sapporo-tzp-2012
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-tzp-2012
+    notes: []
+  sapporo_tzp_2012_dif:
+    bdf_name: sapporo-tzp-2012-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-tzp-2012-dif
+    notes: []
+  sapporo_qzp_2012:
+    bdf_name: sapporo-qzp-2012
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-qzp-2012
+    notes: []
+  sapporo_qzp_2012_dif:
+    bdf_name: sapporo-qzp-2012-dif
+    relativistic: false
+    ecp: false
+    aliases:
+    - sapporo-qzp-2012-dif
+    notes: []
+  sapporo_dkh3_dzp:
+    bdf_name: sapporo-dkh3-dzp
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-dzp
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_dzp_dif:
+    bdf_name: sapporo-dkh3-dzp-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-dzp-dif
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_tzp:
+    bdf_name: sapporo-dkh3-tzp
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-tzp
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_tzp_dif:
+    bdf_name: sapporo-dkh3-tzp-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-tzp-dif
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_qzp:
+    bdf_name: sapporo-dkh3-qzp
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-qzp
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_qzp_dif:
+    bdf_name: sapporo-dkh3-qzp-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-qzp-dif
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_dzp_2012:
+    bdf_name: sapporo-dkh3-dzp-2012
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-dzp-2012
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_dzp_2012_dif:
+    bdf_name: sapporo-dkh3-dzp-2012-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-dzp-2012-dif
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_tzp_2012:
+    bdf_name: sapporo-dkh3-tzp-2012
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-tzp-2012
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_tzp_2012_dif:
+    bdf_name: sapporo-dkh3-tzp-2012-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-tzp-2012-dif
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_qzp_2012:
+    bdf_name: sapporo-dkh3-qzp-2012
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-qzp-2012
+    notes:
+    - 相对论优化基组
+  sapporo_dkh3_qzp_2012_dif:
+    bdf_name: sapporo-dkh3-qzp-2012-dif
+    relativistic: true
+    ecp: false
+    aliases:
+    - sapporo-dkh3-qzp-2012-dif
+    notes:
+    - 相对论优化基组
+  adzp_ano:
+    bdf_name: ADZP-ANO
+    relativistic: false
+    ecp: false
+    aliases:
+    - ADZP-ANO
+    notes: []
+  iglo_ii:
+    bdf_name: IGLO-II
+    relativistic: false
+    ecp: false
+    aliases:
+    - IGLO-II
+    notes: []
+  iglo_iii:
+    bdf_name: IGLO-III
+    relativistic: false
+    ecp: false
+    aliases:
+    - IGLO-III
+    notes: []
+  svp_bsex:
+    bdf_name: SVP-BSEX
+    relativistic: false
+    ecp: false
+    aliases:
+    - SVP-BSEX
+    notes: []
+  svp:
+    bdf_name: SVP
+    relativistic: false
+    ecp: false
+    aliases:
+    - SVP
+    notes: []
+  dzp:
+    bdf_name: DZP
+    relativistic: false
+    ecp: false
+    aliases:
+    - DZP
+    notes: []
+  dzvp:
+    bdf_name: DZVP
+    relativistic: false
+    ecp: false
+    aliases:
+    - DZVP
+    notes: []
+  vdz:
+    bdf_name: VDZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - VDZ
+    notes: []
+  sadlej_pvtz:
+    bdf_name: Sadlej-pVTZ
+    relativistic: false
+    ecp: false
+    aliases:
+    - Sadlej-pVTZ
+    notes: []
+  tzvpp:
+    bdf_name: TZVPP
+    relativistic: false
+    ecp: false
+    aliases:
+    - TZVPP
+    notes: []
+  ano_dk3:
+    bdf_name: ANO-DK3
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-DK3
+    notes:
+    - 相对论优化基组
+  ano_r:
+    bdf_name: ANO-R
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R
+    notes:
+    - 相对论优化基组
+  ano_r0:
+    bdf_name: ANO-R0
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R0
+    notes:
+    - 相对论优化基组
+  ano_r1:
+    bdf_name: ANO-R1
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R1
+    notes:
+    - 相对论优化基组
+  ano_r2:
+    bdf_name: ANO-R2
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R2
+    notes:
+    - 相对论优化基组
+  ano_r3:
+    bdf_name: ANO-R3
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R3
+    notes:
+    - 相对论优化基组
+  ano_r_old:
+    bdf_name: ANO-R-OLD
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R-OLD
+    notes:
+    - 相对论优化基组
+  ano_r0_old:
+    bdf_name: ANO-R0-OLD
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R0-OLD
+    notes:
+    - 相对论优化基组
+  ano_r1_old:
+    bdf_name: ANO-R1-OLD
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R1-OLD
+    notes:
+    - 相对论优化基组
+  ano_r2_old:
+    bdf_name: ANO-R2-OLD
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R2-OLD
+    notes:
+    - 相对论优化基组
+  ano_r3_old:
+    bdf_name: ANO-R3-OLD
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-R3-OLD
+    notes:
+    - 相对论优化基组
+  ano_rcc:
+    bdf_name: ANO-RCC
+    relativistic: true
+    ecp: false
+    aliases:
+    - ANO-RCC
+    notes:
+    - 相对论优化基组
+  relbas:
+    bdf_name: RELBAS
+    relativistic: true
+    ecp: false
+    aliases:
+    - RELBAS
+    notes:
+    - 相对论优化基组
+  relbas.mine:
+    bdf_name: RELBAS.mine
+    relativistic: true
+    ecp: false
+    aliases:
+    - RELBAS.mine
+    notes:
+    - 相对论优化基组
+  relbas.r315:
+    bdf_name: RELBAS.r315
+    relativistic: true
+    ecp: false
+    aliases:
+    - RELBAS.r315
+    notes:
+    - 相对论优化基组
+  relbas.r324:
+    bdf_name: RELBAS.r324
+    relativistic: true
+    ecp: false
+    aliases:
+    - RELBAS.r324
+    notes:
+    - 相对论优化基组
+  relbas_vtz:
+    bdf_name: RELBAS_VTZ
+    relativistic: true
+    ecp: false
+    aliases:
+    - RELBAS_VTZ
+    notes:
+    - 相对论优化基组
+  dyall_fw_tz:
+    bdf_name: DYALL-FW-TZ
+    relativistic: true
+    ecp: false
+    aliases:
+    - DYALL-FW-TZ
+    notes:
+    - 相对论优化基组
+  dyallqz:
+    bdf_name: DYALLQZ
+    relativistic: true
+    ecp: false
+    aliases:
+    - DYALLQZ
+    notes:
+    - 相对论优化基组
+  dyalltzp:
+    bdf_name: DYALLTZP
+    relativistic: true
+    ecp: false
+    aliases:
+    - DYALLTZP
+    notes:
+    - 相对论优化基组
+  ugbs:
+    bdf_name: UGBS
+    relativistic: true
+    ecp: false
+    aliases:
+    - UGBS
+    notes:
+    - 相对论优化基组
+  aug_cc_pvdz_pp:
+    bdf_name: aug-cc-pVDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVDZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pvtz_pp:
+    bdf_name: aug-cc-pVTZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVTZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pvqz_pp:
+    bdf_name: aug-cc-pVQZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVQZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pv5z_pp:
+    bdf_name: aug-cc-pV5Z-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pV5Z-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pwcvdz_pp:
+    bdf_name: aug-cc-pwCVDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pwCVDZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pwcvtz_pp:
+    bdf_name: aug-cc-pwCVTZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pwCVTZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pwcvqz_pp:
+    bdf_name: aug-cc-pwCVQZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pwCVQZ-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pwcv5z_pp:
+    bdf_name: aug-cc-pwCV5Z-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pwCV5Z-PP
+    notes:
+    - 包含有效核势
+  cc_pvdz_pp:
+    bdf_name: cc-pVDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVDZ-PP
+    notes:
+    - 包含有效核势
+  cc_pvtz_pp:
+    bdf_name: cc-pVTZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVTZ-PP
+    notes:
+    - 包含有效核势
+  cc_pvqz_pp:
+    bdf_name: cc-pVQZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVQZ-PP
+    notes:
+    - 包含有效核势
+  cc_pv5z_pp:
+    bdf_name: cc-pV5Z-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pV5Z-PP
+    notes:
+    - 包含有效核势
+  cc_pwcvdz_pp:
+    bdf_name: cc-pwCVDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pwCVDZ-PP
+    notes:
+    - 包含有效核势
+  cc_pwcvtz_pp:
+    bdf_name: cc-pwCVTZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pwCVTZ-PP
+    notes:
+    - 包含有效核势
+  cc_pwcvqz_pp:
+    bdf_name: cc-pwCVQZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pwCVQZ-PP
+    notes:
+    - 包含有效核势
+  cc_pwcv5z_pp:
+    bdf_name: cc-pwCV5Z-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pwCV5Z-PP
+    notes:
+    - 包含有效核势
+  aug_cc_pcvdz_ccecp:
+    bdf_name: aug-cc-pCVDZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pCVDZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pcvtz_ccecp:
+    bdf_name: aug-cc-pCVTZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pCVTZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pcvqz_ccecp:
+    bdf_name: aug-cc-pCVQZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pCVQZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pcv5z_ccecp:
+    bdf_name: aug-cc-pCV5Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pCV5Z-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pvdz_ccecp:
+    bdf_name: aug-cc-pVDZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVDZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pvtz_ccecp:
+    bdf_name: aug-cc-pVTZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVTZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pvqz_ccecp:
+    bdf_name: aug-cc-pVQZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pVQZ-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pv5z_ccecp:
+    bdf_name: aug-cc-pV5Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pV5Z-ccECP
+    notes:
+    - 包含有效核势
+  aug_cc_pv6z_ccecp:
+    bdf_name: aug-cc-pV6Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - aug-cc-pV6Z-ccECP
+    notes:
+    - 包含有效核势
+  cc_pcvdz_ccecp:
+    bdf_name: cc-pCVDZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pCVDZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pcvtz_ccecp:
+    bdf_name: cc-pCVTZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pCVTZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pcvqz_ccecp:
+    bdf_name: cc-pCVQZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pCVQZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pcv5z_ccecp:
+    bdf_name: cc-pCV5Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pCV5Z-ccECP
+    notes:
+    - 包含有效核势
+  cc_pvdz_ccecp:
+    bdf_name: cc-pVDZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVDZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pvtz_ccecp:
+    bdf_name: cc-pVTZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVTZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pvqz_ccecp:
+    bdf_name: cc-pVQZ-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pVQZ-ccECP
+    notes:
+    - 包含有效核势
+  cc_pv5z_ccecp:
+    bdf_name: cc-pV5Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pV5Z-ccECP
+    notes:
+    - 包含有效核势
+  cc_pv6z_ccecp:
+    bdf_name: cc-pV6Z-ccECP
+    relativistic: false
+    ecp: true
+    aliases:
+    - cc-pV6Z-ccECP
+    notes:
+    - 包含有效核势
+  crenbl:
+    bdf_name: CRENBL
+    relativistic: false
+    ecp: true
+    aliases:
+    - CRENBL
+    notes:
+    - 包含有效核势
+  crenbs:
+    bdf_name: CRENBS
+    relativistic: false
+    ecp: true
+    aliases:
+    - CRENBS
+    notes:
+    - 包含有效核势
+  def2_sv(p):
+    bdf_name: DEF2-SV(P)
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SV(P)
+    notes:
+    - 包含有效核势
+  def2_svp:
+    bdf_name: DEF2-SVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SVP
+    notes:
+    - 包含有效核势
+  def2_svpd:
+    bdf_name: DEF2-SVPD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SVPD
+    notes:
+    - 包含有效核势
+  def2_tzvp:
+    bdf_name: DEF2-TZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVP
+    notes:
+    - 包含有效核势
+  def2_tzvp_f:
+    bdf_name: DEF2-TZVP-F
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVP-F
+    notes:
+    - 包含有效核势
+  def2_tzvpp:
+    bdf_name: DEF2-TZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPP
+    notes:
+    - 包含有效核势
+  def2_tzvpp_f:
+    bdf_name: DEF2-TZVPP-F
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPP-F
+    notes:
+    - 包含有效核势
+  def2_tzvpd:
+    bdf_name: DEF2-TZVPD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPD
+    notes:
+    - 包含有效核势
+  def2_tzvppd:
+    bdf_name: DEF2-TZVPPD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPPD
+    notes:
+    - 包含有效核势
+  def2_qzvp:
+    bdf_name: DEF2-QZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVP
+    notes:
+    - 包含有效核势
+  def2_qzvpp:
+    bdf_name: DEF2-QZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPP
+    notes:
+    - 包含有效核势
+  def2_qzvpd:
+    bdf_name: DEF2-QZVPD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPD
+    notes:
+    - 包含有效核势
+  def2_qzvppd:
+    bdf_name: DEF2-QZVPPD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPPD
+    notes:
+    - 包含有效核势
+  def2_sv(p)_g16:
+    bdf_name: DEF2-SV(P)-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SV(P)-G16
+    notes:
+    - 包含有效核势
+  def2_svp_g16:
+    bdf_name: DEF2-SVP-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SVP-G16
+    notes:
+    - 包含有效核势
+  def2_tzvp_g16:
+    bdf_name: DEF2-TZVP-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVP-G16
+    notes:
+    - 包含有效核势
+  def2_tzvpp_g16:
+    bdf_name: DEF2-TZVPP-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPP-G16
+    notes:
+    - 包含有效核势
+  def2_qzvp_g16:
+    bdf_name: DEF2-QZVP-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVP-G16
+    notes:
+    - 包含有效核势
+  def2_qzvpp_g16:
+    bdf_name: DEF2-QZVPP-G16
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPP-G16
+    notes:
+    - 包含有效核势
+  def2_sv(p)_old:
+    bdf_name: DEF2-SV(P)-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SV(P)-OLD
+    notes:
+    - 包含有效核势
+  def2_svp_old:
+    bdf_name: DEF2-SVP-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SVP-OLD
+    notes:
+    - 包含有效核势
+  def2_svpd_old:
+    bdf_name: DEF2-SVPD-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-SVPD-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvp_old:
+    bdf_name: DEF2-TZVP-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVP-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvp_f_old:
+    bdf_name: DEF2-TZVP-F-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVP-F-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvpp_old:
+    bdf_name: DEF2-TZVPP-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPP-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvpp_f_old:
+    bdf_name: DEF2-TZVPP-F-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPP-F-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvpd_old:
+    bdf_name: DEF2-TZVPD-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPD-OLD
+    notes:
+    - 包含有效核势
+  def2_tzvppd_old:
+    bdf_name: DEF2-TZVPPD-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-TZVPPD-OLD
+    notes:
+    - 包含有效核势
+  def2_qzvp_old:
+    bdf_name: DEF2-QZVP-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVP-OLD
+    notes:
+    - 包含有效核势
+  def2_qzvpp_old:
+    bdf_name: DEF2-QZVPP-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPP-OLD
+    notes:
+    - 包含有效核势
+  def2_qzvpd_old:
+    bdf_name: DEF2-QZVPD-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPD-OLD
+    notes:
+    - 包含有效核势
+  def2_qzvppd_old:
+    bdf_name: DEF2-QZVPPD-OLD
+    relativistic: false
+    ecp: true
+    aliases:
+    - DEF2-QZVPPD-OLD
+    notes:
+    - 包含有效核势
+  ma_def2_qzvp:
+    bdf_name: MA-DEF2-QZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-QZVP
+    notes:
+    - 包含有效核势
+  ma_def2_qzvpp:
+    bdf_name: MA-DEF2-QZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-QZVPP
+    notes:
+    - 包含有效核势
+  ma_def2_svp:
+    bdf_name: MA-DEF2-SVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-SVP
+    notes:
+    - 包含有效核势
+  ma_def2_sv(p):
+    bdf_name: MA-DEF2-SV(P)
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-SV(P)
+    notes:
+    - 包含有效核势
+  ma_def2_tzvp:
+    bdf_name: MA-DEF2-TZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-TZVP
+    notes:
+    - 包含有效核势
+  ma_def2_tzvpp:
+    bdf_name: MA-DEF2-TZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - MA-DEF2-TZVPP
+    notes:
+    - 包含有效核势
+  dhf_qzvp:
+    bdf_name: DHF-QZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-QZVP
+    notes:
+    - 包含有效核势
+  dhf_qzvpp:
+    bdf_name: DHF-QZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-QZVPP
+    notes:
+    - 包含有效核势
+  dhf_svp:
+    bdf_name: DHF-SVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-SVP
+    notes:
+    - 包含有效核势
+  dhf_sv(p):
+    bdf_name: DHF-SV(P)
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-SV(P)
+    notes:
+    - 包含有效核势
+  dhf_tzvp:
+    bdf_name: DHF-TZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-TZVP
+    notes:
+    - 包含有效核势
+  dhf_tzvpp:
+    bdf_name: DHF-TZVPP
+    relativistic: false
+    ecp: true
+    aliases:
+    - DHF-TZVPP
+    notes:
+    - 包含有效核势
+  lanl08:
+    bdf_name: LANL08
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL08
+    notes:
+    - 包含有效核势
+  lanl08+:
+    bdf_name: LANL08+
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL08+
+    notes:
+    - 包含有效核势
+  lanl08(d):
+    bdf_name: LANL08(D)
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL08(D)
+    notes:
+    - 包含有效核势
+  lanl08(f):
+    bdf_name: LANL08(F)
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL08(F)
+    notes:
+    - 包含有效核势
+  lanl2dz:
+    bdf_name: LANL2DZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL2DZ
+    notes:
+    - 包含有效核势
+  lanl2dzdp:
+    bdf_name: LANL2DZDP
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL2DZDP
+    notes:
+    - 包含有效核势
+  lanl2tz:
+    bdf_name: LANL2TZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL2TZ
+    notes:
+    - 包含有效核势
+  lanl2tz+:
+    bdf_name: LANL2TZ+
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL2TZ+
+    notes:
+    - 包含有效核势
+  lanl2tz(f):
+    bdf_name: LANL2TZ(F)
+    relativistic: false
+    ecp: true
+    aliases:
+    - LANL2TZ(F)
+    notes:
+    - 包含有效核势
+  mini:
+    bdf_name: MINI
+    relativistic: false
+    ecp: false
+    aliases:
+    - MINI
+    notes: []
+  modified_lanl2dz:
+    bdf_name: MODIFIED-LANL2DZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MODIFIED-LANL2DZ
+    notes:
+    - 包含有效核势
+  pitzer_avdz_pp:
+    bdf_name: Pitzer-AVDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - Pitzer-AVDZ-PP
+    notes:
+    - 包含有效核势
+  pitzer_vdz_pp:
+    bdf_name: Pitzer-VDZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - Pitzer-VDZ-PP
+    notes:
+    - 包含有效核势
+  pitzer_vtz_pp:
+    bdf_name: Pitzer-VTZ-PP
+    relativistic: false
+    ecp: true
+    aliases:
+    - Pitzer-VTZ-PP
+    notes:
+    - 包含有效核势
+  psbkjc:
+    bdf_name: pSBKJC
+    relativistic: false
+    ecp: true
+    aliases:
+    - pSBKJC
+    notes:
+    - 包含有效核势
+  sbkjc_polar:
+    bdf_name: SBKJC-POLAR
+    relativistic: false
+    ecp: true
+    aliases:
+    - SBKJC-POLAR
+    notes:
+    - 包含有效核势
+  sbkjc_vdz:
+    bdf_name: SBKJC-VDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - SBKJC-VDZ
+    notes:
+    - 包含有效核势
+  stuttgart_rlc:
+    bdf_name: STUTTGART-RLC
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-RLC
+    notes:
+    - 包含有效核势
+  stuttgart_rsc_1997:
+    bdf_name: STUTTGART-RSC-1997
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-RSC-1997
+    notes:
+    - 包含有效核势
+  stuttgart_rsc_ano:
+    bdf_name: STUTTGART-RSC-ANO
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-RSC-ANO
+    notes:
+    - 包含有效核势
+  stuttgart_rsc_seg:
+    bdf_name: STUTTGART-RSC-SEG
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-RSC-SEG
+    notes:
+    - 包含有效核势
+  stuttgart_ecp92mdfq_dzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-DZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-ECP92MDFQ-DZVP
+    notes:
+    - 包含有效核势
+  stuttgart_ecp92mdfq_tzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-TZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-ECP92MDFQ-TZVP
+    notes:
+    - 包含有效核势
+  stuttgart_ecp92mdfq_qzvp:
+    bdf_name: STUTTGART-ECP92MDFQ-QZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-ECP92MDFQ-QZVP
+    notes:
+    - 包含有效核势
+  stuttgart_ecpmdfso_qzvp:
+    bdf_name: STUTTGART-ECPMDFSO-QZVP
+    relativistic: false
+    ecp: true
+    aliases:
+    - STUTTGART-ECPMDFSO-QZVP
+    notes:
+    - 包含有效核势
+  sdb_cc_pvtz:
+    bdf_name: SDB-cc-pVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - SDB-cc-pVTZ
+    notes:
+    - 包含有效核势
+  sdb_cc_pvqz:
+    bdf_name: SDB-cc-pVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - SDB-cc-pVQZ
+    notes:
+    - 包含有效核势
+  sdb_aug_cc_pvtz:
+    bdf_name: SDB-aug-cc-pVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - SDB-aug-cc-pVTZ
+    notes:
+    - 包含有效核势
+  sdb_aug_cc_pvqz:
+    bdf_name: SDB-aug-cc-pVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - SDB-aug-cc-pVQZ
+    notes:
+    - 包含有效核势
+  mwb_fic:
+    bdf_name: MWB-FIC
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC
+    notes:
+    - 包含有效核势
+  mwb_fic_avdz:
+    bdf_name: MWB-FIC-AVDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC-AVDZ
+    notes:
+    - 包含有效核势
+  mwb_fic_avtz:
+    bdf_name: MWB-FIC-AVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC-AVTZ
+    notes:
+    - 包含有效核势
+  mwb_fic_avqz:
+    bdf_name: MWB-FIC-AVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC-AVQZ
+    notes:
+    - 包含有效核势
+  mwb_fic_i:
+    bdf_name: MWB-FIC-I
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC-I
+    notes:
+    - 包含有效核势
+  mwb_fic_ii:
+    bdf_name: MWB-FIC-II
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FIC-II
+    notes:
+    - 包含有效核势
+  mwb_ficm1_avdz:
+    bdf_name: MWB-FICm1-AVDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm1-AVDZ
+    notes:
+    - 包含有效核势
+  mwb_ficm1_avtz:
+    bdf_name: MWB-FICm1-AVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm1-AVTZ
+    notes:
+    - 包含有效核势
+  mwb_ficm1_avqz:
+    bdf_name: MWB-FICm1-AVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm1-AVQZ
+    notes:
+    - 包含有效核势
+  mwb_ficm2_avdz:
+    bdf_name: MWB-FICm2-AVDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm2-AVDZ
+    notes:
+    - 包含有效核势
+  mwb_ficm2_avtz:
+    bdf_name: MWB-FICm2-AVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm2-AVTZ
+    notes:
+    - 包含有效核势
+  mwb_ficm2_avqz:
+    bdf_name: MWB-FICm2-AVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm2-AVQZ
+    notes:
+    - 包含有效核势
+  mwb_ficm3_avdz:
+    bdf_name: MWB-FICm3-AVDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm3-AVDZ
+    notes:
+    - 包含有效核势
+  mwb_ficm3_avtz:
+    bdf_name: MWB-FICm3-AVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm3-AVTZ
+    notes:
+    - 包含有效核势
+  mwb_ficm3_avqz:
+    bdf_name: MWB-FICm3-AVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICm3-AVQZ
+    notes:
+    - 包含有效核势
+  mwb_ficp1:
+    bdf_name: MWB-FICp1
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICp1
+    notes:
+    - 包含有效核势
+  mwb_ficp1_avdz:
+    bdf_name: MWB-FICp1-AVDZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICp1-AVDZ
+    notes:
+    - 包含有效核势
+  mwb_ficp1_avtz:
+    bdf_name: MWB-FICp1-AVTZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICp1-AVTZ
+    notes:
+    - 包含有效核势
+  mwb_ficp1_avqz:
+    bdf_name: MWB-FICp1-AVQZ
+    relativistic: false
+    ecp: true
+    aliases:
+    - MWB-FICp1-AVQZ
+    notes:
+    - 包含有效核势
+  dirac_dyall.2zp:
+    bdf_name: Dirac-Dyall.2zp
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.2zp
+    notes:
+    - 相对论优化基组
+  dirac_dyall.3zp:
+    bdf_name: Dirac-Dyall.3zp
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.3zp
+    notes:
+    - 相对论优化基组
+  dirac_dyall.4zp:
+    bdf_name: Dirac-Dyall.4zp
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.4zp
+    notes:
+    - 相对论优化基组
+  dirac_dyall.aae2z:
+    bdf_name: Dirac-Dyall.aae2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.aae2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.aae3z:
+    bdf_name: Dirac-Dyall.aae3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.aae3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.aae4z:
+    bdf_name: Dirac-Dyall.aae4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.aae4z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.acv2z:
+    bdf_name: Dirac-Dyall.acv2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.acv2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.acv3z:
+    bdf_name: Dirac-Dyall.acv3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.acv3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.acv4z:
+    bdf_name: Dirac-Dyall.acv4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.acv4z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.ae2z:
+    bdf_name: Dirac-Dyall.ae2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.ae2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.ae3z:
+    bdf_name: Dirac-Dyall.ae3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.ae3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.ae4z:
+    bdf_name: Dirac-Dyall.ae4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.ae4z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.av2z:
+    bdf_name: Dirac-Dyall.av2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.av2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.av3z:
+    bdf_name: Dirac-Dyall.av3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.av3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.av4z:
+    bdf_name: Dirac-Dyall.av4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.av4z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.cv2z:
+    bdf_name: Dirac-Dyall.cv2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.cv2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.cv3z:
+    bdf_name: Dirac-Dyall.cv3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.cv3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.cv4z:
+    bdf_name: Dirac-Dyall.cv4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.cv4z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.v2z:
+    bdf_name: Dirac-Dyall.v2z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.v2z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.v3z:
+    bdf_name: Dirac-Dyall.v3z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.v3z
+    notes:
+    - 相对论优化基组
+  dirac_dyall.v4z:
+    bdf_name: Dirac-Dyall.v4z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-Dyall.v4z
+    notes:
+    - 相对论优化基组
+  dirac_rpf_4z:
+    bdf_name: Dirac-RPF-4Z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-RPF-4Z
+    notes:
+    - 相对论优化基组
+  dirac_aug_rpf_4z:
+    bdf_name: Dirac-aug-RPF-4Z
+    relativistic: true
+    ecp: false
+    aliases:
+    - Dirac-aug-RPF-4Z
+    notes:
+    - 相对论优化基组
