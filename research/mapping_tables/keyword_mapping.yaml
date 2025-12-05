@@ -26,6 +26,10 @@ task_types:
     required_fields: ["molecule", "method"]
 
 # COMPASS 模块关键词映射
+# 注意：以下仅包含 BDF COMPASS 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/compass.rst
+
 compass:
   # 1. 基本说明 / 标题 ----------------------------------------------------------
   title:
@@ -45,10 +49,11 @@ compass:
   # 2. 几何与坐标输入 -----------------------------------------------------------
   geometry:
     bdf_keyword: "GEOM"
-    format: "多行坐标块，格式：ATOM X Y Z，或 FILE/XYZ/ZMAT 等子关键字"
+    format: "字符串数组（可以是直角坐标模式或内坐标模式）"
     location: "COMPASS 模块"
     end_marker: "END GEOM"
     yaml_mapping: "molecule.coordinates"
+    note: "常用关键词。指定计算的分子结构，可以是直角坐标模式，也可以是内坐标模式。分子坐标的定义从Geometry参数下一行开始，以End Geometry前一行结束。直角坐标模式：ATOM X Y Z；内坐标模式：使用键长、键角、二面角等定义"
     rules:
       - "默认：直接在 GEOM/END GEOM 中给出笛卡尔坐标，单位由 UNIT 控制"
       - "如果首行以 FILE 开头：file=filename.xyz，从指定 xyz 文件读取"
@@ -57,17 +62,17 @@ compass:
 
   punched_geometry:
     bdf_keywords: ["PUNGEOM", "RESTART"]
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.geometry.from_optgeom"
-    note: "logic_geom_punched = .true.，几何从 .optgeom 等打孔文件读取"
+    note: "常用关键词。使用$BDFTASK.optgeom文件里的坐标，而非Geometry关键词下给定的坐标来进行计算，其中$BDFTASK是输入文件名称去掉后缀.inp后剩余的字符串。注意虽然此时计算不会使用Geometry关键词后的坐标数值，但是Geometry关键词后的坐标并不能省略，而且原子的种类、个数和顺序必须正确，只不过坐标数值可以是任意的而已。restart主要用于结构优化的断点续算"
 
   no_rotate:
     bdf_keyword: "NOROTATE"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.geometry.no_rotate"
-    note: "禁止将分子旋转到标准取向（logic_rotate = .false.）"
+    note: "常用关键词。强制不将分子坐标旋转到标准取向。与Nosymm不同，Norotate不会忽略分子的对称性，但是当分子具有对称轴或者镜面时，对称轴和镜面的位置必须和分子旋转到标准取向时对称轴和镜面的位置一致"
 
   split_so3:
     bdf_keyword: "SPLITSO3"
@@ -78,33 +83,58 @@ compass:
 
   unit:
     bdf_keyword: "UNIT"
-    format: "单行文本（BOHR 或 ANGSTROM）"
+    format: "字符串（Bohr 或 Angstrom）"
     location: "COMPASS 模块"
-    default: "ANGSTROM（逻辑上 logic_bohr=.false.）"
+    default: "Angstrom"
     yaml_mapping: "molecule.units"
-    note: "YAML 中默认 Angstrom；如果为 Bohr，则写 UNIT 后子行 BOHR"
+    note: "常用关键词。Bohr表示坐标输入的长度单位为原子单位制，Angstrom表示长度单位为埃"
 
   group:
     bdf_keyword: "GROU"
-    format: "下一行给出点群名（如 C(2v)、D(2h) 等）"
+    format: "字符串（点群名称，下标需用括号括起来）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.symmetry.group"
-    note: "设置分子点群；逻辑上 logic_group=.true., logic_nosym=.false."
+    note: "常用关键词。强制程序在分子所属点群的某个子群下计算。BDF支持实表示点群：阿贝尔群（C(1), C(i), C(s), C(2), C(2v), C(2h), D(2), D(2h)）、非阿贝尔群（C(nv), D(n), D(nh), D(nd), T(d), O, O(h), I, I(h)）以及特殊点群（C(LIN)对应C∞v，D(LIN)对应D∞h）。点群名称的下标需要用括号括起来，如C(3v)、D(2h)。特殊点群C∞v、D∞h需要写作C(LIN)、D(LIN)。程序会自动检查用户输入的点群是否是分子实际所属点群的子群；如否，则程序报错退出。注意：某些计算任务（如开壳层TDDFT、TDDFT/SOC等）仅支持D(2h)及其子群（阿贝尔群），而大部分计算任务支持任何实表示点群。BDF会自动根据分子坐标判断分子所属的点群，并在分子属于复表示点群时自动改用合适的子群"
+    valid_values:
+      - "阿贝尔群（D(2h)及其子群）：C(1), C(i), C(s), C(2), C(2v), C(2h), D(2), D(2h)"
+      - "非阿贝尔群示例：C(3v), C(4v), D(3), D(4), D(3h), D(4h), T(d), O, O(h), I, I(h)等"
+      - "特殊点群：C(LIN)（对应C∞v）, D(LIN)（对应D∞h）"
+      - "注意：BDF支持的点群范围很广，此处仅列出常见点群。用户也可以手动编辑BDF输入文件使用其他点群"
+    rules:
+      - "点群名称大小写不敏感（如 'c(2v)' 和 'C(2v)' 等价）"
+      - "如果用户忘记加括号，转换器会自动补上括号（如 'C2v' → 'C(2v)'）"
+      - "特殊点群：C∞v → C(LIN), D∞h → D(LIN)"
+      - "程序会自动检查用户输入的点群是否是分子实际所属点群的子群；如否，则程序报错退出"
+      - "如果用户设置了此关键词且值有效，则在 COMPASS 模块中添加 Group 关键词"
+      - "**与 nosymm 关键词互斥**：如果同时设置了 group 和 nosymm，nosymm 优先，group 将被忽略"
+      - "BDF会自动将分子旋转到标准取向（standard orientation），使得对称轴尽量和坐标轴重合"
+      - "对于C(2v)、D(2h)点群，需要注意B1、B2不可约表示的定义可能与其他量化程序不同"
 
   no_symmetry:
-    bdf_keyword: "NOSY"
-    format: "无值关键词"
+    bdf_keyword: "NoSymm"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.symmetry.no_symmetry"
-    note: "强制不使用对称性，Grpname 设为 C(1)"
+    default: "false"
+    note: "常用关键词。强制BDF在计算时忽略分子对称性。与指定C1群不同，一旦使用了这个参数，分子坐标不会旋转。默认情况下，分子坐标会被旋转到标准取向（Standard orientation）"
+    rules:
+      - "强制不使用点群对称性，Grpname 设为 C(1)"
+      - "**与 group 关键词互斥**：如果同时设置了 group 和 nosymm，nosymm 优先，group 将被忽略"
 
   # 3. 基组与 RI / DF 相关 ------------------------------------------------------
   basis:
     bdf_keyword: "BASI"
-    format: "多行：基组名或基组文件；支持多基组、多块（-BLOCK/-MULTI）"
+    format: "字符串（基组名称，大小写不敏感）"
     location: "COMPASS 模块"
     yaml_mapping: "method.basis"
-    note: "内部通过 process_basis 处理；支持 6D/5D 选择与多基组逻辑"
+    note: "常用关键词。指定计算所用的基组名称。对所有原子使用相同的BDF内置基组。BDF基组存储在$BDFHOME/basis_library中，基组名称大小写不敏感。BDF支持全电子基组（如cc-pVDZ、def2-SVP等）和赝势基组（如cc-pVDZ-PP、def2-TZVP等）。用户也可以使用自定义基组文件（文件名必须全部大写，引用时大小写任意）。注意：BDF一律采用球基函数（spherical basis functions），不是笛卡尔基函数。如果用其它量子化学程序重复BDF的计算结果，除保证结构、方法、基组相同外，还需检查是否用了球基函数。参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/guide/Gaussian-Basis-Sets.rst"
+
+  basis_block:
+    bdf_keyword: "Basis-block"
+    format: "多行输入块：第一行是默认基组，之后的行对不同元素或原子指定其它基组，格式为元素=基组名或元素1,元素2,...,元素n=基组名，必须以End Basis作为结束"
+    location: "COMPASS 模块"
+    yaml_mapping: "settings.compass.basis.block"
+    note: "常用关键词。对不同元素指定不同的基组，或为同种元素的不同原子指定不同基组。第一行是默认基组，之后的行对不同元素或原子指定其它基组，格式为元素=基组名或元素1,元素2,...,元素n=基组名。必须以End Basis作为结束。注意：对称等价原子必须使用相同基组，程序将对此进行检查；如果对称等价原子必须要使用不同基组，可通过Group设置较低的点群对称性，或者用Nosymm关闭对称性。如果为同种元素的不同原子指定不同基组，需要在坐标中定义原子类型时，在元素符号后加上数字以示区分（如H1, H2），并必须在Basis-block中为这些原子类型明确指定基组。也可以在inline...end line数据区中直接提供基组数据。参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/guide/Gaussian-Basis-Sets.rst"
 
   end_basis:
     bdf_keyword: "END BASI"
@@ -122,31 +152,31 @@ compass:
 
   ri_j:
     bdf_keyword: "RI-J"
-    format: "下一行给出 RI 基组名 / 文件"
+    format: "字符串（RI基组名称）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.ri.ri_j_basis"
-    note: "logic_df=.true., toptask%task(9)=11，riname='RI-J'"
+    note: "常用关键词。密度拟合近似（Density-fitting approximation）加速算法的辅助基组。RI-J为库伦拟合基组。注意：BDF的RI计算功能，用于加速MCSCF、MP2等波函数计算方法，不推荐用户在SCF、TDDFT等计算中使用，用户可以用多级展开库伦势（MPEC）方法，MPEC方法不依赖辅助基组，计算速度和精度都与RI方法相当。高级别密度拟合基组可以用在低级别基组上（如cc-pVTZ/C可以用于在cc-pVTZ上做RI-J），反之，高级别轨道基组结合低级别的辅助基组则会带来较明显的误差。参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/guide/Gaussian-Basis-Sets.rst"
 
   ri_k:
     bdf_keyword: "RI-K"
-    format: "下一行给出 RI 基组名 / 文件"
+    format: "字符串（RI基组名称）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.ri.ri_k_basis"
-    note: "logic_df=.true., toptask%task(9)=12，riname='RI-K'"
+    note: "常用关键词。密度拟合近似（Density-fitting approximation）加速算法的辅助基组。RI-K为交换拟合基组。注意：BDF的RI计算功能，用于加速MCSCF、MP2等波函数计算方法，不推荐用户在SCF、TDDFT等计算中使用。参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/guide/Gaussian-Basis-Sets.rst"
 
   ri_c:
     bdf_keyword: "RI-C"
-    format: "下一行给出 RI 基组名 / 文件"
+    format: "字符串（RI基组名称）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.ri.ri_c_basis"
-    note: "logic_df=.true., toptask%task(9)=13，riname='RI-C'"
+    note: "常用关键词。密度拟合近似（Density-fitting approximation）加速算法的辅助基组。RI-C为相关拟合基组。注意：BDF的RI计算功能，用于加速MCSCF、MP2等波函数计算方法，不推荐用户在SCF、TDDFT等计算中使用。参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/guide/Gaussian-Basis-Sets.rst"
 
   mpec_cosx:
     bdf_keyword: "MPEC+COSX"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
-    yaml_mapping: "settings.scf.cosx.mpec_cosx"
-    note: "toptask%task(73)=1，控制 SCF 阶段的 MPEC+COSX 选项"
+    yaml_mapping: "settings.compass.mpec_cosx"
+    note: "常用关键词。指定利用多级展开库伦势（Multipole expansion of Coulomb potential, MPEC）方法计算J矩阵，COSX（Chain-of-sphere exchange）方法计算K矩阵"
 
   poisson:
     bdf_keyword: "POIS"
@@ -157,10 +187,10 @@ compass:
 
   uncontracted_basis:
     bdf_keyword: "UNCONT"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.basis.uncontracted"
-    note: "logic_uncontracted=.true.；结束时调用 basis_uncontract()"
+    note: "常用关键词。强制使用非收缩的原高斯基函数计算，无论输入基组是否是收缩基组。通常用于测试"
 
   segmented_contraction:
     bdf_keyword: "SEGCONT"
@@ -171,18 +201,18 @@ compass:
 
   primitive_input:
     bdf_keyword: "PRIM"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.basis.primitive_input"
-    note: "logic_prim=.true.，仅输入 primitive GTO"
+    note: "常用关键词。指定只输入特定格式的原高斯基函数。通常用于测试"
 
   # 4. 任务 / 运行模式 / 阈值 ---------------------------------------------------
   check_run:
     bdf_keyword: "CHEC"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.check_only"
-    note: "toptask%task(8)=1，触发数据检查模式"
+    note: "常用关键词。按照特定格式打印最重要结果。通常用于测试"
 
   task:
     bdf_keyword: "TASK"
@@ -196,10 +226,11 @@ compass:
 
   thresh_symmetry:
     bdf_keyword: "THRE"
-    format: "下一行给出 STICK/STRICT/TIGHT/MEDIUM/COARSE/LOOSE 等文字"
+    format: "字符串（Coarse, Medium, Strict）"
     location: "COMPASS 模块"
+    default: "Medium"
     yaml_mapping: "settings.compass.symmetry.threshold_level"
-    note: "控制 thrdm1/thrdm2/threps，影响对称性判定严格程度"
+    note: "常用关键词。指定判断分子对称性的精度。BDF的一个特色是对分子点群的支持。compass模块可以自动识别分子所属的对称群，并按照对称群将分子严格对称化。由于分子建模精度，分子可能不严格属于某个对称点群，本参数可以控制判断分子对称的精度"
 
   print_level:
     bdf_keyword: "PRINT"
@@ -210,10 +241,10 @@ compass:
 
   basis_print_format:
     bdf_keyword: "EXPBAS"
-    format: "下一行整数 iprbs（0~5）"
+    format: "整数（0、1、2、3、4、5）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.basis.print_format"
-    note: "控制基组输出格式：Molpro/Molcas/Gaussian/Orca/CFour 等"
+    note: "常用关键词。在输出文件中以其它量子化学程序的格式打印基组和赝势。0：默认格式；1：Molpro；2：Molcas；3：Gaussian；4：ORCA；5：CFour"
 
   # 5. 相对论 / Skeleton / 轨道构造 -------------------------------------------
   relativistic:
@@ -225,16 +256,21 @@ compass:
 
   skeleton_method:
     bdf_keyword: "SKEL"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.skeleton_method"
-    note: "toptask%task(2)=2，Skeleton 矩阵方法（默认）"
+    note: "常用关键词。指定在BDF计算中对称性的处理方式。BDF有两种分子点群对称性处理方式：一种是先构造对称匹配的轨道，原子轨道积分计算过程中会对称化积分，并存储基于对称匹配轨道的积分，该方法只支持非积分直接的波函数理论计算，如SCF，MCSCF，MRCI，CCSD等；另一种做法是不产生对称匹配的积分，而是只计算存储对称独立的原子轨道积分，在做Hartree-Fock、Kohn-Sham DFT等计算时，直接产生对称匹配的算符如J、K矩阵。后一种做法称为Skeleton方法，即只计算\"骨架\"原子轨道积分。Skeleton方法对各种非阿贝尔点群提供支持。BDF最初默认使用第一种做法，如今默认使用第二种做法，但是无法用于各种后-HF波函理论方法，此时需要用Saorb关键词切换到第一种做法"
 
   saorb:
     bdf_keyword: "SAORB"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.symmetry_adapted_orbitals"
+    note: "常用关键词。指定在BDF计算中对称性的处理方式为传统做法。只有做各种后-HF波函理论计算时才需要指定该关键词。参见Skeleton关键词"
+    rules:
+      - "默认不添加：只有在出现 MCSCF 或 TRAINT 模块时才默认添加"
+      - "如果 COMPASS 中要求使用 RI 基组（RI-J/RI-K/RI-C/CD-RI），则无需添加此关键词"
+      - "SAORB 用于要求 XUANYUAN 计算并存储对称匹配轨道的积分，主要用于 MCSCF 和多参考态电子相关计算"
     note: "toptask%task(2)=0，使用对称适应积分/轨道"
 
   # 6. 片段 / Kratzer 势 / 外加电荷 -------------------------------------------
@@ -254,19 +290,20 @@ compass:
 
   external_charge:
     bdf_keyword: "EXTCHARGE"
-    format: "下一行字符串，指定 POINT 或 GAUSSIAN"
+    format: "字符串（有效输入值为：point）"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.external_charge.type"
+    note: "常用关键词。指定计算需要外加点电荷，外加点电荷放置于名为$BDFTASK.extcharge的文件中。该文件内容如下：第一行是标题行，可以为空行。第二行输入一个整数N，定义需要多少个附加电荷。第三到末尾，总共N行，定义附加电荷的坐标与电量，格式如下：Atom \\ Charge \\ x y z"
     rules:
       - "POINT → toptask%task(52)=1，点电荷"
-      - "GAUSSIAN → toptask%task(52)=2，高斯分布电荷"
+      - "GAUSSIAN → toptask%task(52)=2，高斯分布电荷（如果支持）"
 
   atommass:
     bdf_keyword: "ATOMMASS"
-    format: "下一行整数 Nmass，之后 Nmass 行：iatom mass"
+    format: "输入块：第一行指定要替换的原子量个数，后面的每一行指定原子编号以及新的原子量"
     location: "COMPASS 模块"
     yaml_mapping: "settings.compass.atomic_masses"
-    note: "覆盖默认同位素质量，用于同位素替换等"
+    note: "常用关键词。指定原子的同位素质量。接下来的第一行指定要替换的原子量个数，后面的每一行指定原子编号以及新的原子量。如果原子量写为整数形式，将用实际的同位素原子量替代（如果内置数据库支持的话），否则不修改用户提供的新原子量。如果原子量小于1，将使用平均原子量。其余原子的原子量不做修改，默认为最丰同位素的原子量，自然界不存在的元素采用已知或理论预测的最长寿同位素原子量"
 
   # 7. 外电场 / 实时 TDDFT 相关 ------------------------------------------------
   realtdfield:
@@ -303,6 +340,10 @@ compass:
     note: "自旋多重度在 SCF 模块中生效，这里仅作为整体映射记录"
 
 # SCF 模块关键词映射
+# 注意：以下仅包含 BDF SCF 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/scf.rst
+
 scf:
   # 1. SCF 类型 / 接口 ---------------------------------------------------------
   method_type:
@@ -335,32 +376,46 @@ scf:
     format: "整数（2S+1）"
     location: "SCF 模块"
     yaml_mapping: "molecule.multiplicity"
-    note: "通常由 COMPASS/整体系控制；在 SCF 中可以覆盖"
+    required: true
+    rules:
+      - "**必需字段**：用户必须在 YAML 中明确设置自旋多重度"
+      - "转换器会直接将 YAML 中的值复制到 SCF 模块的 Spin 关键词"
+      - "无论值是多少（包括1），都会添加到 SCF 模块中，确保用户清楚知道计算的电子态"
+      - "AI 分析用户任务时必须提醒用户设置自旋多重度"
+    note: "控制电子态的自旋多重度（2S+1）。必需字段，直接复制到 SCF 模块"
 
   charge:
     bdf_keyword: "CHARGE"
     format: "整数"
     location: "SCF 模块"
     yaml_mapping: "molecule.charge"
+    required: true
+    rules:
+      - "**必需字段**：用户必须在 YAML 中明确设置电荷"
+      - "转换器会直接将 YAML 中的值复制到 SCF 模块的 Charge 关键词"
+      - "无论值是多少（包括0），都会添加到 SCF 模块中，确保用户清楚知道计算的体系电荷"
+    note: "分子电荷。必需字段，直接复制到 SCF 模块"
 
   occupied:
     bdf_keyword: "OCCUP"
-    format: "一行或多行占据数（按不可约表示）"
+    format: "整数数组（按不可约表示）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.occupation.total"
-    note: "高级选项：实数占据，内部转换为整数占据"
+    note: "常用关键词。指定每个不可约表示分子轨道中双电子占据的轨道数目，用于RHF/RKS计算"
 
   alpha:
     bdf_keyword: "ALPHA"
-    format: "一行或多行 alpha 占据数"
+    format: "整数数组（按不可约表示）"
     location: "SCF 模块（UHF/UKS）"
     yaml_mapping: "settings.scf.occupation.alpha"
+    note: "常用关键词。Alpha和Beta两个关键词必须联用，用于UHF/UKS计算，分别指定alpha或beta轨道每种不可约表示占据轨道数目"
 
   beta:
     bdf_keyword: "BETA"
-    format: "一行或多行 beta 占据数"
+    format: "整数数组（按不可约表示）"
     location: "SCF 模块（UHF/UKS）"
     yaml_mapping: "settings.scf.occupation.beta"
+    note: "常用关键词。Alpha和Beta两个关键词必须联用，用于UHF/UKS计算，分别指定alpha或beta轨道每种不可约表示占据轨道数目"
 
   mom_pair:
     bdf_keyword: "IFPAIR"
@@ -391,22 +446,26 @@ scf:
   # 3. 收敛与迭代控制 ---------------------------------------------------------
   convergence_pair:
     bdf_keyword: "THRESHCONV"
-    format: "两列浮点数（能量、密度）"
+    format: "两列浮点数（能量、密度，单位：Hartree）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.convergence"
-    note: "从 settings.scf.convergence.energy/density 生成"
+    note: "常用关键词。同时指定SCF收敛的能量和密度矩阵阈值。当且仅当以下任何一条满足时，程序认为SCF收敛：（1）能量变化小于ThrEne，且RMS密度矩阵元变化小于ThrDen；（2）能量变化小于ThrEne的0.1倍，且RMS密度矩阵元变化小于ThrDen的1.5倍；（3）最大密度矩阵元变化小于ThrDen"
 
   thresh_ene:
     bdf_keyword: "THRENE"
-    format: "浮点数"
+    format: "浮点数（单位：Hartree）"
     location: "SCF 模块"
+    default: "1.d-8"
     yaml_mapping: "settings.scf.convergence.energy"
+    note: "常用关键词。指定SCF收敛的能量阈值（单位：Hartree）"
 
   thresh_den:
     bdf_keyword: "THRDEN"
     format: "浮点数"
     location: "SCF 模块"
+    default: "5.d-6"
     yaml_mapping: "settings.scf.convergence.density"
+    note: "常用关键词。指定SCF收敛的均方根密度矩阵元阈值"
 
   thresh_diis:
     bdf_keyword: "THRDIIS"
@@ -418,19 +477,99 @@ scf:
     bdf_keywords: ["MAXITER", "MAXCYCLE"]
     format: "整数"
     location: "SCF 模块"
+    default: "100"
     yaml_mapping: "settings.scf.max_iterations"
+    note: "常用关键词。定义SCF计算的最大迭代次数"
 
   level_shift:
     bdf_keyword: "VSHIFT"
-    format: "浮点数"
+    format: "浮点数（非负实数）"
     location: "SCF 模块"
+    default: "0"
     yaml_mapping: "settings.scf.level_shift"
+    note: "常用关键词。指定分子轨道能级移动值。人为地将虚轨道能量加上用户指定数值，以加大HOMO-LUMO能隙，加速收敛。Vshift值越大，收敛过程越不容易出现振荡，但Vshift值太大会导致收敛变慢。一般只有在分子的HOMO-LUMO能隙较小（如小于2 eV），且SCF迭代时能量非单调降低时，才需要设置Vshift。建议范围（当取值不为0时）：0.2~1.0"
 
   damping:
     bdf_keyword: "DAMP"
-    format: "浮点数"
+    format: "浮点数（大于等于0、小于1的实数）"
     location: "SCF 模块"
+    default: "0"
     yaml_mapping: "settings.scf.damping"
+    note: "常用关键词。指定本次SCF迭代与上次迭代的密度矩阵以一定比例混合（P(i):=(1-C)*P(i)+C*P(i-1)），从而加速SCF收敛。Damp值越大，收敛过程越不容易出现振荡，但Damp值太大会导致收敛变慢。一般只有在SCF迭代能量非单调降低的时候，才需要设置Damp。建议范围（当取值不为0时）：0.5~0.99"
+
+  # DIIS 收敛加速算法 ---------------------------------------------------------
+  no_diis:
+    bdf_keywords: ["NOXIIS", "NODIIS"]
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.disable"
+    note: "常用关键词。指定不使用DIIS家族的收敛加速算法加速SCF收敛。一般只有在SCF能量以较大幅度（> 1.0E-5）振荡不收敛，且Damp和VShift效果不明显时，才需要指定NoXiis"
+
+  diis:
+    bdf_keyword: "DIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.type"
+    note: "常用关键词。指定使用DIIS家族中的传统DIIS算法。该项为默认值"
+
+  lciis:
+    bdf_keyword: "LCIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.lciis"
+    note: "常用关键词。指定使用DIIS家族中的LCIIS算法"
+
+  ediis:
+    bdf_keyword: "EDIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.ediis"
+    note: "常用关键词。指定使用DIIS家族中的EDIIS算法。用户应首先考虑使用EDIIS + DIIS而非纯EDIIS"
+
+  adiis:
+    bdf_keyword: "ADIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.adiis"
+    note: "常用关键词。指定使用DIIS家族中的ADIIS算法。用户应首先考虑使用ADIIS + DIIS而非纯ADIIS"
+
+  ediis_plus_diis:
+    bdf_keyword: "EDIISPLUSDIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.ediis_plus_diis"
+    note: "常用关键词。指定使用DIIS家族中的EDIIS + DIIS算法"
+
+  adiis_plus_diis:
+    bdf_keyword: "ADIISPLUSDIIS"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.diis.adiis_plus_diis"
+    note: "常用关键词。指定使用DIIS家族中的ADIIS + DIIS算法"
+
+  max_diis:
+    bdf_keywords: ["MAXXIIS", "MAXDIIS"]
+    format: "整数"
+    location: "SCF 模块"
+    default: "8"
+    yaml_mapping: "settings.scf.diis.max_subspace_dim"
+    note: "常用关键词。指定DIIS家族方法的最大子空间维数"
+
+  min_diis:
+    bdf_keywords: ["MINXIIS", "MINDIIS"]
+    format: "整数"
+    location: "SCF 模块"
+    default: "2"
+    yaml_mapping: "settings.scf.diis.min_subspace_dim"
+    note: "常用关键词。指定DIIS家族方法的最小子空间维数"
+
+  diis_mode:
+    bdf_keywords: ["XIISMODE", "DIISMODE"]
+    format: "整数（0、1、3、4）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.diis.mode"
+    note: "常用关键词。当DIIS类方法所用的存储策略。具体的来说，指的是在当子空间维度达到最大值时的做法。0=删除最旧的数条记录直至空间维度为最小值；1=删除最旧的一条记录；3=删除对应迭代均方误差最大的那条记录；4=删除对应迭代误差矩阵元绝对值最大的那条记录。选项3和4只在启用了NLopt后可用，收敛效果通常较选项0更好，但偶尔可能引起稳定振荡不收敛问题"
 
   icheck:
     bdf_keyword: "ICHECK"
@@ -440,9 +579,11 @@ scf:
 
   iaufbau:
     bdf_keyword: "IAUFBAU"
-    format: "整数/逻辑"
+    format: "整数（0、1、2、3）"
     location: "SCF 模块"
+    default: "当用户设定了Occupy、Alpha或Beta时为0，否则为1"
     yaml_mapping: "settings.scf.aufbau"
+    note: "常用关键词。定义用什么方法指定轨道占据数。0表示轨道占据数始终与初猜一致；1表示按照Aufbau规则指定轨道占据数；2表示按照mom方法指定轨道占据数，即令占据数尽可能和初始猜测轨道保持一致，结合前述Mixorb关键词可以实现用DeltaSCF方法计算激发态；3用于程序调试，正式计算一般无需使用"
 
   deform:
     bdf_keyword: "DEFORM"
@@ -453,10 +594,10 @@ scf:
   # 4. DFT / XC / 色散 --------------------------------------------------------
   dft_functional:
     bdf_keyword: "DFT"
-    format: "下一行给出交换/相关泛函名，如 'PBE LYP' 或 'B3LYP'"
+    format: "字符串（交换相关泛函名称）"
     location: "SCF 模块"
     yaml_mapping: "method.functional"
-    note: "泛函转换器负责将 YAML 的 functional 规范化为 'X C' 或 'XC' 形式"
+    note: "常用关键词。指定DFT计算的交换相关泛函。参见BDF支持的交换相关泛函列表。泛函转换器负责将YAML的functional规范化为'X C'或'XC'形式"
 
   rsalphabeta:
     bdf_keyword: "RSALPHABETA"
@@ -478,10 +619,10 @@ scf:
 
   dft_d3:
     bdf_keywords: ["D3", "D3(BJ)", "D2", "D3ZERO", "D3MZERO", "D3MBJ"]
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.dft.d3.scheme"
-    note: "根据 scheme 选择具体关键字；版本号由 VERSION/DFTDVERSION 控制"
+    note: "常用关键词。指定对DFT计算加入Grimme的D3色散矫正。根据scheme选择具体关键字；版本号由VERSION/DFTDVERSION控制"
 
   dft_d_version:
     bdf_keywords: ["VERSION", "DFTDVERSION"]
@@ -494,14 +635,131 @@ scf:
     format: "浮点数"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.dft.facex"
+    note: "常用关键词。指定泛函的HF交换项比例。注意目前只有SVWN、SVWN5、PBE、PBE0、PW91、BP86、BLYP、B3LYP、GB3LYP、B3PW91、BHHLYP、SF5050、B2PLYP泛函允许用户自定义FACEX"
 
   facco:
     bdf_keyword: "FACCO"
     format: "浮点数"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.dft.facco"
+    note: "常用关键词。指定泛函的MP2相关项比例。注意目前只有B2PLYP泛函允许用户自定义FACCO"
+
+  rsomega:
+    bdf_keywords: ["RSOMEGA", "RS"]
+    format: "浮点数（omega系数）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.dft.rs_omega"
+    note: "常用关键词（但建议在XUANYUAN模块中设置）。指定Range-Separated泛函如CAM-B3LYP等的omega（某些文献称mu）系数。RS是RSOMEGA的同义词。本关键词在scf模块中仅用于调试，建议在XUANYUAN模块中设置"
+
+  # 4a. SCF加速算法（MPEC+COSX） ---------------------------------------------
+  mpec_cosx:
+    bdf_keyword: "MPEC+COSX"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mpec_cosx"
+    note: "常用关键词。指定利用多级展开库伦势（Multipole expansion of Coulomb potential, MPEC）方法计算J矩阵，COSX（Chain-of-sphere exchange）方法计算K矩阵。在Scf模块中保留该关键词只是为了向下兼容，建议在Compass模块中设定该关键词"
+
+  coulpot:
+    bdf_keyword: "COULPOT"
+    format: "整数（0、1、2）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.coulpot"
+    note: "常用关键词。控制MPEC计算产生库伦势Vc与原子核吸引势Vn矩阵的方法。0为利用解析积分计算Vc与Vn；1为利用多级展开计算Vc，利用解析积分计算Vn；2为利用多级展开计算Vc，数值积分计算Vn"
+
+  coulpotlmax:
+    bdf_keyword: "COULPOTLMAX"
+    format: "整数"
+    location: "SCF 模块"
+    default: "8"
+    yaml_mapping: "settings.scf.coulpot_lmax"
+    note: "常用关键词。定义MPEC方法多级展开最高的角动量L值"
+
+  coulpottol:
+    bdf_keyword: "COULPOTTOL"
+    format: "整数"
+    location: "SCF 模块"
+    default: "8（含义为1.0E-8）"
+    yaml_mapping: "settings.scf.coulpot_tol"
+    note: "常用关键词。定义多级展开的精度阈值，越大越精确"
+
+  mpec:
+    bdf_keyword: "MPEC"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.mpec"
+    note: "常用关键词。指定用MPEC方法计算J矩阵"
+
+  cosx:
+    bdf_keyword: "COSX"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.cosx"
+    note: "常用关键词。指定用COSX方法计算K矩阵"
+
+  # 4b. SMH / Smeartemp / Restrainspin ----------------------------------------
+  smh:
+    bdf_keyword: "SMH"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.smh.enabled"
+    note: "常用关键词。指定使用Semiempirical Model Hamiltonian（SMH）方法加速SCF收敛。该方法对于一般的有机体系，可节省约10~15%的SCF迭代步数，对于具有显著电荷转移、自旋极化的体系，加速收敛效果更为显著。此外该方法还可增加收敛到稳定波函数的概率。对于满足以下情况之一的计算，不支持使用SMH：（1）ROHF/ROKS计算；（2）用户指定了Smeartemp时；（3）基组存在线性相关时。除这些情况外，SMH一律默认开启"
+
+  no_smh:
+    bdf_keyword: "NOSMH"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.smh.disable"
+    note: "常用关键词。指定不使用SMH方法加速SCF收敛"
+
+  smeartemp:
+    bdf_keyword: "SMEARTEMP"
+    format: "浮点数（非负实数，单位：Kelvin）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.smeartemp"
+    note: "常用关键词。指定体系的电子温度，也即通过费米展宽（Fermi Smearing）方法改变前线轨道的占据数。注意BDF如果使用Fermi Smearing方法，最终的能量包含了电子熵能（the electronic entropy）的贡献，名为-TS_ele，从E_tot中间减掉这一项（注意这一项是负的，也就是说需要加上这一项的绝对值）可以得到电子能量。Smeartemp不可与Vshift或SMH同时使用，也不可在FLMO或iOI计算中使用。该关键词主要有以下几类应用场景：（1）用于研究温度对电子结构的影响；（2）对于HOMO-LUMO能隙非常小或者前线轨道能级简并的体系，该方法能改善DFT的收敛性；（3）对于HF或DFT破坏分子空间对称性的情况，Smeartemp有助于得到符合空间对称性的轨道"
+
+  restrainspin:
+    bdf_keyword: "RESTRAINSPIN"
+    format: "输入块：第一行为整数N（需要指定几个原子的自旋），第2行至第N+1行为一个整数（原子编号）和一个浮点数（希望的自旋布居）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.restrainspin"
+    note: "常用关键词。用于待研究体系有不止一个可能的SCF波函数，且希望收敛到其中特定的一个波函数的情形。指定在SCF迭代过程中，为特定原子的Mulliken自旋布居添加柔性限制，使最后收敛的波函数的Mulliken自旋布居与用户设置值相近。注意：（1）当体系的自旋多重度为1时，需要显式指定UHF或UKS；（2）当体系有点群对称性时，每指定一个原子的自旋布居为x，即同时指定了和这个原子对称等价的所有原子的自旋布居为x；（3）当体系有点群对称性，且需要收敛到的波函数会破坏这种对称性时，必须关闭点群对称性或指定合适的子群"
 
   # 5. 数值积分 / COSX / 网格 -------------------------------------------------
+  grid:
+    bdf_keyword: "GRID"
+    format: "字符串（Ultra Coarse、Coarse、Medium、Fine、Ultra Fine）"
+    location: "SCF 模块"
+    default: "Medium"
+    yaml_mapping: "settings.scf.grid.type"
+    note: "常用关键词。指定DFT计算的格点类型"
+
+  gridtol:
+    bdf_keyword: "GRIDTOL"
+    format: "浮点数"
+    location: "SCF 模块"
+    default: "1.0E-6（对于meta-GGA为1.0E-8）"
+    yaml_mapping: "settings.scf.grid.tolerance"
+    note: "常用关键词。指定产生DFT自适应格点的截断阈值。该值越低，格点数越多，因此数值积分精度越高，但计算量也越大"
+
+  gridtype:
+    bdf_keyword: "GRIDTYPE"
+    format: "整数（0、1、2、3）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.grid.gridtype"
+    note: "常用关键词。指定DFT计算的径向与角向布点方法"
+
+  partitiontype:
+    bdf_keyword: "PARTITIONTYPE"
+    format: "整数（0、1）"
+    location: "SCF 模块"
+    default: "1"
+    yaml_mapping: "settings.scf.grid.partition_type"
+    note: "常用关键词。指定DFT格点分割类型。0为Becke分割；1为Stratmann-Scuseria-Frisch分割。一般用户无需改变该参数"
+
   maxmem:
     bdf_keyword: "MAXMEM"
     format: "整数（MB）"
@@ -572,22 +830,32 @@ scf:
   # 7. 轨道输出 / 初始猜测 / 线性相关 ----------------------------------------
   molden:
     bdf_keyword: "MOLDEN"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.output.molden"
+    note: "常用关键词。控制将分子轨道输出为Molden格式，以做后续的波函数分析"
 
   pyscforb:
     bdf_keyword: "PYSCFORB"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.output.pyscf_orbitals"
+    note: "常用关键词。控制将SCF收敛轨道存储为Pyscf轨道格式"
 
   noscforb:
     bdf_keyword: "NOSCFORB"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.output.write_scf_orbitals"
-    note: "YAML 中为 true 表示写出；生成时需要取反控制 NOSCFORB"
+    note: "常用关键词。强制不将分子轨道存入.scforb文件。YAML中为true表示写出；生成时需要取反控制NOSCFORB"
+
+  iprtmo:
+    bdf_keyword: "IPRTMO"
+    format: "整数（0、1、2）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.output.iprtmo"
+    note: "常用关键词。控制是否打印分子轨道系数。若设为0，不打印分子轨道；若设为1（默认），打印前线轨道（每个不可约表示的HOMO-5到LUMO+5）的占据数、能量、系数；若设为2，打印所有轨道的占据数、能量、系数"
 
   outaooverlap:
     bdf_keyword: "OUTAOOVERLAP"
@@ -597,9 +865,18 @@ scf:
 
   guess:
     bdf_keyword: "GUESS"
-    format: "单行文本（nddo/huckel 等）"
+    format: "字符串（atom、Hcore、Huckel、Readmo）"
     location: "SCF 模块"
+    default: "atom"
     yaml_mapping: "settings.scf.guess.type"
+    note: "常用关键词。指定初猜的类型。一般情况下atom较Hcore、Huckel好，因此正常情况下无需选择Hcore或Huckel。若选择Readmo，则程序会依次检查$BDF_TMPDIR/$BDFTASK.inporb、$BDF_TMPDIR/inporb、$BDF_WORKDIR/$BDFTASK.scforb文件是否存在，读取第一个存在的文件里的轨道信息。读取的轨道文件必须和当前计算在以下方面相符：原子的数目和种类必须相同；原子的排列顺序必须相同；使用的点群必须相同；使用的基组必须相同"
+
+  mixorb:
+    bdf_keyword: "MIXORB"
+    format: "输入块：第一行整数N（需要混合的轨道对的数目），第2行到第N+1行每行为5个数（alpha/beta标识、不可约表示编号、第一个轨道序号、第二个轨道序号、混合角度θ（度））"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.guess.mixorb"
+    note: "常用关键词。将初猜轨道按一定比例进行混合。一般只有在Guess设定为Readmo时，才能使用Mixorb，否则用户撰写输入文件时尚不清楚初猜轨道的成分，因此无法知道应当混合哪些轨道。一般使用较多的是θ=45和θ=90的情况，θ=45相当于把两个轨道按等比例混合，θ=90相当于把两个轨道交换"
 
   atomguesshf:
     bdf_keyword: "ATOMGUESSHF"
@@ -609,15 +886,18 @@ scf:
 
   checklin:
     bdf_keyword: "CHECKLIN"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.linear_dependence.check"
+    note: "常用关键词。强制SCF进行基组线性相关检查。BDF默认对DirectSCF进行基组线性相关检查，以提高使用弥散基函数时的SCF收敛性"
 
   tollin:
     bdf_keyword: "TOLLIN"
     format: "浮点数"
     location: "SCF 模块"
+    default: "1.0E-7"
     yaml_mapping: "settings.scf.linear_dependence.tol"
+    note: "常用关键词。控制基组线性相关检查的阈值"
 
   lowdinlin:
     bdf_keyword: "LOWDINLIN"
@@ -668,6 +948,29 @@ scf:
     location: "SCF 模块"
     yaml_mapping: "settings.scf.flmo.no_reorder"
 
+  # 8. Fock矩阵对角化控制 -----------------------------------------------------
+  sylv:
+    bdf_keyword: "SYLV"
+    format: "无值关键词（Bool型）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.sylv"
+    note: "常用关键词。控制在SCF迭代中利用求解Sylvester方程的方法进行块对角化，代替全对角化，以节省计算时间。对于特别大的体系（例如原子数大于1000、基函数数目大于10000）的计算，Fock矩阵对角化占总计算的时间常常不可忽略，此时通常可以降低计算量，因为用较快的块对角化代替了全对角化，并且可以充分利用Fock矩阵的稀疏性加速计算。但需要注意的是，此时SCF收敛得到的轨道不是正则轨道，不过收敛的占据轨道张成的空间和正则占据轨道张成的空间相同，能量、密度矩阵等也和传统全对角化计算的结果一致"
+
+  iviop:
+    bdf_keyword: "IVIOP"
+    format: "整数（1~3）"
+    location: "SCF 模块"
+    yaml_mapping: "settings.scf.iviop"
+    note: "常用关键词。控制在SCF迭代中使用iVI方法，需要与Blkiop=7联用。建议值：1"
+
+  blkiop:
+    bdf_keyword: "BLKIOP"
+    format: "整数（1~8，分别代表SAI、DDS、DNR、DGN、FNR、FGN、iVI、CHC）"
+    location: "SCF 模块"
+    default: "当指定Sylv时，默认值为3，否则无默认值"
+    yaml_mapping: "settings.scf.blkiop"
+    note: "常用关键词。指定块对角化的方法，通常用于iVI或FLMO计算。如不指定该关键词，默认进行全对角化。建议值：3"
+
   # 9. 对称性 / 特殊模式 ------------------------------------------------------
   so3z:
     bdf_keyword: "SO3Z"
@@ -695,9 +998,10 @@ scf:
 
   notopt:
     bdf_keywords: ["NOTOPT", "ONEITER"]
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.mode.notopt"
+    note: "常用关键词。仅进行一步SCF迭代，得到的能量是由初猜轨道和由初猜轨道构建的Fock矩阵计算得到的；计算后将Fock矩阵对角化后得到的轨道输出到.scforb文件，并基于该套轨道打印轨道能、布居分析等。和将MaxIter设为1不同的是，后者情况下程序会因为达到最大迭代次数而报错退出，进而不执行后续的计算任务（如TDDFT等）"
 
   fockonly:
     bdf_keyword: "FOCKONLY"
@@ -723,7 +1027,16 @@ scf:
     location: "SCF 模块"
     yaml_mapping: "settings.scf.mode.atom_mp2"
 
-  # 10. 其它标志 / 分析开关 ---------------------------------------------------
+  # 10. 打印控制 ---------------------------------------------------------------
+  print:
+    bdf_keyword: "PRINT"
+    format: "整数（0、1）"
+    location: "SCF 模块"
+    default: "0"
+    yaml_mapping: "settings.scf.print_level"
+    note: "常用关键词。仅用于程序调试，控制SCF的打印级别"
+
+  # 11. 其它标志 / 分析开关 ---------------------------------------------------
   sgnfix:
     bdf_keyword: "SGNFIX"
     format: "无值"
@@ -746,24 +1059,31 @@ scf:
 
   sepejk:
     bdf_keyword: "SEPEJK"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.sepEJK"
+    note: "常用关键词。将程序打印的双电子能量进一步分解为库伦能和HF交换能。该关键词会略微增加计算时长"
 
   sepexc:
     bdf_keyword: "SEPEXC"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.sepEXC"
+    note: "常用关键词。将程序打印的XC能量进一步分解为DFT交换能和DFT相关能。该关键词会略微增加计算时长"
 
   noorthguess:
     bdf_keyword: "NOORTHGUESS"
-    format: "无值"
+    format: "无值关键词（Bool型）"
     location: "SCF 模块"
     yaml_mapping: "settings.scf.mode.no_orthogonal_guess"
+    note: "常用关键词。不对初猜轨道进行正交化。一般仅在需要评估初猜轨道正交化对能量的贡献时，才需要添加该关键词"
 
 
 # BDFOPT 模块关键词映射
+# 注意：以下仅包含 BDF BDFOPT 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/bdfopt.rst
+
 bdfopt:
   # 1. 总体控制 / 求解器与电子结构方法 -----------------------------------------
   iprt:
@@ -774,11 +1094,11 @@ bdfopt:
 
   solver:
     bdf_keyword: "SOLVER"
-    format: "下一行整数 optinfo%solver"
+    format: "整数（0、1）"
     location: "BDFOPT 模块"
-    default: "1"
+    default: "0"
     yaml_mapping: "settings.geometry_optimization.solver"
-    note: "0=DL-FIND, 1=BDF 内置几何优化；HESS 仅 Hessian/频率模式会强制设置为 -1 等"
+    note: "常用关键词。指定几何结构优化使用的求解器。Solver=0，BDF将使用外带的DL-Find优化器进行优化，该优化器支持在直角坐标或内坐标下，进行能量极小化、过渡态搜索、高阶鞍点搜索、锥形交叉点搜索、最小能量交叉点（MECP）搜索等。Solver=1，BDF将使用自带的优化器进行优化。如果在冗余内坐标下（参见ICoord关键词）进行能量极小化、过渡态搜索，建议使用Solver=1。注意：由于DL-FIND与BDF默认的坐标转动有冲突，必须在compass模块中加上关键词norotate禁止分子转动，或用nosymm关闭对称性；对于双原子和三原子分子，只能用nosymm"
 
   method:
     bdf_keyword: "METHOD"
@@ -789,82 +1109,103 @@ bdfopt:
 
   maxcycle:
     bdf_keywords: ["MAXCYCLE", "MAXITER"]
-    format: "下一行整数 bdf_dlf_glob%maxcycle"
+    format: "整数"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.max_iterations"
+    note: "常用关键词。指定最大优化步数。对于DL-Find优化器，默认值为50；对于BDF优化器，默认值为max(100, 6*原子数)"
 
   trust_radius:
     bdf_keyword: "TRUST"
-    format: "下一行浮点数 optinfo%init_trusra"
+    format: "浮点数（非零实数）"
     location: "BDFOPT 模块"
+    default: "0.3"
     yaml_mapping: "settings.bdfopt.trust_radius"
-    note: "正值/负值控制初始 trust radius 及最大/最小半径的不同策略"
+    note: "常用关键词。指定优化的置信半径（trust radius）。建议范围：0.005 ~ 0.5或-0.5 ~ -0.005。当置信半径r设定为正数时，程序的初始置信半径将设为r，但在随后的结构优化步骤中可能会视优化情况而动态地增加或减少置信半径。当置信半径r设定为负数时，程序的初始置信半径将设为|r|，且随后的结构优化步骤中保证置信半径不会超过|r|"
 
   tol_grad:
     bdf_keyword: "TOLGRAD"
-    format: "下一行浮点数 bdf_dlf_glob%tolerance"
+    format: "浮点数（单位：Hartree/Bohr）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.tolerance.gradient"
+    note: "常用关键词。指定均方根梯度（RMS Gradient）的收敛标准，单位Hartree/Bohr。对于DL-Find优化器，默认值为2.D-4；对于BDF优化器，默认值为3.D-4。该参数同时还将梯度的最大分量（Max Gradient）的收敛标准设为TolGrad的1.5倍"
 
   tol_energy:
     bdf_keyword: "TOLENE"
-    format: "下一行浮点数 bdf_dlf_glob%tolerance_e"
+    format: "浮点数（单位：Hartree）"
     location: "BDFOPT 模块"
+    default: "1.D-6"
     yaml_mapping: "settings.bdfopt.tolerance.energy"
+    note: "常用关键词。指定结构优化相邻两步能量变化的收敛标准，单位Hartree。该参数仅对DL-Find优化器有效"
 
   tol_step:
     bdf_keyword: "TOLSTEP"
-    format: "下一行浮点数 bdf_tolerance_s"
+    format: "浮点数（单位：Bohr）"
     location: "BDFOPT 模块"
+    default: "1.2D-3"
     yaml_mapping: "settings.bdfopt.tolerance.step"
+    note: "常用关键词。均方根步长（RMS Step）的收敛标准，单位Bohr。该参数仅对BDF优化器有效。该参数同时还将步长的最大分量（Max Step）的收敛标准设为TolStep的1.5倍"
 
   iopt:
     bdf_keyword: "IOPT"
-    format: "下一行整数 bdf_dlf_glob%iopt"
+    format: "整数"
     location: "BDFOPT 模块"
+    default: "3"
     yaml_mapping: "settings.bdfopt.dlfind.iopt"
-    note: "DL-FIND 优化方法选择，参见 DL-FIND 手册"
+    note: "常用关键词。指定优化目标。对于DL-Find优化器，该参数的意义与DL-Find的IOpt参数意义相同，其中常用的有3（L-BFGS）和10（P-RFO）；对于BDF优化器，仅支持其中的2个IOpt值，IOpt=3（优化极小值点）和IOpt=10（优化过渡态）。可选值：当Solver=1时可选3、10；当Solver=0时可选0、1、2、3、9、10、11、12、13、20、30、51、52"
 
   icoord:
     bdf_keyword: "ICOORD"
-    format: "下一行整数 bdf_dlf_glob%icoord"
+    format: "整数（0、1）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.dlfind.icoord"
-    note: "坐标系类型，DL-FIND 定义；与内坐标/笛卡尔相关"
+    note: "常用关键词。本参数指定几何优化使用的坐标类型。如ICoord=0，采用直角坐标；如ICoord=1，采用冗余内坐标。对于DL-Find优化器，默认值为0；对于BDF优化器，默认值为1，且不支持1以外的值"
 
   update:
     bdf_keyword: "UPDATE"
-    format: "下一行整数 bdf_dlf_glob%update"
+    format: "整数（0、1、2、3、9）"
     location: "BDFOPT 模块"
+    default: "对于极小值点优化为3，对于过渡态优化为2"
     yaml_mapping: "settings.bdfopt.dlfind.update"
-    note: "Hessian 更新方案（BFGS/Bofill 等），若未设置则根据 iopt 选择默认值"
+    note: "常用关键词。指定几何优化过程中Hessian的更新方式。0为每步均重新计算数值Hessian；1为Powell更新法（仅DL-Find支持）；2为针对过渡态的Bofill更新法；3为指定L-BFGS更新法（优化器为DL-Find），否则指定BFGS更新法；9为针对极小值点的Bofill更新法。如选择0以外的值，则程序将在几何优化的第一步构造基于分子力场的初始Hessian"
 
   # 2. 多态 / 多态耦合 / 线搜索 --------------------------------------------------
   imulti:
     bdf_keyword: "IMULTI"
-    format: "下一行整数 bdf_dlf_glob%imultistate"
+    format: "整数（0、1、2）"
     location: "BDFOPT 模块"
+    default: "0"
     yaml_mapping: "settings.bdfopt.multistate.imulti"
+    note: "常用关键词。用于圆锥交点（conical intersection；CI）、系间窜越（intersystem crossing；ISC）等的多态优化。目前仅支持DL-Find优化器。Imulti=0，不执行多态优化（默认）；Imulti=1，用惩罚函数方法优化CI或ISC，不需要计算非绝热耦合或态间耦合梯度；Imulti=2，用梯度投影方法优化CI或ISC，其中CI优化需要计算非绝热耦合（默认），ISC优化需要设定Noncoupl关键词，跳过态间耦合梯度计算"
 
   noncoupl:
     bdf_keyword: "NONCOUPL"
-    format: "无值关键词（不需要耦合）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.multistate.no_coupling"
+    note: "常用关键词。这个关键词不执行态间耦合梯度计算，用于ISC优化"
+
+  multistate:
+    bdf_keyword: "MULTISTATE"
+    format: "字符串（NONE、2SOC、3SOC、...、9SOC、MECP、CI）"
+    location: "BDFOPT 模块"
+    default: "NONE"
+    yaml_mapping: "settings.bdfopt.multistate.type"
+    note: "常用关键词。指定多态计算的类型。支持DL-Find优化器和BDF自带的优化器。NONE，执行常规的单态优化或频率计算（1SOC是同义词）；2SOC[chi]，用多态自旋混合（MSSM）模型进行Truhlar等人建议的两态自旋混合模型计算；3SOC[chi]等，用MSSM模型计算三个或更多自旋态构成的自旋混合基态，最多支持九个自旋不同的态；MECP，优化两个态之间的最低能量交叉点（暂不支持）；CI，优化两个态之间的锥形交叉点（暂不支持）。chi是可选的旋轨耦合常数的经验值（单位：cm-1），如果不提供，采用默认值400"
 
   iline:
     bdf_keyword: "ILINE"
-    format: "下一行整数 bdf_dlf_glob%iline"
+    format: "整数（0、1）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.line_search.iline"
+    note: "常用关键词。本参数指定是否在几何优化过程中进行线性搜索；如不进行线性搜索，则只进行二次搜索。ILine=0表示不进行线性搜索，否则表示进行线性搜索。对于DL-Find优化器，默认值为0；对于BDF优化器，默认值为1"
 
   # 3. 约束 / 连接 / 冻结原子 ----------------------------------------------------
   constrain:
     bdf_keyword: "CONSTRAIN"
-    format: "一行整数 N；随后 N 行约束定义（原子索引 + 可选目标值）"
+    format: "输入块：第一行整数N（约束的数目），第2行到第N+1行，每一行分别由1~4个整数组成（原子编号，或键/键角/二面角的原子编号，可选目标值）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.constraints"
-    note: "内部写入 optinfo%nconstraint / %constraints / %constraint_target，自动单位转换（Å→bohr, 度→弧度）"
+    note: "常用关键词。本参数指定进行约束性优化（constrained optimization），即在约束一个或多个原子的笛卡尔坐标、键长、键角或二面角的情况下，优化分子其余的自由度。目前本参数仅支持BDF优化器。如某一行有1个整数，表示原子编号为该整数的原子的笛卡尔坐标被冻结；如某一行有2个整数，表示原子编号为这2个整数的原子之间的键被冻结；如某一行有3个整数，表示原子编号为这3个整数的原子之间的键角被冻结；如某一行有4个整数，表示原子编号为这4个整数的原子之间的二面角被冻结。也可以先将键长、键角或二面角设定为用户给定值，再进行冻结。注意：即使分子坐标是以直角坐标而非内坐标形式指定的，BDF仍然可以冻结分子的键长、键角或二面角"
 
   connections:
     bdf_keyword: "CONNECTIONS"
@@ -874,18 +1215,18 @@ bdfopt:
 
   frozen:
     bdf_keyword: "FROZEN"
-    format: "一行整数 N；随后 N 行 (A, flag) 控制冻结类型"
+    format: "输入块：第一行整数N（约束的数目），第2行到第N+1行，每一行分别由2个整数组成（待冻结的原子编号，冻结类型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.frozen_atoms"
-    note: "flag=-1 冻结全部坐标；-2/-3/-4 等分别冻结 x/y/z 或其组合"
+    note: "常用关键词。本参数指定进行笛卡尔坐标约束性优化（constrained optimization），即在约束一个或多个原子的笛卡尔坐标的情况下，优化分子其余的自由度。冻结类型：0=不冻结（默认值）；-1=冻结该原子的x、y、z坐标；-2=冻结该原子的x坐标；-3=冻结该原子的y坐标；-4=冻结该原子的z坐标；-23=冻结该原子的x、y坐标；-24=冻结该原子的x、z坐标；-34=冻结该原子的y、z坐标。其中当使用BDF优化器时，该数字仅允许取0或-1。注意：程序冻结的是用户指定的各原子之间的相对笛卡尔坐标，原子的绝对笛卡尔坐标仍可能因为分子标准取向的变化而变化"
 
   # 4. 扫描（Relaxed / rigid scan）----------------------------------------------
   scan:
     bdf_keyword: "SCAN"
-    format: "一行 'M [N]'；随后定义扫描坐标和扫描值/范围"
+    format: "输入块：第一行是一个整数N（N维网格扫描）或两个整数M N（散点扫描，共需要改变M个内坐标，扫N个结构），随后定义扫描坐标和扫描值/范围"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.scan"
-    note: "支持规则网格扫描与自定义列表扫描；内部会将角度转换为弧度、距离转换为 bohr"
+    note: "常用关键词。指定进行柔性扫描计算。支持规则网格扫描与自定义列表扫描。对于网格扫描，每行格式为：A B = startvalue endvalue interval（键长，单位Angstrom）或A B C = startvalue endvalue interval（键角，单位度）或A B C D = startvalue endvalue interval（二面角，单位度）。对于散点扫描，首先写M行指定要扫描哪些内坐标，接着写N行，每行M个数。注意：柔性扫描功能仅支持solver=1，不支持solver=0"
 
   dliopt:
     bdf_keyword: "DLIOPT"
@@ -908,61 +1249,68 @@ bdfopt:
   # 5. Dimer / NEB 路径搜索 ------------------------------------------------------
   dimer:
     bdf_keyword: "DIMER"
-    format: "无值或带 'DIMER-BLOCK' 子块控制 NOINT/CRUDE/DELTA"
+    format: "无值关键词（Bool型）或带'DIMER-BLOCK'子块控制NoInterpolation/Crude/Delta"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.dimer"
-    note: "仅支持 DL-FIND 求解器（solver=0），且要求 iopt=3, 合适的 icoord"
+    note: "常用关键词。用DL-FIND外部库的Dimer方法优化过渡态。该方法只需要计算梯度，不需要计算Hessian。如果修改Dimer方法的默认参数，需要改用Dimer-Block...End Dimer输入块。仅支持DL-FIND求解器（solver=0）"
 
   neb:
     bdf_keyword: "NEB"
-    format: "无值或带 'NEB-BLOCK' 子块控制 NIMAGE/NEBK/NEBMODE/CRUDE"
+    format: "无值关键词（Bool型）或带'NEB-BLOCK'子块控制NImage/NEBk/NEBMode/Crude"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.neb"
+    note: "常用关键词。用DL-FIND外部库的CI-NEB方法计算反应路径，其中能量最高点对应过渡态（如果路径存在能垒的话）。CI-NEB计算需要提供两个端点的坐标，其中第一个端点的初始结构来自Compass模块的几何结构，而第二个端点的初始结构在Geometry2...End Geometry2输入块提供。需要注意两套坐标的原子顺序必须一致。如果修改CI-NEB方法的默认参数，需要改用NEB-Block...End NEB输入块"
 
   nframe:
     bdf_keyword: "NFRAME"
-    format: "下一行整数 Nframe（GEOMETRY2 中的结构帧数）"
+    format: "整数（1至NImage+1的正整数，CI-NEB计算）"
     location: "BDFOPT 模块"
+    default: "1"
     yaml_mapping: "settings.bdfopt.neb.nframe"
+    note: "常用关键词。在Geometry2中提供的坐标个数。NFrame必须出现在Geometry2之前才有意义，否则只能为Geometry2提供一个坐标"
 
   geometry2:
     bdf_keyword: "GEOMETRY2"
-    format: "多行坐标，直至 'END'；可使用 'GEOMETRY2B' 表示 Bohr 单位"
+    format: "多行坐标块（直角坐标），直至'End Geometry2'；可使用'Geometry2 Bohr'表示Bohr单位"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.neb.geometry2"
+    note: "常用关键词。为CI-NEB方法指定第二个端点的几何结构，目前仅支持直角坐标（单位：埃，或使用Bohr指定原子单位）。如果NFrame>1，可以在Geometry2中为CI-NEB计算提供中间像点的结构，按照像点的编号排序，第二个端点的结构放到最后。由于第二个端点与第一个端点的原子顺序必须一致，因此这里可以省略原子名称，仅输入直角坐标数据"
 
   # 6. Hessian/频率控制（数值 Hessian, O1NumHess 等）----------------------------
   hess_block:
     bdf_keywords: ["HESS", "FREQ"]
-    format: "后续一行控制 INIT/FINAL/INIT+FINAL/ONLY 等子选项"
+    format: "字符串（only、init、final、init+final）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.block"
-    note: "INIT/FINAL/ONLY 控制是否在优化前/后/仅做 Hessian，ONLY 会将 solver 设为 -1"
+    note: "常用关键词。指定计算Hessian。如为only，则仅计算Hessian而不做几何结构优化。如Hessian计算正常结束，程序将把Hessian对角化并进行热化学分析，给出振动频率、振动简正模、零点能、内能、焓、熵、Gibbs自由能等数据。如为init，则首先计算Hessian，然后以其为初始Hessian进行几何结构优化。该方法主要应用于过渡态搜索中（因为默认的基于分子力场的初始Hessian缺乏虚频）。如为final，则首先进行结构优化，如结构优化收敛，则在收敛的几何结构上计算Hessian，并进行频率分析和热化学分析（在其他量化程序中，这种计算模式常被称为opt+freq）。如为init+final，则首先计算初始Hessian，然后进行几何结构优化，优化收敛后再计算Hessian。注意：BDF目前仅支持HF/DFT的解析Hessian，使用TDDFT激发态结构优化使用数值Hessian"
 
   usenumhess:
     bdf_keywords: ["USENUMHESS", "USENUMFREQ"]
-    format: "无值关键词（强制使用数值 Hessian）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.force_numerical"
+    note: "常用关键词。强行计算数值Hessian，即使某个方法的解析Hessian可以获得。解析Hessian方法仅支持HF/DFT，DFT目前支持LDA、GGA、Hybrid和RS-Hybrid泛函"
 
   readhess:
     bdf_keyword: "READHESS"
-    format: "无值关键词（从任务名.hess 读入初始 Hessian，允许重启）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.read_initial"
+    note: "常用关键词。指定读取$BDFTASK.hess作为结构优化的初始Hessian（其中$BDFTASK为当前输入文件的名字去掉后缀.inp得到的字符串）。$BDFTASK.hess可以由其他的频率计算任务产生，而不一定需要和当前结构优化计算的理论级别一致"
 
   restarthess:
     bdf_keyword: "RESTARTHESS"
-    format: "无值关键词（重启未完成的数值 Hessian）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.restart"
+    note: "常用关键词。指定对频率任务进行断点续算"
 
   removeimag:
     bdf_keywords: ["REMOVEIMAG", "RMIMAG"]
-    format: "无值关键词（自动移除多余虚频）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.remove_imag"
-    note: "仅支持 BDF solver (solver=1)，否则会报错"
+    note: "常用关键词。对于极小值点优化，该关键字表示如果优化收敛后的结构存在虚频，则自动尝试消除虚频直至分子没有虚频为止；对于过渡态优化，该关键字表示如果优化收敛后的结构存在多于1个虚频，则自动尝试消除虚频直至分子恰有一个虚频为止。需要注意的是，消除虚频不能保证成功，所以计算结束后用户仍然需要手动检查虚频数目是否正确。仅支持BDF solver (solver=1)，否则会报错"
 
   check_geom:
     bdf_keyword: "CHECK"
@@ -972,9 +1320,10 @@ bdfopt:
 
   recalchess:
     bdf_keyword: "RECALCHESS"
-    format: "下一行整数 recalchess（每隔多少步重算 Hessian）"
+    format: "整数（非负整数）"
     location: "BDFOPT 模块"
     yaml_mapping: "settings.bdfopt.hessian.recalculate_every"
+    note: "常用关键词。指定在几何优化中，每隔多少步计算一次数值Hessian。如不提供该关键词，默认在几何优化过程中不计算数值Hessian（除非指定了Update=0）"
 
   numhessstep:
     bdf_keyword: "NUMHESSSTEP"
@@ -1015,59 +1364,83 @@ bdfopt:
   # 7. UniMoVib 相关（振动/热力学分析）------------------------------------------
   ndeg:
     bdf_keyword: "NDEG"
-    format: "下一行整数 unimovib%ndeg"
+    format: "整数（正整数）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.ndeg"
+    default: "1"
+    yaml_mapping: "settings.bdfopt.thermochemistry.electronic_degeneracy"
+    note: "常用关键词。指定当前电子态的电子简并度，用于计算热化学分析中的吉布斯自由能。电子简并度等于空间简并度乘以自旋简并度，其中空间简并度等于当前电子态所属不可约表示的维数（当分子属于阿贝尔群时，空间简并度等于1），自旋简并度对于非相对论计算和标量相对论计算等于自旋多重度（2S+1），而对考虑了旋轨耦合的计算等于2J+1，其中J为当前电子态的总角动量量子数。注意即使对于电子简并度不等于1的体系，NDeg的默认值仍然是1，用户必须手动指定正确的NDeg值，这一点对于开壳层体系的吉布斯自由能计算尤其重要"
 
   ntemp:
     bdf_keyword: "NTEMP"
-    format: "下一行整数 unimovib%ntemp（1~30）"
+    format: "整数（正整数）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.ntemp"
+    default: "1"
+    yaml_mapping: "settings.bdfopt.thermochemistry.n_temperatures"
+    note: "常用关键词。用户提供的温度值的个数。这些温度值由下面的Temp定义。NTemp必须出现在Temp之前才有意义，否则只能为Temp提供一个温度值"
 
   temp:
     bdf_keyword: "TEMP"
-    format: "一行或多行温度列表（长度 ntemp）"
+    format: "浮点数（正实数，单位：K）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.temp"
+    default: "298.15"
+    yaml_mapping: "settings.bdfopt.thermochemistry.temperature"
+    note: "常用关键词。指定在什么温度下进行热化学分析（单位：K）"
 
   npress:
     bdf_keyword: "NPRESS"
-    format: "下一行整数 unimovib%npress（1~30）"
+    format: "整数（正整数）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.npress"
+    default: "1"
+    yaml_mapping: "settings.bdfopt.thermochemistry.n_pressures"
+    note: "常用关键词。用户提供的压强值的个数。这些压强值由下面的Press定义。NPress必须出现在Press之前才有意义，否则只能为Press提供一个压强值。当NTemp>1，NPress=1时，对给定压强下的各种温度进行热化学计算；当NTemp=1，NPress>1时，对给定温度下的各种压强进行热化学计算；当NTemp>1，NPress>1时，除了常温常压下的热化学计算之外，还对每一对温度值和压强值进行热化学计算"
 
   press:
     bdf_keyword: "PRESS"
-    format: "一行或多行压强列表（长度 npress）"
+    format: "浮点数（正实数，单位：atm）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.press"
+    default: "1.0"
+    yaml_mapping: "settings.bdfopt.thermochemistry.pressure"
+    note: "常用关键词。指定在什么压强下进行热化学分析（单位：atm）"
 
   scale:
     bdf_keyword: "SCALE"
-    format: "下一行浮点数 unimovib%scale"
+    format: "浮点数（正实数）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.scale"
+    default: "1.0"
+    yaml_mapping: "settings.bdfopt.thermochemistry.frequency_scale"
+    note: "常用关键词。指定在振动频率计算后进行热化学分析的频率换算因子，一般在0.9至1.0之间。一些文献中总结了常见泛函/基组搭配的频率换算因子"
 
   sctol:
     bdf_keyword: "SCTOL"
-    format: "下一行浮点数 unimovib%sctol"
+    format: "浮点数（正实数，单位：cm-1）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.sctol"
+    default: "0.0"
+    yaml_mapping: "settings.bdfopt.thermochemistry.scale_threshold"
+    note: "常用关键词。用Scale进行频率换算的阈值（单位：cm-1）。在阈值以下的低频不做换算。若不指定ScTol，默认对除了虚频以外的全部振动频率做换算。注意：BDF的电子结构计算基于Born-Oppenheimer近似，导致一些振动模式的频率偏高，尤其是当键伸缩模式中的一个原子位于元素周期表的前两行（H至F），频率的高估尤为明显，进而高估热化学能。因此对于这类体系，合理的做法是只把高于某个阈值（例如，ScTol=400）的振动频率进行换算"
 
   qrrho:
     bdf_keyword: "QRRHO"
-    format: "无值关键词（开启 quasi-RRHO 修正）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.qrrho"
+    yaml_mapping: "settings.bdfopt.thermochemistry.qrrho"
+    note: "常用关键词。指定用Grimme的QRRHO方法，而非默认的刚性转子-谐振子近似（RRHO）计算熵、Gibbs自由能。开启QRRHO会使得较大体系，尤其是涉及非共价相互作用和/或柔性的体系的自由能、熵的计算精度提高，对于刚性小体系的计算结果几乎没有影响。开启QRRHO后，自由能、熵结果与ORCA、Turbomole可比，但与Gaussian不可比。若所研究的课题涉及至少一个非共价相互作用很重要的体系的自由能计算，且不需要计算结果与Gaussian可比，则建议总是打开QRRHO。注意：开启QRRHO算出来的自由能、熵，与不开启QRRHO算出来的自由能、熵不可比，不能作差得到自由能变、熵变"
 
   nmsym:
     bdf_keyword: "NMSYM"
-    format: "无值关键词（考虑正常模对称性）"
+    format: "无值关键词（Bool型）"
     location: "BDFOPT 模块"
-    yaml_mapping: "settings.bdfopt.unimovib.nmsym"
+    default: "false"
+    yaml_mapping: "settings.bdfopt.thermochemistry.nmsym"
+    note: "常用关键词。由于数值噪声或者开壳层体系中的Jahn-Teller效应，可能无法判断简正振动模式的不可约表示。该关键词可以把简正振动模式做对称化处理。默认不开启"
 
 # LOCALMO 模块关键词映射（局域轨道 / FLMO / IAO/IBO 等）
+# LOCALMO 模块关键词映射
+# 注意：以下仅包含 BDF LOCALMO 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/localmo.rst
+# LOCALMO模块用于产生定域化的分子轨道，包含了Boys，Pipek-Mezey，以及改进的Boys定域化等方法。
+# localmo还用于为FLMO方法产生初始的分子片定域轨道。
+
 localmo:
   # 1. 输出与收敛控制 -----------------------------------------------------------
   print_level:
@@ -1084,21 +1457,24 @@ localmo:
 
   moprt:
     bdf_keyword: "MOPRT"
-    format: "下一行整数 iprtmo"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.mo_print_level"
+    note: "常用关键词。指定打印定域分子轨道的系数"
 
   maxcycle:
     bdf_keyword: "MAXCYCLE"
-    format: "下一行整数 maxcycle"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.max_iterations"
+    note: "常用关键词。指定Boys定域化允许的最大循环次数"
 
   thresh:
     bdf_keyword: "THRESH"
-    format: "下一行两个浮点数：thresh_converge, thresh_rotation"
+    format: "两个浮点数（定域化方法收敛的阈值）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.thresholds.converge_and_rotation"
+    note: "常用关键词。指定定域化方法收敛的阈值，输入为两个浮点数"
 
   thresh_match:
     bdf_keyword: "THRMATCH"
@@ -1106,24 +1482,35 @@ localmo:
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.thresholds.match"
 
-  thresh_pop:
+  threshpop:
     bdf_keyword: "THRESHPOP"
-    format: "下一行浮点数 thresh_population"
+    format: "浮点数"
     location: "LOCALMO 模块"
+    default: "1.D-1"
     yaml_mapping: "settings.localmo.thresholds.population"
+    note: "常用关键词。指定Lowdin布居的阈值"
 
   iapair:
     bdf_keyword: "IAPAIR"
-    format: "下一行浮点数 thr_iapair"
+    format: "浮点数"
     location: "LOCALMO 模块"
+    default: "1.0×10^-4"
     yaml_mapping: "settings.localmo.thresholds.iapair"
+    note: "常用关键词。指定统计占据-空轨道对重叠的阈值，默认仅统计重叠绝对值大于1.0×10^-4的占据-空轨道对"
 
   # 2. 轨道来源 / 自旋 / 读入 ---------------------------------------------------
+  orbital:
+    bdf_keyword: "ORBITAL"
+    format: "字符串（指定文件读入分子轨道，如hforb）"
+    location: "LOCALMO 模块"
+    yaml_mapping: "settings.localmo.orbitals.source"
+    note: "常用关键词。指定文件读入分子轨道。例如指定从SCF计算存储的hforb读入轨道"
+
   orbi:
     bdf_keyword: "ORBI"
     format: "下一行字符串 hforb/mcorb"
     location: "LOCALMO 模块"
-    yaml_mapping: "settings.localmo.orbitals.source"
+    yaml_mapping: "settings.localmo.orbitals.source_alt"
     note: "控制 Fnmo；mcorb 时 nden=1（MCSCF 轨道）"
 
   spin:
@@ -1134,22 +1521,25 @@ localmo:
 
   orbread:
     bdf_keyword: "ORBREAD"
-    format: "无值关键词（从 inporb 文件读入 MO）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.orbitals.read_external"
+    note: "常用关键词。指定从BDF_TMPDIR中的文本文件inporb读入分子轨道"
 
   # 3. 冻结/子空间/活性空间控制 ------------------------------------------------
   frozocc:
     bdf_keyword: "FROZOCC"
-    format: "下一行整数 frozocc"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.frozen.occ"
+    note: "常用关键词。指定不定域化的双占据轨道数目"
 
   frozvir:
     bdf_keyword: "FROZVIR"
-    format: "下一行整数 frozvir"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.frozen.vir"
+    note: "常用关键词。指定不定域化的虚轨道数目"
 
   mosub:
     bdf_keyword: "MOSUB"
@@ -1190,15 +1580,17 @@ localmo:
   # 4. 局域化方法与参数 ---------------------------------------------------------
   boys:
     bdf_keyword: "BOYS"
-    format: "无值关键词（Boys 局域化，local_method=1）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.boys"
+    note: "常用关键词。指定使用Boys定域化方法定域轨道。Boys是Localmo模块默认的方法"
 
   mboys:
     bdf_keyword: "MBOYS"
-    format: "下一行浮点数 powerm（modified Boys 幂次）"
+    format: "整数（指定改进Boys方法的指数因子）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.mboys"
+    note: "常用关键词。指定使用改进的Boys定域化方法，下一行为一个整数，指定改进Boys方法的指数因子"
 
   cdloc:
     bdf_keyword: "CDLOC"
@@ -1214,9 +1606,10 @@ localmo:
 
   pipek:
     bdf_keywords: ["PEPIK", "PIPEK"]
-    format: "无值关键词（Pipek–Mezey 局域化，local_method=4）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.pipek"
+    note: "常用关键词。指定使用Pipek-Mezey定域化方法。默认用Mulliken电荷，如果设置了Lowdin参数，则Pipek-Mezey方法用Lowdin电荷而非默认的Mulliken电荷。本方法默认用雅可比旋转定域化轨道，如果需要指定用Trust-Region方法，需要使用关键词Trust"
 
   regboys:
     bdf_keyword: "REGBOYS"
@@ -1232,27 +1625,31 @@ localmo:
 
   hybridboys:
     bdf_keyword: "HYBRIDBOYS"
-    format: "下一行整数 hybrid_boys"
+    format: "整数（-100或100）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.hybrid_boys"
+    note: "常用关键词。指定Pipek-Mezey或Boys定域化方法混合使用雅可比旋转与Trust Region方法定域轨道。默认不使用混合方法。可选值：-100（仅将虚轨道先用雅可比旋转定域化100次或者定域化达到收敛阈值Hybridthre后，转换为Trust Region方法继续定域化）；100（将占据轨道与虚轨道都先利用雅可比旋转定域化100次或者定域化达到收敛阈值Hybridthre后，转换为Trust Region方法继续定域化）"
 
-  hybidthre:
+  hybridthre:
     bdf_keyword: "HYBRIDTHRE"
-    format: "下一行浮点数 thresh_hybrid"
+    format: "浮点数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.hybrid_threshold"
+    note: "常用关键词。指定混合定域化方法的转换阈值"
 
   trust:
     bdf_keyword: "TRUST"
-    format: "无值关键词（使用 trust-region 方式旋转）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.trust_region"
+    note: "常用关键词。指定Pipek-Mezey方法利用Trust Region方法定域轨道"
 
   jacobi:
     bdf_keyword: "JACOBI"
-    format: "无值关键词（使用 Jacobi 旋转）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.jacobi"
+    note: "常用关键词。指定Pipek-Mezey方法利用雅可比旋转定域轨道"
 
   tdpiA:
     bdf_keyword: "TDPIA"
@@ -1262,15 +1659,18 @@ localmo:
 
   tailcut:
     bdf_keyword: "TAILCUT"
-    format: "下一行浮点数 tceps"
+    format: "浮点数"
     location: "LOCALMO 模块"
+    default: "1.D-2"
     yaml_mapping: "settings.localmo.method.tail_cut"
+    note: "常用关键词。指定忽略FLMO尾巴的阈值"
 
   rohfloc:
     bdf_keyword: "ROHFLOC"
-    format: "无值关键词（ROHF/ROKS 局域化）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.method.rohf_localization"
+    note: "常用关键词。指定定域化ROHF/ROKS轨道"
 
   mcscfloc:
     bdf_keyword: "MCSCFLOC"
@@ -1281,21 +1681,24 @@ localmo:
   # 5. FLMO / iOI / iOIZW / Opq 等高级控制 -------------------------------------
   flmo:
     bdf_keyword: "FLMO"
-    format: "无值关键词（开启 FLMO 输出）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.flmo.enabled"
+    note: "常用关键词。指定投影LMO到pFLMO"
 
   mulliken:
     bdf_keyword: "MULLIKEN"
-    format: "无值关键词（使用 Mulliken population，默认）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.population.mulliken"
+    note: "常用关键词。指定Pipek-Mezey方法使用Mulliken电荷。默认选项"
 
   lowdin:
     bdf_keyword: "LOWDIN"
-    format: "无值关键词（使用 Löwdin population）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.population.lowdin"
+    note: "常用关键词。参数指定Pipek-Mezey方法使用Lowdin电荷"
 
   ioidirect:
     bdf_keyword: "IOIDIRECT"
@@ -1343,15 +1746,17 @@ localmo:
   # 7. 其他开关 / 分析 / 对称性 / Fock 选择 -------------------------------------
   analyze:
     bdf_keyword: "ANALYZE"
-    format: "下一行两个整数 nocc(1), nocc(2)"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.analysis.enabled"
+    note: "常用关键词。指定分析用户给定的定域轨道，计算占据-空轨道对的数目和MOS（Molecular Orbital Spread）。分析定域轨道需要从BDF_TMPDIR读入名为bdftask.testorb的文件，并进行轨道分析。这一轨道文件与SCF的bdftask.scforb格式相同，均为文本文件"
 
   directgrid:
     bdf_keyword: "DIRECTGRID"
-    format: "无值关键词（DirectGrid=.true.）"
+    format: "无值关键词（Bool型）"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.integration.direct_grid"
+    note: "常用关键词。指定利用直接数值积分的方法计算占据-空轨道对的绝对重叠"
 
   nosymmo:
     bdf_keyword: "NOSYMMO"
@@ -1379,9 +1784,10 @@ localmo:
 
   nolmocls:
     bdf_keyword: "NOLMOCLS"
-    format: "无值关键词（local_nolmocls=.true.）"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.output.no_lmo_cls"
+    note: "常用关键词。指定不定域化SCF的占据轨道"
 
   nolmoact:
     bdf_keyword: "NOLMOACT"
@@ -1391,9 +1797,10 @@ localmo:
 
   nolmovir:
     bdf_keyword: "NOLMOVIR"
-    format: "无值关键词（local_nolmovir=.true.）"
+    format: "整数"
     location: "LOCALMO 模块"
     yaml_mapping: "settings.localmo.output.no_lmo_virtual"
+    note: "常用关键词。指定不定域化SCF的空轨道"
 
   focksele:
     bdf_keyword: "FOCKSELE"
@@ -1439,6 +1846,12 @@ localmo:
     yaml_mapping: "settings.localmo.molden.disabled"
 
 # NMR 模块关键词映射
+# NMR 模块关键词映射
+# 注意：以下仅包含 BDF NMR 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/nmr.rst
+# NMR用于计算分子的核磁屏蔽常数。
+
 nmr:
   # 1. 基本输出 / 调试控制 ------------------------------------------------------
   iprt:
@@ -1449,15 +1862,19 @@ nmr:
 
   icg:
     bdf_keyword: "ICG"
-    format: "下一行整数 icg"
+    format: "整数（0、1）"
     location: "NMR 模块"
+    default: "0"
     yaml_mapping: "settings.nmr.cg.icg"
+    note: "常用关键词。指定是否计算COMMON GAUGE（CG）的核磁共振屏蔽常数，可以为0（不做CG计算）或1（做CG计算），默认为0"
 
   igiao:
     bdf_keyword: "IGIAO"
-    format: "下一行整数 igiao"
+    format: "整数（0、1）"
     location: "NMR 模块"
+    default: "0"
     yaml_mapping: "settings.nmr.giao.igiao"
+    note: "常用关键词。指定是否计算GIAO的核磁共振屏蔽常数，可以为0（不做GIAO计算）或1（做GIAO计算），默认为0"
 
   iucpbj:
     bdf_keyword: "IUCPBJ"
@@ -1480,10 +1897,11 @@ nmr:
   # 2. 原子选择 / 同位素 / 参考点 -----------------------------------------------
   igatom:
     bdf_keyword: "IGATOM"
-    format: "下一行整数 igatom"
+    format: "整数（0，或1到原子个数的值）"
     location: "NMR 模块"
+    default: "0"
     yaml_mapping: "settings.nmr.atom_selection.igatom"
-    note: "指定参考原子编号；与 CGCOORD/ISOTOPE 联合控制"
+    note: "常用关键词。指定COMMON GAUGE计算的规范原点位置，接受的输入为0，或1到原子个数的值，默认为0。当igatom为0时，COMMON GAUGE的规范原点设定在空间坐标原点上，而当igatom为1到分子原子数的值时，设定规范原点在第igatom的原子中心上"
 
   isotope:
     bdf_keyword: "ISOTOPE"
@@ -1497,18 +1915,20 @@ nmr:
     location: "NMR 模块"
     yaml_mapping: "settings.nmr.x2c.isfx2c"
 
-  cgunit:
-    bdf_keyword: "CGUNIT"
-    format: "下一行字符串 cgunit（如 'AU'）"
-    location: "NMR 模块"
-    yaml_mapping: "settings.nmr.cg.unit"
-
   cgcoord:
     bdf_keyword: "CGCOORD"
-    format: "接下来 3 行，每行一个浮点数坐标分量"
+    format: "三个浮点数（实型3个数，指定COMMON GAUGE计算的规范原点位置到空间中某个坐标点上）"
     location: "NMR 模块"
     yaml_mapping: "settings.nmr.cg.coord"
-    note: "设置后 igatom 将被设为 -2，表示使用自定义坐标"
+    note: "常用关键词。指定COMMON GAUGE计算的规范原点位置到空间中某个坐标点上，输入坐标的默认单位是原子单位（即bohr，AU），其单位可由参数cgunit控制"
+
+  cgunit:
+    bdf_keyword: "CGUNIT"
+    format: "字符串（angstrom、bohr、AU等，不区分大小写）"
+    location: "NMR 模块"
+    default: "原子单位（bohr，AU）"
+    yaml_mapping: "settings.nmr.cg.unit"
+    note: "常用关键词。给出cgcoord参数的单位，默认为原子单位（即bohr，AU），可以通过输入angstrom，将单位改为埃。其他输入（如bohr，AU等），坐标单位为原子单位，输入不区分大小写"
 
   nactive:
     bdf_keyword: "NACTIVE"
@@ -1739,20 +2159,30 @@ nmr:
     yaml_mapping: "settings.nmr.integration.upden"
 
 # MP2 模块关键词映射
+# MP2 模块关键词映射
+# 注意：以下仅包含 BDF MP2 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/mp2.rst
+# 注意：对于基于积分非直接的对称匹配轨道SCF算法（见Saorb关键词），MP2支持RHF和UHF参考波函；
+#       对于积分直接SCF算法（默认情况，见Skeleton关键词），MP2仅支持RHF参考波函。
+
 mp2:
   # 1. SCS/SOS / 用户指定缩放因子 ----------------------------------------------
   fss:
     bdf_keyword: "FSS"
-    format: "下一行浮点数 fss（same-spin 缩放因子）"
+    format: "浮点数"
     location: "MP2 模块"
+    default: "1.0"
     yaml_mapping: "settings.mp2.scaling.fss"
-    note: "默认 fss=1.0；若 fss≠1 或 fos≠1，则 iscale=1，使用用户定义 scaling"
+    note: "常用关键词。SCS-MP2以及某些双杂化泛函使用的自旋组分调节（spin component scaling）参数。程序在计算完MP2能量以后，会将其中的同自旋（same-spin）成分乘以Fss"
 
   fos:
     bdf_keyword: "FOS"
-    format: "下一行浮点数 fos（opposite-spin 缩放因子）"
+    format: "浮点数"
     location: "MP2 模块"
+    default: "1.0"
     yaml_mapping: "settings.mp2.scaling.fos"
+    note: "常用关键词。SCS-MP2以及某些双杂化泛函使用的自旋组分调节（spin component scaling）参数。程序在计算完MP2能量以后，会将其中的反自旋（opposite-spin）成分乘以Fos"
 
   # 2. 资源与磁盘使用 -----------------------------------------------------------
   maxdisk:
@@ -1790,43 +2220,55 @@ mp2:
 
   nature:
     bdf_keyword: "NATURE"
-    format: "无值关键词（启用 NMO/NATURE MP2 输出）"
+    format: "无值关键词（Bool型）"
     location: "MP2 模块"
     yaml_mapping: "settings.mp2.nmo.enabled"
+    note: "常用关键词。计算约化密度矩阵并输出自然轨道"
 
   # 4. 轨道输出与打印控制 --------------------------------------------------------
   molden:
     bdf_keyword: "MOLDEN"
-    format: "无值关键词（输出 MOLDEN 轨道信息）"
+    format: "无值关键词（Bool型）"
     location: "MP2 模块"
     yaml_mapping: "settings.mp2.output.molden"
+    note: "常用关键词。输出自然轨道为molden格式文件"
 
   iprtmo:
     bdf_keyword: "IPRTMO"
-    format: "下一行整数 iprtmo"
+    format: "整数"
     location: "MP2 模块"
     yaml_mapping: "settings.mp2.output.iprtmo"
-    note: "控制 MP2 相关 MO/密度等的详细打印级别"
+    note: "常用关键词。控制轨道输出打印模式"
 
 # RESP 模块关键词映射（用于几何优化和频率计算）
 # 注意：RESP 模块是几何优化的推荐选择（而非 GRAD 模块）
 # GRAD 模块仅支持 HF 和 MCSCF，不支持 DFT
+# RESP 模块关键词映射
+# 注意：以下仅包含 BDF RESP 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/resp.rst
+
+# RESP 模块关键词映射
+# 注意：以下仅包含 BDF RESP 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/resp.rst
+
 resp:
   # 1. 总体控制 / 任务类型 ------------------------------------------------------
   method:
     bdf_keywords: ["METHOD", "IMETHOD"]
-    format: "整数（1=SCF/DFT 梯度或 Hessian，2=TDDFT 梯度/性质等）"
+    format: "整数（1、2）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.method"
     default: "1"
-    note: "RESP 内部的 method，与 SCF 的 method.type 概念不同；用于区分基态/激发态响应"
+    note: "常用关键词。指定进行DFT基态计算还是TD-DFT激发态计算。1为基态，如指定2，则为激发态计算。在较老的BDF版本中该关键词写作Method，目前程序既支持Imethod也支持Method，但是未来可能会只支持前者"
 
   iprt:
     bdf_keyword: "IPRT"
-    format: "下一行整数 respinfo%iprt"
+    format: "整数"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.print_level"
-    note: "默认继承 COMPASS 的全局 iprt"
+    note: "常用关键词。控制打印输出级别，主要用于程序调试"
 
   ixcfun:
     bdf_keyword: "IXCFUN"
@@ -1844,30 +2286,31 @@ resp:
 
   geom:
     bdf_keyword: "GEOM"
-    format: "无值关键词（几何响应：梯度/Hessian）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.types.geometry"
-    note: "对应 respinfo%itype(1)=.true."
+    note: "常用关键词。本关键词无需提供参数，需要与Norder关键词联用，用于指定计算几何坐标一阶或二阶导数。可选值：1.梯度或fo-NACMEs；2.Hessian"
 
   line:
     bdf_keyword: "LINE"
-    format: "无值关键词（线性响应）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.types.linear"
-    note: "respinfo%itype(2)=.true.，且 alloper=.true."
+    note: "常用关键词。执行resp进行线性响应计算"
 
   quad:
     bdf_keyword: "QUAD"
-    format: "无值关键词（二阶/四极相关响应）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.types.quadratic"
-    note: "此处 QUAD 与 TDDFT 中的 QUAD/ECD 无关，是 RESP 自己的类型标志"
+    note: "常用关键词。指定resp进行二次响应计算"
 
   fnac:
     bdf_keyword: "FNAC"
-    format: "无值关键词（有限差分 NAC，非绝热耦合）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.types.fnac"
+    note: "常用关键词。指定resp计算一阶非绝热耦合（first-order noadibatic couplings）向量，需要与Single或者Double参数联用，分别指定计算基态-激发态、激发态-激发态非绝热耦合向量"
 
   pola:
     bdf_keyword: "POLA"
@@ -1926,40 +2369,47 @@ resp:
 
   noresp:
     bdf_keyword: "NORESP"
-    format: "无值关键词（不做响应，只做检查等）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.no_response"
+    note: "常用关键词。指定在Double和FNAC计算中忽略跃迁密度矩阵的响应项。推荐使用该关键词"
 
   ignore:
     bdf_keyword: "IGNORE"
-    format: "下一行整数 respinfo%ignore"
+    format: "整数（-1、0、1）"
     location: "RESP 模块"
+    default: "0"
     yaml_mapping: "settings.resp.ignore"
+    note: "常用关键词。用于TDDFT梯度计算的数据一致性检查，主要用于调试程序。-1：重新计算TDDFT的激发能，用于检查Resp和TDDFT模块对能量计算是否一致。仅供调试程序使用。0：检查Wmo矩阵是不是对称矩阵。理论上，Wmo矩阵应该是对称矩阵，但如果TDDFT或者Z-Vector迭代没有完全收敛，Wmo矩阵会表现出明显的不对称，此时程序报错退出。1：忽略Wmo矩阵对称性检查。仅当用户确认其设置的TDDFT和Z-vector收敛阈值足够严，不会对计算结果精度造成不可接受的影响，且输入文件各关键词输入正确，但程序仍然因对称性检查不通过而报错时，才应将ignore设置为1"
 
   # 4. 二阶响应（quadratic response）-------------------------------------------
   single:
     bdf_keyword: "SINGLE"
-    format: "无值关键词（单态 quadratic 响应）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.quadratic.single"
+    note: "常用关键词。指定计算基态-激发态非绝热耦合向量"
 
   states:
     bdf_keyword: "STATES"
-    format: "一行整数 nstate，随后 nstate 行，每行 3 个整数/实数"
+    format: "输入块：第一行整数n（指定要计算基态与n个激发态之间的非绝热耦合向量），第2行至第n+1行，每行格式为m i l三个整数（m为先前的TDDFT计算istore指定存储的文件编号，i为第i个不可约表示，l是该不可约表示的第l个根）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.quadratic.states"
+    note: "常用关键词。指定计算哪些态与基态的非绝热耦合向量。本参数是多行参数"
 
   double:
     bdf_keyword: "DOUBLE"
-    format: "无值关键词（成对态 quadratic 响应）"
+    format: "无值关键词（Bool型）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.quadratic.double"
+    note: "常用关键词。指定计算激发态-激发态非绝热耦合向量"
 
   pairs:
     bdf_keyword: "PAIRS"
-    format: "一行整数 npair，随后 npair 行，每行 6 个整数/实数"
+    format: "输入块：第一行整数n（指定要计算n对激发态之间的非绝热耦合向量），第2行至第n+1行，每行格式为m1 i1 l1 m2 i2 l2六个整数（每三个整数指定一个激发态，m为先前的TDDFT计算istore指定存储的文件编号，i为不可约表示，l是该不可约表示的第l个根）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.quadratic.pairs"
+    note: "常用关键词。指定计算哪两组激发态之间的非绝热耦合向量。本参数是多行参数"
 
   step:
     bdf_keyword: "STEP"
@@ -1983,10 +2433,11 @@ resp:
   # 5. 几何响应（梯度 / Hessian）-----------------------------------------------
   norder:
     bdf_keyword: "NORDER"
-    format: "下一行整数 respgeom%norder（0=能量, 1=梯度, 2=Hessian, ...）"
+    format: "整数（0、1、2）"
     location: "RESP 模块"
+    default: "1"
     yaml_mapping: "settings.resp.geometry.order"
-    note: "几何优化常用 1，频率/Hessian 计算常用 2"
+    note: "常用关键词。几何坐标导数的阶数，可选值0、1和2。目前仅支持0和1，其中0表示计算不涉及对核坐标求导的响应性质，如激发态偶极矩；1表示计算解析梯度。尚不支持2（计算解析Hessian）。本参数要求必须先设置Geom"
 
   nprt:
     bdf_keyword: "NPRT"
@@ -2010,10 +2461,11 @@ resp:
   # 6. CPHF 求解器控制 ---------------------------------------------------------
   rtol:
     bdf_keyword: "RTOL"
-    format: "下一行浮点数 respcphf%rtol"
+    format: "浮点数（正数）"
     location: "RESP 模块"
+    default: "1E-10"
     yaml_mapping: "settings.resp.cphf.rtol"
-    note: "CPHF 收敛阈值；Hessian 计算时，未显式设置会自动放宽/收紧"
+    note: "常用关键词。指定Z-vector方程的收敛阈值"
 
   normav:
     bdf_keyword: "NORMAV"
@@ -2037,29 +2489,32 @@ resp:
   # 7. TDDFT 关联信息（激发态跟踪）--------------------------------------------
   nfiles:
     bdf_keyword: "NFILES"
-    format: "下一行整数 nfiles"
+    format: "整数"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.tddft.nfiles"
+    note: "常用关键词。对于TD-DFT响应性质计算，指定读取哪个$tddft块的计算结果；注意当该参数等于x时，并不简单代表读取第x个$tddft块的计算结果，而是指读取istore值为x的那个$tddft块的计算结果"
 
   irep:
     bdf_keyword: "IREP"
-    format: "一行数组，最多 10 个整数，对应需要跟踪的不可约表示"
+    format: "整数"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.tddft.irep"
+    note: "常用关键词。这两个关键词（IRep和IRoot）指定计算哪个/哪些态的TD-DFT梯度或激发态偶极矩。分4种情况：a.既指定IRep，又指定IRoot：计算第IRep个不可约表示下的第IRoot个根的梯度或偶极矩；b.只指定IRep：计算该不可约表示下的所有根的梯度或偶极矩；c.只指定IRoot：将所有不可约表示下计算的根按照能量从低到高排序，然后计算第IRoot个根的梯度或偶极矩（若IRoot为负数，则进行态跟踪，仅在C1群时支持）；d.两者都不指定：计算tddft得到的所有态的梯度或偶极矩"
 
   iroot:
     bdf_keyword: "IROOT"
-    format: "一行数组，最多 10 个整数，对应每个 irrep 要跟踪的根号"
+    format: "整数（可为负数，用于态跟踪）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.tddft.iroot"
+    note: "常用关键词。与IRep联用指定计算哪个/哪些态的TD-DFT梯度或激发态偶极矩。若为负数（如-3），表示在TDDFT结构优化的过程中进行态跟踪：第一步时计算第3个根的梯度，第N+1步时计算与第N步计算梯度的那个根的成分最接近的根的梯度。注意这种写法只在分子属于C1群时支持，且要求不能有任何激发态的激发能是虚数或者复数"
 
   # 8. Jahn-Teller / NACME / 内存等高级选项 -----------------------------------
   jahnteller:
     bdf_keyword: "JAHNTELLER"
-    format: "一行：可以是整数 jahnteller_type 或子群名字"
+    format: "字符串（点群名称，如D(2h)）"
     location: "RESP 模块"
     yaml_mapping: "settings.resp.jahn_teller"
-    note: "整数 → 方向编号；非数值 → target_subgroup 名称（自动转大写）"
+    note: "常用关键词。对于具有一定对称性的分子，如果分子所属点群是高阶点群，则TDDFT结构优化可能会导致分子出现Jahn-Teller畸变，但畸变方向可能有多个。当Jahn-Teller畸变得到的点群不唯一时，可以用JahnTeller关键词指定具体的Jahn-Teller畸变方式。例如指定D(2h)表示优先选择畸变后结构属于D2h群的畸变方式。如果由群论可以推出该分子在当前电子态下不会发生Jahn-Teller畸变，或虽然会发生Jahn-Teller畸变但不会得到属于指定群的结构，则程序会打印警告信息，并忽略用户输入。如果当前分子会发生Jahn-Teller畸变，但用户没有指定JahnTeller关键词，则程序会在Jahn-Teller畸变时尽量保持分子的高阶对称轴"
 
   awf:
     bdf_keyword: "AWF"
@@ -2068,14 +2523,73 @@ resp:
     yaml_mapping: "settings.resp.auxiliary_wavefunction.type"
     note: "用于 NACME 的辅助波函数方法选择"
 
-  mxmem:
+  maxmem:
     bdf_keywords: ["MXMEM", "MAXMEM"]
-    format: "下一行整数（单位 GB，总 heap 内存），内部转换为 double 数量"
+    format: "整数（单位：GB）"
     location: "RESP 模块"
+    default: "32"
     yaml_mapping: "settings.resp.memory.max_gb"
+    note: "常用关键词。解析Hessian计算所需的堆内存，单位为GB，默认值为32。堆内存与栈内存之和必须小于节点总物理内存，考虑到内存估计的误差及同一个节点上的其他进程消耗的内存，建议小于节点总物理内存的80%。也即：OMP_STACKSIZE*OMP_NUM_THREADS + maxmem <= 物理内存*80%。对于解析Hessian计算，建议OMP_STACKSIZE*OMP_NUM_THREADS为maxmem的1/3~1/10左右，但若这使得OMP_STACKSIZE小于1G，则设置OMP_STACKSIZE=1G。注意该关键词仅对解析Hessian计算有效，对resp模块支持的其他计算类型无效，尽管后者也会消耗堆内存，这是因为一般来说仅对解析Hessian计算，堆内存才占据总内存消耗的较大比例。特别地，该关键词对数值Hessian计算无效"
+
+  # 9. DFT 格点控制 -------------------------------------------------------------
+  grid:
+    bdf_keyword: "GRID"
+    format: "字符串（Ultra Coarse、Coarse、Medium、Fine、Ultra Fine）"
+    location: "RESP 模块"
+    default: "Medium"
+    yaml_mapping: "settings.resp.dft.grid"
+    note: "常用关键词。指定DFT计算的格点类型"
+
+  gridtol:
+    bdf_keyword: "GRIDTOL"
+    format: "浮点数（正数）"
+    location: "RESP 模块"
+    default: "1.0E-6（对于meta-GGA为1.0E-8）"
+    yaml_mapping: "settings.resp.dft.gridtol"
+    note: "常用关键词。指定产生DFT自适应格点的截断阈值。该值越低，格点数越多，因此数值积分精度越高，但计算量也越大"
+
+  mpec_cosx:
+    bdf_keyword: "MPEC+COSX"
+    format: "无值关键词（Bool型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.mpec_cosx"
+    note: "常用关键词。指定利用多级展开库伦势（Multipole expansion of Coulomb potential, MPEC）方法计算J矩阵，COSX（Chain-of-sphere exchange）方法计算K矩阵。在resp模块中保留该关键词只是为了向下兼容，建议在Compass模块中设定该关键词"
+
+  # 10. 溶剂化效应控制 -----------------------------------------------------------
+  solneqlr:
+    bdf_keyword: "SOLNEQLR"
+    format: "无值关键词（Bool型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.solvent.linear_response_non_equilibrium"
+    note: "常用关键词。指定进行线性响应非平衡溶剂化效应计算"
+
+  soleqlr:
+    bdf_keyword: "SOLEQLR"
+    format: "无值关键词（Bool型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.solvent.linear_response_equilibrium"
+    note: "常用关键词。指定进行线性响应平衡溶剂化效应计算"
+
+  solneqss:
+    bdf_keyword: "SOLNEQSS"
+    format: "无值关键词（Bool型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.solvent.state_specific_non_equilibrium"
+    note: "常用关键词。指定进行态特定非平衡溶剂化效应计算"
+
+  soleqss:
+    bdf_keyword: "SOLEQSS"
+    format: "无值关键词（Bool型）"
+    location: "RESP 模块"
+    yaml_mapping: "settings.resp.solvent.state_specific_equilibrium"
+    note: "常用关键词。指定进行态特定平衡溶剂化效应计算"
 
 # TDDFT 模块关键词映射
 tddft:
+  # 注意：以下仅包含 BDF TDDFT 模块手册中列出的常用关键词
+  # 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+  # 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/tddft.rst
+  
   # 1. TDDFT 方法类型 / 自旋翻转 / 近似 ----------------------------------------
   imethod:
     bdf_keyword: "IMETHOD"
@@ -2124,9 +2638,11 @@ tddft:
   # 2. 特殊核 / X-/S-/SF-TDDFT 细节 --------------------------------------------
   ialda:
     bdf_keyword: "IALDA"
-    format: "整数（1=强制 ALDA 核）"
+    format: "整数（0=full non-collinear kernel, 1=non-collinear ALDA, 2=no-collinear ALDA0, 3=full non-collinear kernel with spin-averaged density, 4=full collinear kernel）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.kernel.ialda"
+    note: "常用关键词。对于isf≠0且参考态不是RHF/RKS的单点计算，建议设为2；对于isf≠0的TDDFT结构优化/频率计算，必须设为4"
 
   thrdab:
     bdf_keyword: "THRDAB"
@@ -2156,21 +2672,27 @@ tddft:
 
   itest:
     bdf_keyword: "ITEST"
-    format: "整数"
+    format: "整数（0或1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.method.test_flag"
+    note: "常用关键词。当itest=1, icorrect=1, imethod=2且参考态为ROKS/ROHF时，程序做X-TDDFT计算"
 
   icorrect:
     bdf_keyword: "ICORRECT"
-    format: "整数（RPA 修正开关）"
+    format: "整数（0或1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.method.icorrect"
+    note: "常用关键词。当itest=1, icorrect=1, imethod=2且参考态为ROKS/ROHF时，程序做X-TDDFT计算"
 
   itrans:
     bdf_keyword: "ITRANS"
-    format: "整数（X-TDDFT 中 U→S 表示的转换控制）"
+    format: "整数（0或1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.method.itrans"
+    note: "常用关键词。控制是否将自旋轨道基的激发态矢量转到自旋张量基。仅当参考态为ROKS，且后续不需要用$resp模块进行TDDFT梯度等计算，也不需要计算NTO时，itrans才可设为1；当参考态为ROKS且后续需要进行TDDFT-SOC计算时，itrans必须设为1"
 
   iro:
     bdf_keyword: "IRO"
@@ -2224,9 +2746,11 @@ tddft:
 
   idiag:
     bdf_keyword: "IDIAG"
-    format: "整数（对角化方法，1=Davidson, 2=FullDiag, 3=iVI）"
+    format: "整数（1=Davidson迭代对角化, 2=完全对角化, 3=iVI对角化）"
     location: "TDDFT 模块"
+    default: "1"
     yaml_mapping: "settings.tddft.solver.idiag"
+    note: "常用关键词。建议：X射线吸收/发射光谱等涉及很高激发态的计算用idiag=3；分子很小且需要很多激发态时用idiag=2；其余情况用默认的idiag=1"
 
   iviop:
     bdf_keyword: "IVIOP"
@@ -2236,17 +2760,34 @@ tddft:
 
   iguess:
     bdf_keyword: "IGUESS"
-    format: "整数（0=IPA, 1=读入, 20=sTDA/sTDDFT guess 等）"
+    format: "整数（10*x+y，x∈{0,1,2}, y∈{0,1}）"
     location: "TDDFT 模块"
+    default: "对于使用阿贝尔点群的AO-TDDFT计算为20，其余情况下为0"
     yaml_mapping: "settings.tddft.solver.guess"
-    note: "也会影响 Davidson dvdsonguess/dvdsondump、iupdate 等"
+    note: "常用关键词。X=0:对角元猜测；X=1:从文件读入初始波函数；X=2:紧束缚近似猜测；Y=0:不存储Davidson/iVI迭代中间过程向量；Y=1:存储"
 
   grimmestd:
     bdf_keyword: "GRIMMESTD"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.solver.grimme_std"
-    note: "要求 iguess=20；将 grimmestd%noiter 设为 .true.，对应独立的 sTDA/sTDDFT 模式"
+    note: "常用关键词。指定使用Grimme的sTDA或sTDDFT方法。当itda=0时表示sTDDFT；当itda=1时表示sTDA。sTDDFT/sTDA是近似方法，较MPEC+COSX快约10~100倍，但误差约0.2 eV量级。推荐用于100原子以上有机体系的pi-pi*激发态计算。不支持计算激发态梯度、激发态偶极矩和非绝热耦合矩阵元，也不支持配合isf=-1使用"
+
+  grid:
+    bdf_keyword: "GRID"
+    format: "字符串（Ultra Coarse/Coarse/Medium/Fine/Ultra Fine）"
+    location: "TDDFT 模块"
+    default: "Medium"
+    yaml_mapping: "settings.tddft.grid.type"
+    note: "常用关键词。指定DFT计算的格点类型"
+
+  gridtol:
+    bdf_keyword: "GRIDTOL"
+    format: "浮点数"
+    location: "TDDFT 模块"
+    default: "1.0E-4（对于meta-GGA为1.0E-6）"
+    yaml_mapping: "settings.tddft.grid.tolerance"
+    note: "常用关键词。指定产生DFT自适应格点的截断阈值。该值越低，格点数越多，数值积分精度越高，但计算量也越大"
 
   ndiag:
     bdf_keyword: "NDIAG"
@@ -2268,15 +2809,18 @@ tddft:
 
   nroot:
     bdf_keyword: "NROOT"
-    format: "与 NEXIT 相同语义（历史别名）"
+    format: "整型数组（每个不可约表示一个整数）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.excitations.nroot_per_irrep"
+    note: "常用关键词。对每个不可约表示指定不同数目的根。如Nroot为5 1 3，表示计算5个属于第1个不可约表示的激发态，1个属于第2个不可约表示的激发态，和3个属于第3个不可约表示的激发态。如果同时指定iroot和nroot，nroot会被忽略"
 
   iroot:
     bdf_keyword: "IROOT"
-    format: "整数（历史用法：目标态数/根号）"
+    format: "整数（非零整数）"
     location: "TDDFT 模块"
+    default: "10"
     yaml_mapping: "settings.tddft.excitations.iroot"
+    note: "常用关键词。当iroot>0时，表示每个不可约表示下计算iroot个根。当iroot<0时，表示所有不可约表示下总共计算|iroot|个根，由程序自动判断每个不可约表示下应该计算多少个根。注意对于简并的不可约表示，同一个态的不同简并分量按一个态处理。同义词：iexit"
 
   followiroot:
     bdf_keyword: "FOLLOWIROOT"
@@ -2296,6 +2840,7 @@ tddft:
     format: "整数（存在哪个 tdinfoX 文件）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.properties.store_index"
+    note: "常用关键词。指定将波函数存储于编号为istore的文件中，以备其他计算使用"
 
   iprops:
     bdf_keyword: "IPROPS"
@@ -2323,16 +2868,18 @@ tddft:
 
   imatrsf:
     bdf_keyword: "IMATRSF"
-    format: "整数 + 随后 imatrsf 行，每行 6 个数"
+    format: "整数（0或-1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.properties.imatrsf"
-    note: "代码注释中提到该关键字目前没有实质效果"
+    note: "常用关键词。指定在TDDFT-SOC计算里，计算标量态之间的跃迁偶极矩，imatrsf=-1可以打印所有标量态间的跃迁偶极矩"
 
   imatrso:
     bdf_keyword: "IMATRSO"
     format: "整数 + 随后 imatrso 行，每行 2 个索引"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.properties.imatrso"
+    note: "常用关键词。指定打印考虑SOC之后的旋量态之间的跃迁偶极矩（以及对应的振子强度，和根据费米黄金规则计算得到的辐射跃迁速率常数）。如果这里指定-1，则后面无需写任何信息，程序逐对打印旋量态之间的跃迁偶极矩。如果这里指定-2，则后面无需写任何信息，程序逐对打印所有基态旋量态和所有激发态旋量态之间的跃迁偶极矩，但不打印基态旋量态和基态旋量态之间，以及激发态旋量态和激发态旋量态之间的跃迁偶极矩。程序最多允许计算4000个跃迁偶极矩"
 
   imatnsf:
     bdf_keyword: "IMATNSF"
@@ -2348,15 +2895,18 @@ tddft:
 
   ifgs:
     bdf_keyword: "IFGS"
-    format: "整数（是否包含基态、如何处理）"
+    format: "整数（0或1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.properties.ifgs"
+    note: "常用关键词。指定TDDFT-SOC计算是否包含基态。0为TDDFT-SOC计算不包含基态，此时无法得到基态和考虑了SOC的激发态（即旋量态）之间的跃迁偶极矩，因此无法绘制包含SOC校正的光谱，同时也无法计算基态的SOC校正，但仍可得到包含SOC校正的激发能；1为TDDFT-SOC计算包含基态，此时可以得到包含SOC校正的光谱，且可以计算基态的SOC校正，但此时纳入TDDFT-SOC处理的标量激发态的数目不宜过多（一般以10~100个左右为宜），否则会低估基态能量，从而高估激发能"
 
   nfiles:
     bdf_keyword: "NFILES"
     format: "整数（tdinfo 文件个数）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.properties.nfiles"
+    note: "常用关键词。读入nfiles个TDDFT先前计算的波函数，以进行SOC计算"
 
   thr_dact:
     bdf_keyword: "THRDACT"
@@ -2422,15 +2972,18 @@ tddft:
 
   imemshrink:
     bdf_keyword: "IMEMSHRINK"
-    format: "整数（内存压缩模式）"
+    format: "整数（0或1）"
     location: "TDDFT 模块"
+    default: "0"
     yaml_mapping: "settings.tddft.eri.imemshrink"
+    note: "常用关键词。控制积分直接TDDFT计算J、K算符时，OpenMP并行对内存的使用方式。0为不降低内存使用量；1为降低OpenMP并行内存使用量，效率稍低。如果计算的分子体系特别大，要求的计算根数目特别多，memjkop参数无法再增大内存，使用这个参数比积分多次计算效率高"
 
   memjkop:
     bdf_keyword: "MEMJKOP"
-    format: "浮点数（J/K 算符 AO-TDDFT 内存上限，MB）"
+    format: "整数（单位：MW，即兆字符，每格字符长度为8个字节）"
     location: "TDDFT 模块"
-    yaml_mapping: "settings.tddft.eri.memjkop_mb"
+    yaml_mapping: "settings.tddft.eri.memjkop_mw"
+    note: "常用关键词。控制积分直接的TDDFT计算J，K算符时的内存大小。如果分配的内存不存储所有的J、K算符，TDDFT将按照指定内存计算一次能存储的J，K算符数目，通过多次积分计算完成每次迭代对角化的所有J，K算符计算。多次积分计算将降低计算效率"
 
   maxeri:
     bdf_keyword: "MAXERI"
@@ -2438,18 +2991,37 @@ tddft:
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.eri.maxeri"
 
-  # 7. 本征矢输出控制 ----------------------------------------------------------
+  # 7. 收敛控制关键词（常用） --------------------------------------------------
+  crit_e:
+    bdf_keyword: "CRIT_E"
+    format: "浮点数（单位：Hartree）"
+    location: "TDDFT 模块"
+    default: "1e-7"
+    yaml_mapping: "settings.tddft.convergence.energy_threshold"
+    note: "常用关键词。指定TDDFT计算能量的收敛阈值"
+
+  crit_vec:
+    bdf_keyword: "CRIT_VEC"
+    format: "浮点数"
+    location: "TDDFT 模块"
+    default: "1e-5"
+    yaml_mapping: "settings.tddft.convergence.vector_threshold"
+    note: "常用关键词。指定TDDFT计算波函数的收敛阈值"
+
+  # 8. 本征矢输出控制（常用） --------------------------------------------------
   nprt:
     bdf_keyword: "NPRT"
     format: "整数（输出多少本征矢）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.output.nprt"
+    note: "常用关键词。指定在计算结束后只打印前nprt个激发态的信息。当用户不指定nprt或nprt大于等于用户计算的激发态总数时，程序打印所有激发态的信息"
 
   cthrd:
     bdf_keyword: "CTHRD"
     format: "浮点数（本征矢筛选阈值）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.output.cthrd"
+    note: "常用关键词。指定打印绝对值大于cthrd的轨道激发信息"
 
   aokxc:
     bdf_keyword: "AOKXC"
@@ -2459,15 +3031,17 @@ tddft:
 
   maxld:
     bdf_keyword: "MAXLD"
-    format: "整数（内部 iVI 最大维度）"
+    format: "整数（iVI的展开空间的最大维度）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.solver.i_ivi_maxld"
+    note: "常用关键词。一般情况下程序会自动选定合理的默认值，一般足够计算使用，但有极小概率会不足。若遇到程序报错\"too small ld xxx, require yyy\"，应将maxld设为大于等于yyy的正整数，重新进行计算"
 
   iwindow:
     bdf_keyword: "IWINDOW"
-    format: "一行：el er [unit]（unit 可为 eV/NM/AU/CM）"
+    format: "一行：el er [unit]（unit 可为 eV/NM/AU/CM，默认单位为eV）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.solver.window"
+    note: "常用关键词。指定计算哪个能量/波长范围内的激发态。一般建议结合iVI方法使用（idiag=3），此时程序可以确保计算出该能量/波长范围内的所有激发态，没有任何遗漏。当使用Davidson方法（idiag=1）时，iwindow仍然可以使用，但下限将被忽略，程序计算上限以下的所有激发态。不支持与idiag=2同时使用。当指定iwindow时，iroot、nroot对程序计算的激发态数目没有影响"
 
   icenter:
     bdf_keyword: "ICENTER"
@@ -2517,12 +3091,14 @@ tddft:
     format: "一行数组：每个 irrep 冻结核轨道数 frzcore(irep)"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.frozen_orbitals.core_per_irrep"
+    note: "常用关键词。指定每个不可约表示冻结多少个占据轨道（注意程序总是冻结该不可约表示下能量最低的占据轨道）。如不指定该关键词，则默认不冻结占据轨道。冻结轨道的关键词主要在大体系计算中希望节省内存时有用，例如计算UV-Vis光谱可以考虑冻结所有原子的内层轨道，引入的误差通常小于0.01 eV。注意，程序支持在冻结轨道的情况下计算激发能、振子强度、NTO、SOC矩阵元等，但不支持冻结轨道的情况下计算激发态梯度、激发态偶极矩和非绝热耦合矩阵元"
 
   frzvirt:
     bdf_keywords: ["FRZVIR", "FRZVIRT"]
     format: "一行数组：每个 irrep 冻结虚轨道数 frzvirt(irep)"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.frozen_orbitals.virt_per_irrep"
+    note: "常用关键词。指定每个不可约表示冻结多少个虚轨道（注意程序总是冻结该不可约表示下能量最高的虚轨道）。如不指定该关键词，则默认不冻结虚轨道。冻结轨道的关键词主要在大体系计算中希望节省内存时有用。注意，程序支持在冻结轨道的情况下计算激发能、振子强度、NTO、SOC矩阵元等，但不支持冻结轨道的情况下计算激发态梯度、激发态偶极矩和非绝热耦合矩阵元"
 
   frzorb:
     bdf_keyword: "FRZORB"
@@ -2535,6 +3111,7 @@ tddft:
     format: "一行整数 nto_nstate，若 >0，下一行给出具体态编号列表"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.nto.analysis"
+    note: "常用关键词（手册中为Ntoanalyze）。自然跃迁轨道(Natural transition orbital - NTO)分析，指定对TDDFT计算的某些态做NTO分析。该功能仅支持阿贝尔点群。计算将NTO输出为Molden格式的文件。文件名为bdftask.tdno_irepm_staten.molden，其中m，n的含义为第m个不可约表示的第n个根"
 
   dencube:
     bdf_keyword: "DENCUBE"
@@ -2544,15 +3121,17 @@ tddft:
 
   trdcube:
     bdf_keyword: "TRDCUBE"
-    format: "无值关键词（只写出跃迁密度 cube）"
+    format: "无值关键词（Bool型，手册中为TRDDens）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.cube.transition_only"
+    note: "常用关键词。输入激发态越迁密度到Cube文件。默认文件名为bdftask.trd_irepm_staten.cube。其中m，n的含义为第m个不可约表示的第n个根"
 
   cubetxyz:
     bdf_keyword: "CUBETXYZ"
-    format: "一行 3 个实数，cube 网格步长"
+    format: "一行 3 个实数，cube 网格步长（手册中为Cubexyz）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.cube.grid_step"
+    note: "常用关键词。输入为3个浮点数，分别指定cube文件x、y、z方向格点的步长"
 
   cubeorigin:
     bdf_keyword: "CUBEORIGIN"
@@ -2630,9 +3209,10 @@ tddft:
   # 10. ECD / 四极矩 -----------------------------------------------------------
   ecd:
     bdf_keyword: "ECD"
-    format: "无值关键词（电子圆二色性 + 磁偶极跃迁贡献）"
+    format: "无值关键词（Bool型）"
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.properties.ecd"
+    note: "常用关键词。指定计算电子圆二色性谱。程序除每个激发态的跃迁电偶极矩以及振子强度以外，还输出每个激发态的跃迁磁偶极矩，以及长度表象、速度表象下的转子强度"
 
   quad:
     bdf_keyword: "QUAD"
@@ -2640,15 +3220,48 @@ tddft:
     location: "TDDFT 模块"
     yaml_mapping: "settings.tddft.properties.quad"
 
+  # 11. 溶剂化效应控制关键词（常用） --------------------------------------------
+  solneqlr:
+    bdf_keyword: "SOLNEQLR"
+    format: "无值关键词（Bool型）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solvent.linear_response_non_equilibrium"
+    note: "常用关键词。指定进行线性响应非平衡溶剂化效应计算"
+
+  soleqlr:
+    bdf_keyword: "SOLEQLR"
+    format: "无值关键词（Bool型）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solvent.linear_response_equilibrium"
+    note: "常用关键词。指定进行线性响应平衡溶剂化效应计算"
+
+  solneqss:
+    bdf_keyword: "SOLNEQSS"
+    format: "无值关键词（Bool型）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solvent.state_specific_non_equilibrium"
+    note: "常用关键词。指定进行态特定非平衡溶剂化效应计算"
+
+  soleqss:
+    bdf_keyword: "SOLEQSS"
+    format: "无值关键词（Bool型）"
+    location: "TDDFT 模块"
+    yaml_mapping: "settings.tddft.solvent.state_specific_equilibrium"
+    note: "常用关键词。指定进行态特定平衡溶剂化效应计算"
+
 # XUANYUAN 模块关键词映射（双电子积分 / 直接 SCF / 相对论等控制）
+# 注意：以下仅包含 BDF XUANYUAN 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/xuanyuan.rst
+
 xuanyuan:
   # 1. 范围分离 / RS-DFT --------------------------------------------------------
   range_separation:
     bdf_keywords: ["RSOMEGA", "RS"]
-    format: "无值关键词，下一行一个实数 omega"
+    format: "浮点型（omega系数）"
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.range_separation.omega"
-    note: "logic_rangsep=.true.，romiga 从下一行读取，并写入 toptask%param(1)"
+    note: "常用关键词。指定Range-Separated泛函如CAM-B3LYP等的omega（某些文献称mu）系数。RS是RSOMEGA的同义词。如果DFT使用了Range-Separation泛函，必须加入此参数。标准范围分离泛函的omega值：CAM-B3LYP=0.33, LC-BLYP=0.33, wB97=0.40, wB97X=0.30"
 
   # 2. 多极积分 / 额外多极矩 ----------------------------------------------------
   multipole:
@@ -2661,40 +3274,42 @@ xuanyuan:
   # 3. 相对论哈密顿量 / 自旋轨道耦合 -------------------------------------------
   effective_hamiltonian:
     bdf_keyword: "HEFF"
-    format: "下一行整数 iheff"
+    format: "整数（0、1、2、3/4、5、21、22、23）"
     location: "XUANYUAN 模块"
+    default: "0"
     yaml_mapping: "settings.xuanyuan.relativistic.heff"
+    note: "常用关键词。指定标量相对论哈密顿，包括：0=非相对论（包括使用ECP的情况）；1=sf-ZORA（不建议普通用户使用）；2=sf-IORA（不建议普通用户使用）；3、4=sf-X2C（二者计算流程不同，一般用3即可）；5=sf-X2C + so-DKH3（无自旋部分，需结合Hsoc使用，精度有待进一步测试）；21=sf-X2C（同3、4，但支持解析导数和部分单电子性质）；22=sf-X2C-aXR（使用原子X矩阵近似的sf-X2C，支持解析导数和部分单电子性质）；23=sf-X2C-aU（使用原子酉变换近似的sf-X2C，支持解析导数和部分单电子性质）"
     rules:
       - "iheff≠0 时自动打开 scalar relativistic 逻辑（logic_scalrel=.true.）"
       - "iheff≠0 且存在 ECP（toptask%task(3)=1 或 7）时报错"
-    note: "最终写入 toptask%task(27)，并可能将 toptask%task(3) 设置为 2（X2C 标量相对论）"
 
   spin_orbit_coupling:
     bdf_keyword: "HSOC"
-    format: "下一行整数 ihsoc"
+    format: "整数（0、1、2、3、4、5、6、7，或以上参数加上10使用BP近似）"
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.relativistic.hsoc"
+    note: "常用关键词。指定自旋轨道（SO）积分的类型，包括：0=so-1e（仅计算单电子SO积分，一般不推荐使用）；1=so-1e + SOMF（通过有效Fock算符计算双电子SO积分，对于全电子计算，这是最准确的方法）；2=so-1e + SOMF-1c（使用单中心近似的SOMF，对于全电子计算，这是推荐选项，尤其是计算大分子）；3=so-1e + SOMF-1c / no soo（关闭2中的自旋-其它轨道（SOO）贡献）；4=so-1e + SOMF-1c / no soo + WSO_XC（采用DFT计算SOO贡献）；5=so-1e + somf-1c / no soo + WSO_XC-2x（根据Neese的建议，把DFT部分乘以-2来模拟SOO贡献）；6=so-1e-1c + SOMF-1c（一般不推荐使用）；7=Boettger提出的屏蔽原子核的自旋-轨道（SNSO）方法。以上参数加上10，将使用BP近似下的算符。对于ECP基组（包括标量ECP基组、SOECP基组、全电子非相对论基组的混合），唯一接受的值是10，并且是默认选择"
     rules:
       - "设置 ihsoc 后自动开启 SO INT 逻辑（logic_sorel=.true.）"
       - "对于 ECP 体系，hsoc 只能为 10（代码中强制）"
-    note: "最终写入 toptask%task(31)，并要求群必须为 Abel 群（否则停止）"
 
   # 4. 核半径 / 核模型 ---------------------------------------------------------
   nuclear_radii_custom:
     bdf_keyword: "NUCLEARRADII"
-    format: "下一行整数 N；随后 N 行：iatom r"
+    format: "输入块：第一行整数N（指定要替换的原子核半径个数），随后N行指定原子编号以及新的原子核半径"
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.nuclear_radii.custom"
-    note: "调用 SetIsotopeNuclearRadius(i-1,r) 自定义核半径，用于精细性质"
+    note: "常用关键词。指定原子核半径。该输入块仅在已启用有限核模型的情况下生效，未指定的原子核半径将采用默认值。输入模式参考Compass模块中的AtomMass输入块"
 
   nuclear_model:
     bdf_keyword: "NUCLEAR"
-    format: "下一行整数 inuc"
+    format: "整数（0、1）"
     location: "XUANYUAN 模块"
+    default: "0"
     yaml_mapping: "settings.xuanyuan.nuclear_model"
+    note: "常用关键词。指定原子核电荷分布模型。0为点电荷模型；1为高斯电荷模型。对于110号（Ds）之前的元素，均方根（RMS）核半径取自Visscher和Dyall汇总的数据；从Ds元素开始，RMS核半径通过核素质量A估算"
     rules:
       - "inuc ∈ {-1,0,1}：写入 toptask%task(66)"
-    note: "其它取值视为非法，程序会报错退出"
 
   # 5. 检查 / 调试标志 ---------------------------------------------------------
   nocheck:
@@ -2714,13 +3329,13 @@ xuanyuan:
   # 6. direct SCF / ERI 存储方式 ----------------------------------------------
   direct_scf:
     bdf_keyword: "DIRECT"
-    format: "无值关键词"
+    format: "无值关键词（Bool型）"
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.integrals.direct_scf"
+    note: "常用关键词。指定使用积分直接的SCF（Direct）计算。如今是默认选项，不需要用户设置。积分直接的SCF不存储双电子积分，按照Schwartz不等式，结合积分对Fock矩阵的贡献，对积分进行预筛选。当基函数数目大于300左右，可以有效地利用双电子积分重复计算来避免IO操作，且支持OpenMP的多核并行计算。BDF中大多数需要计算Fock-Like矩阵（J与K矩阵）的模块，如SCF，TDDFT等都已经实现了积分直接计算。积分直接的SCF计算需要同时在compass模块中加上Skeleton关键词，如今也是默认的。关闭积分直接的SCF计算可以在compass模块中加上Saorb关键词"
     rules:
       - "若 RI 相关 task(9)≥4，则将 task(9) 取相反数（负号表示 direct RI）"
       - "否则设置 task(9)=1 并启用 Schwarz 预筛选 task(19)=1"
-    note: "控制是否采用直接 SCF（不把全部二电子积分写盘）"
 
   non_direct_scf:
     bdf_keyword: "NONEDIRECT"
@@ -2757,13 +3372,13 @@ xuanyuan:
   # 7. ERI 缓冲大小 / 内存控制 -------------------------------------------------
   maxmem:
     bdf_keyword: "MAXMEM"
-    format: "下一行字符串，形如 '200MW' 或 '2GW'"
+    format: "字符串（数字+MW或数字+GW，例如 '512MW' 或 '2GW'）"
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.integrals.max_memory"
+    note: "常用关键词。指定非积分直接的SCF双电子积分计算缓存大小。大的缓存可以减少积分排序的次数。输入格式为数字+MW或数字+GW，1 Word=2 Byte，因此512MW就等于1024MB"
     rules:
       - "单位 MW：max2ebatch = lenm * 1024 * 1024"
       - "单位 GW：max2ebatch = lenm * 1024 * 1024 * 1024"
-    note: "控制 ERI buffer 大小，最终写入 toptask%task(24)=max2ebatch"
 
   mass_polarization:
     bdf_keyword: "MASSPOL"
@@ -2800,6 +3415,145 @@ xuanyuan:
     location: "XUANYUAN 模块"
     yaml_mapping: "settings.xuanyuan.dump_metric"
     note: "dumpmetric=.true.，将 |S_{μν}| 压缩到原子级 metric 并写入 .dsmetric"
+
+# AUTOFRAG 模块关键词映射
+# 注意：以下仅包含 BDF AUTOFRAG 模块手册中列出的常用关键词
+# 未在列表中的关键词不常用，用户需要手动编辑生成的 BDF 输入文件来添加或修改
+# 参考手册：/Users/bsuo/bdf/BDFManual/data/BDF-Manual-zhcn/source/module/autofrag.rst
+# autofrag的主要功能是对大分子进行自动分片，并自动产生FLMO计算的输入。
+# autofrag还是iOI-SCF的计算引擎，用于调度SCF的其他模块完成iOI计算。
+# 此外，autofrag还可利用卢天等开发的sobEDA、sobEDAw方法，将分子片间的相互作用能分解为静电、位阻、轨道相互作用、色散等项的贡献。
+# 注意：autofrag必须放在compass之前。当使用autofrag模块时，compass模块必须在直角坐标下定义分子坐标，且不能用file=filename.xyz语法从另一个文件里读入分子坐标。
+
+autofrag:
+  # 1. 计算方法与基本控制 --------------------------------------------------------
+  method:
+    bdf_keyword: "METHOD"
+    format: "字符串（FLMO、iOI、sobEDA、sobEDAw）"
+    location: "AUTOFRAG 模块"
+    default: "FLMO"
+    yaml_mapping: "settings.autofrag.method"
+    note: "常用关键词。设定计算方法。FLMO - 计算分片定域化分子轨道；iOI - iOI-SCF计算，用分子片合成分子的方法计算大分子体系。iOI目前仅支持限制性自洽场计算；sobEDA/sobEDAw - 指定用sobEDA或sobEDAw方法进行能量分解。注意对于sobEDA、sobEDAw而言，分片时会确保片段没有缓冲区，也即每个原子仅属于一个片段，这是进行sobEDA/sobEDAw能量分解分析的必要条件。如用户指定了sobEDA/sobEDAw，但没有指定FragDef，则程序自动打开NonCovalent"
+
+  nprocs:
+    bdf_keyword: "NPROCS"
+    format: "整数（小于等于分子片数的正整数）"
+    location: "AUTOFRAG 模块"
+    default: "1"
+    yaml_mapping: "settings.autofrag.nprocs"
+    note: "常用关键词。设定iOI计算最大可用进程数。由于分子片计算是独立的，可并行计算，此处nprocs指的即是最多允许多少个分子片同时计算。注意当nprocs不等于1时，环境变量OMP_NUM_THREADS指定的是iOI计算的总OpenMP线程数，而不是每个进程的可用OpenMP线程数"
+
+  # 2. 分片参数控制 ------------------------------------------------------------
+  radcent:
+    bdf_keyword: "RADCENT"
+    format: "浮点数（非负浮点数，单位：埃）"
+    location: "AUTOFRAG 模块"
+    default: "3.0"
+    yaml_mapping: "settings.autofrag.radcent"
+    note: "常用关键词。设定初始分子片（即尚未添加缓冲区的分子片）的大小（单位：埃），增加radcent会增加每个分子片的尺寸，且减少分子片的数目"
+
+  radbuff:
+    bdf_keyword: "RADBUFF"
+    format: "浮点数（非负浮点数，单位：埃）"
+    location: "AUTOFRAG 模块"
+    default: "2.0"
+    yaml_mapping: "settings.autofrag.radbuff"
+    note: "常用关键词。设定分子片缓冲区半径（单位：埃）。与radcent不同，增加radbuff不改变分子片数目，但会增加每个分子片的尺寸。对于iOI计算，radbuff定义的是第0次宏迭代时分子片缓冲区的大小，缓冲区将在宏迭代过程中增大"
+
+  ioi_thresh:
+    bdf_keyword: "IOITHRESH"
+    format: "浮点数（正浮点数）"
+    location: "AUTOFRAG 模块"
+    default: "0.1"
+    yaml_mapping: "settings.autofrag.ioi_thresh"
+    note: "常用关键词。设定iOI-SCF分子片段计算的收敛阈值。减小iOIThresh会增加iOI计算的宏迭代次数，但改进了整体分子计算的初始轨道，所以会加快整体分子的SCF收敛"
+
+  maxiter:
+    bdf_keyword: "MAXITER"
+    format: "整数"
+    location: "AUTOFRAG 模块"
+    default: "50"
+    yaml_mapping: "settings.autofrag.maxiter"
+    note: "常用关键词。指定iOI-SCF最大的宏迭代次数"
+
+  # 3. 分片方式控制 ------------------------------------------------------------
+  non_covalent:
+    bdf_keyword: "NONCOVALENT"
+    format: "无值关键词（Bool型）"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.non_covalent"
+    note: "常用关键词。在分片时不切断任何共价键。该关键词对于计算非共价复合物，尤其是对非共价复合物做能量分解分析特别有用"
+
+  fragdef:
+    bdf_keyword: "FRAGDEF"
+    format: "输入块：第一行2N个整数（N个片段的电荷和自旋多重度），第2到第N+1行分别为每个片段的原子序号范围"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.fragdef"
+    note: "常用关键词。人为定义哪些原子属于同一个片段。若用户希望将整个分子分为N片，则FragDef后的第一行应当为2N个整数，依次为每个片段的电荷和自旋多重度；第2到第N+1行分别为每个片段的原子序号范围。注意：FragDef涉及的原子序号必须不重不漏地涵盖整个分子里的所有原子，每个原子必须出现一次，且只能出现一次；若按照用户指定的分片方式进行分片会导致切断共价键，则程序自动在用户指定的片段的基础上补充缓冲区；若用户无法确认某些片段的电荷或自旋多重度，则可将相应的电荷或自旋多重度用星号\"*\"代替，程序会自动选择一个能使计算正常进行的值"
+
+  no_overlap_metric:
+    bdf_keyword: "NOOVERLAPMETRIC"
+    format: "无值关键词（Bool型）"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.no_overlap_metric"
+    note: "常用关键词。对于iOI计算，指定基于实空间度规而非重叠积分度规进行分片。仅在对极大的体系（如上万原子体系）进行分片，而且仅进行分片而不对片段进行SCF计算（也即指定DryRun）时，才有必要添加该关键词，可以通过避免计算总体系的重叠矩阵而节约时间"
+
+  # 4. 断键处理方式 ------------------------------------------------------------
+  no_pho:
+    bdf_keyword: "NOPHO"
+    format: "无值关键词（Bool型）"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.no_pho"
+    note: "常用关键词。设置不利用PHO（Project Hybrid orbital），而是利用连接氢（H）原子来饱和分子分片时的断键处。使用该关键词时，子体系计算的计算量比默认的PHO方法稍小，但子体系轨道的精度低，可能导致整体分子的SCF迭代次数增加，乃至使总计算时间增加"
+
+  # 5. 电荷与自旋控制 ------------------------------------------------------------
+  charge:
+    bdf_keyword: "CHARGE"
+    format: "整数数组（格式：原子编号 电荷数，多个原子用空格分隔）"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.charge"
+    note: "常用关键词。设定给定原子的电荷数，用以协助指定分子片段的电荷。当程序难以自动确定某分子片段电子数时，用户可以通过指定电荷来确定分子片段总的电子数。例如：charge 10 +2 25 -1 78 -1 表示第10个原子的电荷数为+2，第25个原子的电荷数为-1，第78个原子的电荷数为-1"
+
+  spinocc:
+    bdf_keyword: "SPINOCC"
+    format: "整数数组（格式：原子编号 形式自旋，多个原子用空格分隔）"
+    location: "AUTOFRAG 模块"
+    yaml_mapping: "settings.autofrag.spinocc"
+    note: "常用关键词。设定给定原子的形式自旋，用以协助计算到合适的自旋态。输入格式和charge关键词相同。例如：spinocc 13 +1 17 -1 表示第13个原子有1个未成对的alpha电子，第17个原子有1个未成对的beta电子。注意，所有的开壳层原子都应该被指定。如果体系有离域的自旋，则应该画出让该自旋局域在某个原子上的共振式，再按该共振式指定形式自旋"
+
+  # 6. 运行模式控制 ------------------------------------------------------------
+  dryrun:
+    bdf_keyword: "DRYRUN"
+    format: "无值关键词（Bool型）"
+    location: "AUTOFRAG 模块"
+    default: "False"
+    yaml_mapping: "settings.autofrag.dryrun"
+    note: "常用关键词。设定只产生FLMO或iOI-SCF输入文件，而不执行计算"
+
+  # 7. sobEDAw 方法参数 ---------------------------------------------------------
+  sob_edaw_c:
+    bdf_keyword: "SOBEDAW_C"
+    format: "浮点数"
+    location: "AUTOFRAG 模块"
+    default: "0.439"
+    yaml_mapping: "settings.autofrag.sob_edaw.c"
+    note: "常用关键词。sobEDAw方法的参数c。此处的默认值为GB3LYP-D3/def2-TZVPD级别下的参数，如用户所用的理论级别并非该级别，则用户必须手动修改该参数。sobEDAw方法的参数可从sobEDA原始文献中读取，或用sobEDAw_fit工具自行拟合"
+
+  sob_edaw_a:
+    bdf_keyword: "SOBEDAW_A"
+    format: "浮点数"
+    location: "AUTOFRAG 模块"
+    default: "0.029"
+    yaml_mapping: "settings.autofrag.sob_edaw.a"
+    note: "常用关键词。sobEDAw方法的参数a。此处的默认值为GB3LYP-D3/def2-TZVPD级别下的参数，如用户所用的理论级别并非该级别，则用户必须手动修改该参数"
+
+  sob_edaw_r:
+    bdf_keyword: "SOBEDAW_R"
+    format: "浮点数"
+    location: "AUTOFRAG 模块"
+    default: "2.351"
+    yaml_mapping: "settings.autofrag.sob_edaw.r"
+    note: "常用关键词。sobEDAw方法的参数r。此处的默认值为GB3LYP-D3/def2-TZVPD级别下的参数，如用户所用的理论级别并非该级别，则用户必须手动修改该参数"
 
 # 注意事项
 notes:

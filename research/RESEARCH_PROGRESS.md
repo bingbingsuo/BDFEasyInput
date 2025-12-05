@@ -66,6 +66,66 @@
 - [ ] 更多高级参数的关键词
 - [ ] Spin-adapted TDDFT 的完整参数配置（IRO 等）
 
+### 溶剂化效应支持
+
+### 支持的溶剂模型
+- **COSMO**、**CPCM**、**IEFPCM**、**SS(V)PE**、**SMD**、**ddCOSMO**
+- 默认模型：IEFPCM
+- 所有模型均支持基态和激发态的单点、梯度、Hessian 计算
+
+### 溶剂类型指定
+- 预定义溶剂名称：`water`、`methanol`、`acetonitrile`、`dmso` 等（见 `Solvent-Dielectric.rst`）
+- 用户指定介电常数：`solvent user` + `dielectric` + `opticalDielectric`（用于非平衡溶剂化）
+
+### 孔穴自定义
+- `cavity`：生成孔穴表面的方式（`swig`、`switching`、`ses`、`sphere`）
+- `radiusType`：半径类型（`UFF`、`Bondi`）
+- `vdWScale`：vdW 半径缩放因子（默认 1.1）
+- `radii`：自定义原子半径
+- `cavityNGrid` / `cavityPrecision`：格点精度
+
+### 非静电溶剂化能
+- `nonels`：开启非静电溶剂化能计算（`dis`、`rep`、`cav`）
+- `solventAtoms`、`solventRho`、`solventRadius`：溶剂参数
+
+### TDDFT 溶剂化效应
+- **垂直吸收**：`solneqlr`（线性响应非平衡）、`solneqss`（态特定非平衡）、cLR（矫正线性响应）
+- **激发态几何优化**：`soleqlr`（平衡溶剂化，在 TDDFT 和 RESP 模块中）
+- **垂直发射**：`soleqss`（平衡）+ `emit`（非平衡基态）
+
+### 模块位置
+- **SCF 模块**：`solvent`、`solmodel`、`cavity`、`nonels` 等
+- **TDDFT 模块**：`solneqlr`、`soleqlr`
+- **RESP 模块**：`solneqlr`、`soleqlr`、`solneqss`、`soleqss`
+
+**参考文档**：
+- `research/module_organization/SOLVENT_MODELS.md`
+- BDF 手册：`Solvent-Model.rst`、`Solvent-Dielectric.rst`
+
+## 新确认信息 ✅
+- [x] SAORB 关键词使用规则：
+  - 默认不添加，只有在出现 MCSCF 或 TRAINT 模块时才默认添加
+  - 如果 COMPASS 中要求使用 RI 基组（RI-J/RI-K/RI-C/CD-RI），则无需添加
+  - SAORB 用于要求 XUANYUAN 计算并存储对称匹配轨道的积分，主要用于 MCSCF 和多参考态电子相关计算
+- [x] 自旋多重度（SPINMULTI/SPIN）默认行为：
+  - SCF 关键词 `spinmul` 用来控制电子态的自旋多重度
+  - **AI 分析用户任务时应该提醒用户设置自旋多重度**
+  - 如果用户未设置，BDF 将按以下规则处理：
+    * 偶数电子数 → 自旋多重度 = 1（闭壳层）
+    * 奇数电子数 → 自旋多重度 = 2（开壳层）
+  - 强烈建议用户在 YAML 中明确设置自旋多重度
+- [x] COMPASS 模块点群（Group）和 NoSymm 关键词：
+  - **Group 关键词**：
+    - 有效值：D(2h), D(2), C(2v), C(2h), C(s), C(2), C(1)
+    - 用户设置的值必须在此列表中
+    - 大小写不敏感（如 'c2v' 和 'C(2v)' 等价）
+    - 如果用户忘记加括号，转换器会自动补上括号（如 'C2v' → 'C(2v)'）
+    - 如果用户设置了此关键词且值有效，则在 COMPASS 模块中添加 Group 关键词
+  - **NoSymm 关键词**：
+    - 强制计算不使用点群对称性
+    - **与 group 关键词互斥**：只能出现一个
+    - **nosymm 优先**：如果同时设置了 group 和 nosymm，nosymm 优先，group 将被忽略
+
 ## 📝 关键发现总结
 
 1. **模块化设计**：BDF 使用模块化输入，每个模块独立
@@ -80,14 +140,52 @@
    - SCF 方法自动选择为 ROHF（HF）或 ROKS（DFT）
    - TDDFT 部分推荐省略 `IMETHOD`，由 BDF 根据 SCF 自动选择：RHF/RKS→1，ROHF/ROKS/UHF/UKS→2（X-TDDFT）
    - 我们统一默认采用基于 ROHF/ROKS 的 **X-TDDFT（IMETHOD=2）**，而不使用 SA-TDDFT（IMETHOD=3，少量调试场景）
+9. **SAORB 关键词**：
+   - 默认不添加，只有在出现 MCSCF 或 TRAINT 模块时才默认添加
+   - 如果 COMPASS 中要求使用 RI 基组（RI-J/RI-K/RI-C/CD-RI），则无需添加
+   - SAORB 用于要求 XUANYUAN 计算并存储对称匹配轨道的积分，主要用于 MCSCF 和多参考态电子相关计算
+10. **COMPASS 模块点群（Group）和 NoSymm 关键词**：
+    - **Group 关键词**：
+      - 有效值：D(2h), D(2), C(2v), C(2h), C(s), C(2), C(1)
+      - 用户设置的值必须在此列表中，转换器会验证
+      - 大小写不敏感（如 'c2v' 和 'C(2v)' 等价）
+      - 如果用户忘记加括号，转换器会自动补上括号（如 'C2v' → 'C(2v)'）
+      - 如果用户设置了此关键词且值有效，则在 COMPASS 模块中添加 Group 关键词
+    - **NoSymm 关键词**：
+      - 强制计算不使用点群对称性
+      - BDF 关键词使用 "NoSymm"（可读性更强，而非 "NOSY"）
+      - **与 group 关键词互斥**：只能出现一个
+      - **nosymm 优先**：如果同时设置了 group 和 nosymm，nosymm 优先，group 将被忽略
+11. **电荷（CHARGE）和自旋多重度（SPINMULTI/SPIN）**：
+    - **必需字段**：`molecule.charge` 和 `molecule.multiplicity` 必须在 YAML 中显式设置
+    - **直接复制**：转换器会直接将这两个值复制到 SCF 模块的 `Charge` 和 `Spin` 关键词
+    - **无论值是多少**：即使 `charge=0` 或 `multiplicity=1`，也会添加到 SCF 模块中
+    - **目的**：确保用户清楚地知道自己在计算什么体系（电荷和电子态）
+    - **验证**：如果 YAML 中缺少这两个字段，转换器会抛出 `ValueError`
+    - **AI 提醒**：AI 分析用户任务时必须提醒用户设置这两个字段
 
 ## 🎯 下一步
 
-1. **完善映射表**：补充更多方法和基组
-2. **实现转换器**：基于已确认的规则开始实现
-3. **测试验证**：使用实际 BDF 输入文件验证转换结果
+### 短期目标（1-2 周）
+1. **频率计算支持**：实现 `task.type: frequency` 的处理
+2. **输入验证增强**：实现 YAML Schema 验证，添加参数检查
+3. **代码重构**：拆分 `converter.py` 为多个模块，改进代码组织
+
+### 中期目标（1-2 月）
+1. **扩展计算类型**：MP2、MCSCF、NMR 等
+2. **AI 模块实现**：AI 客户端、任务规划器、结果分析器
+3. **执行模块**：BDFAutotest 集成
+
+### 长期目标（3-6 月）
+1. **完整工作流**：从任务规划到结果分析的端到端流程
+2. **用户界面**：命令行工具完善、可能的 GUI
+3. **文档完善**：用户指南、API 文档
 
 ---
 
-**研究状态**：核心格式已理解，关键问题已确认，可以开始实现转换器。
+**研究状态**：✅ 核心格式已理解，关键问题已确认，转换器基本实现完成。
+
+**当前进度**：约 60% 完成（核心转换器 70%，关键词映射 90%，文档 85%）
+
+**详细进度**：参见 [WORK_PROGRESS.md](../WORK_PROGRESS.md)
 

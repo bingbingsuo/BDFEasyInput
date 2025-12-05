@@ -261,13 +261,373 @@ $end
 
 **转换说明**：
 - `task.type: optimize` → 添加 `BDFOPT` 和 `RESP` 模块
-- `settings.geometry_optimization.solver` → `BDFOPT solver 1`
+- 模块顺序：`COMPASS` → `BDFOPT` → `XUANYUAN` → `SCF` → `RESP`
+- `settings.geometry_optimization.solver` → `BDFOPT solver 1`（BDF 自带优化器）
 - 使用 RESP 模块计算梯度（GRAD 模块仅支持 HF 和 MCSCF，不支持 DFT）
 - RESP 模块参数：`geom`、`norder 1`（梯度）、`method 1`（SCF 梯度）
+- 结构优化是迭代过程：BDFOPT 会反复调用 COMPASS、XUANYUAN、SCF、RESP 模块计算能量和梯度
+- 输出文件：`.out`（BDFOPT 输出）、`.out.tmp`（SCF 详细信息）、`.optgeom`（优化后的结构，单位 Bohr）
 
 ---
 
-## 示例 4：TDDFT 计算
+## 示例 3b：结构优化 + 频率计算（opt+freq，hess final）
+
+### YAML 输入
+
+```yaml
+task:
+  type: optimize
+  description: "H2O geometry optimization + frequency calculation"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  geometry_optimization:
+    solver: 1
+    hessian:
+      mode: final  # Calculate Hessian after optimization
+    thermochemistry:
+      temperature: 298.15
+      pressure: 1.0
+      scale_factor: 1.0
+```
+
+### 转换后的 BDF 输入
+
+```bdf
+$COMPASS
+Title
+ H2O geometry optimization + frequency calculation
+Basis
+ cc-pvdz
+Geometry
+ O     0.0000    0.0000    0.1173
+ H     0.0000    0.7572   -0.4692
+ H     0.0000   -0.7572   -0.4692
+End geometry
+Check
+$END
+
+$BDFOPT
+solver
+ 1
+hess
+ final
+temp
+ 298.15
+press
+ 1.0
+scale
+ 1.0
+$END
+
+$XUANYUAN
+$END
+
+$SCF
+RKS
+dft functional
+ B3lyp
+Charge
+ 0
+Spin
+ 1
+$END
+
+$RESP
+geom
+norder
+ 2
+method
+ 1
+$END
+```
+
+**转换说明**：
+- `settings.geometry_optimization.hessian.mode: final` → `BDFOPT` 模块中的 `hess final`
+- `hess final` 表示在结构优化成功结束后才进行数值 Hessian 计算
+- 若结构优化不收敛，程序直接报错退出，不进行 Hessian 及频率计算
+- RESP 模块中 `norder 2` 表示计算二阶导数（Hessian 矩阵）
+- 可以在同一个 BDF 任务里依次实现结构优化与频率分析，无需单独编写两个输入文件
+- 详细说明参见：`research/module_organization/GEOMETRY_OPTIMIZATION.md`
+
+---
+
+## 示例 4：频率计算（Frequency Calculation）
+
+### YAML 输入
+
+```yaml
+task:
+  type: frequency
+  description: "H2O ground state frequency calculation with B3LYP/cc-pVDZ"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+  geometry_optimization:
+    thermochemistry:
+      temperature: 298.15
+      pressure: 1.0
+      scale_factor: 1.0
+      electronic_degeneracy: 1
+```
+
+### 转换后的 BDF 输入
+
+```bdf
+$COMPASS
+Title
+ Water
+Basis
+ cc-pvdz
+Geometry
+ O     0.0000    0.0000    0.1173
+ H     0.0000    0.7572   -0.4692
+ H     0.0000   -0.7572   -0.4692
+End geometry
+$END
+
+$BDFOPT
+hess
+ only
+temp
+ 298.15
+press
+ 1.0
+scale
+ 1.0
+ndeg
+ 1
+$END
+
+$XUANYUAN
+$END
+
+$SCF
+RKS
+dft functional
+ B3lyp
+Charge
+ 0
+Spin
+ 1
+$END
+
+$RESP
+geom
+norder
+ 2
+method
+ 1
+$END
+```
+
+**转换说明**：
+- `task.type: frequency` → 频率计算，模块顺序：COMPASS → BDFOPT（`hess only`）→ XUANYUAN → SCF → RESP（`norder 2`）
+- `hess only` 表示只进行频率计算而不做几何结构优化
+- `norder 2` 表示计算二阶导数（Hessian 矩阵）
+- 热化学量设置（`temp`、`press`、`scale`、`ndeg`）用于计算热力学量
+- 对于基态 DFT 计算，程序进行解析 Hessian 计算
+- 对于 TDDFT 等暂不支持解析 Hessian 的理论级别，程序将自动改为数值 Hessian 计算
+- 详细说明参见：`research/module_organization/GEOMETRY_OPTIMIZATION.md`
+
+---
+
+## 示例 5：溶剂化效应计算（SMD 模型）
+
+### YAML 输入
+
+```yaml
+task:
+  type: energy
+  description: "Formaldehyde in water solution, SMD model"
+
+molecule:
+  name: "Formaldehyde"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - C  0.00000000  0.00000000  -0.54200000
+    - O  0.00000000  0.00000000   0.67700000
+    - H  0.00000000  0.93500000  -1.08200000
+    - H  0.00000000  -0.93500000  -1.08200000
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: 6-31g
+
+settings:
+  scf:
+    solvent:
+      name: water
+      model: smd
+```
+
+### 转换后的 BDF 输入
+
+```bdf
+$COMPASS
+Title
+ Formaldehyde single point energy calculation, SMD
+Basis
+ 6-31g
+Geometry
+ C     0.0000    0.0000   -1.0240
+ O     0.0000    0.0000    1.2790
+ H     0.0000    1.7670   -2.0440
+ H     0.0000   -1.7670   -2.0440
+End geometry
+$END
+
+$XUANYUAN
+$END
+
+$SCF
+RKS
+dft functional
+ B3lyp
+Charge
+ 0
+Spin
+ 1
+solvent
+ water
+solmodel
+ smd
+$END
+```
+
+**转换说明**：
+- `settings.scf.solvent.name` → `solvent [name]`
+- `settings.scf.solvent.model` → `solmodel [model]`
+- BDF 支持多种溶剂模型：`cosmo`、`cpcm`、`iefpcm`、`ssvpe`、`smd`、`ddcosmo`
+- 默认模型为 IEFPCM（如果未指定）
+- 详细说明参见：`research/module_organization/SOLVENT_MODELS.md`
+
+---
+
+## 示例 5：TDDFT 非平衡溶剂化效应计算
+
+### YAML 输入
+
+```yaml
+task:
+  type: tddft
+  description: "Formaldehyde TDDFT with non-equilibrium solvation"
+
+molecule:
+  name: "Formaldehyde"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - C  0.00000000  0.00000000  -0.54200000
+    - O  0.00000000  0.00000000   0.67700000
+    - H  0.00000000  0.93500000  -1.08200000
+    - H  0.00000000  -0.93500000  -1.08200000
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: 6-31g
+
+settings:
+  scf:
+    solvent:
+      name: user
+      dielectric: 78.3553
+      optical_dielectric: 1.7778
+      model: iefpcm
+  tddft:
+    n_states: 8
+    linear_response_non_equilibrium: true
+```
+
+### 转换后的 BDF 输入
+
+```bdf
+$COMPASS
+Title
+ Formaldehyde TDDFT with non-equilibrium solvation
+Basis
+ 6-31g
+Geometry
+ C     0.0000    0.0000   -1.0240
+ O     0.0000    0.0000    1.2790
+ H     0.0000    1.7670   -2.0440
+ H     0.0000   -1.7670   -2.0440
+End geometry
+$END
+
+$XUANYUAN
+$END
+
+$SCF
+RKS
+dft functional
+ B3lyp
+Charge
+ 0
+Spin
+ 1
+solvent
+ user
+dielectric
+ 78.3553
+opticalDielectric
+ 1.7778
+solmodel
+ iefpcm
+$END
+
+$TDDFT
+iroot
+ 8
+solneqlr
+$END
+```
+
+**转换说明**：
+- `settings.scf.solvent.name: user` → `solvent user`，需要指定 `dielectric` 和 `opticalDielectric`
+- `settings.tddft.linear_response_non_equilibrium: true` → `TDDFT` 模块中的 `solneqlr` 关键词
+- 计算非平衡溶剂化效应时，如果溶剂为用户指定的，需要设置光介电常数
+- 详细说明参见：`research/module_organization/SOLVENT_MODELS.md`
+
+---
+
+## 示例 7：TDDFT 计算
 
 ### YAML 输入
 
@@ -324,7 +684,6 @@ End geometry
 Unit
  Bohr
 Check
-SAORB
 $END
 
 $XUANYUAN
@@ -499,6 +858,11 @@ $END
 - `energy` → `COMPASS` + `XUANYUAN` + `SCF`
 - `optimize` → `COMPASS` + `BDFOPT` + `XUANYUAN` + `SCF` + `RESP`
 - `tddft` → `COMPASS` + `XUANYUAN` + `SCF` + `TDDFT`（**一个或多个 TDDFT 块**）
+- `frequency` → `COMPASS` + `BDFOPT`（`hess only`）+ `XUANYUAN` + `SCF` + `RESP`（`norder 2`）
+
+**注意**：
+- 结构优化是迭代过程，BDFOPT 会反复调用 COMPASS、XUANYUAN、SCF、RESP 模块
+- 详细说明参见：`research/module_organization/GEOMETRY_OPTIMIZATION.md`
 
 **注意**：
 - 几何优化使用 **RESP 模块**而非 GRAD 模块  
@@ -511,10 +875,11 @@ $END
     2. 第二次：显式设置 `ISF 1`，计算 triplet 激发态  
   - 示例参见 `research/bdf_examples/tddft/h2o_ST.inp`（水分子的 singlet / triplet TDDFT 能量计算）
   - **TDDFT + SOC（自旋轨道耦合）**：典型流程是执行 **三次** `$TDDFT`：
-    1. 第一次：`ISF=0`，计算 singlet TDDFT（如 `IMETHOD 1, ITDA 1, IEXIT 10, ISTORE 1`）。
-    2. 第二次：`ISF=1`，计算 triplet TDDFT（同样设置 `IMETHOD/ITDA/IDIAG/IEXIT/ISTORE 2`）。
-    3. 第三次：不开新的 TDDFT 能量计算，而是设置 `ISOC`/`NFILES`/`IMATSOC`/`IMATRSO` 等，基于前两次存储的 TDDFT 波函数做 SOC 后处理，并可用 `IDIAG 2` 对 SOC 修正的哈密顿量做精确对角化。  
-       - 示例参见 BDF 自带算例：`/Users/bsuo/bdf/bdf-pkg-full/tests/input/test109.inp`（CH2S LC-BLYP/def2-QZVP TDDFT-SOC 计算）。
+    1. 第一次：`ISF=0`，计算 singlet TDDFT，使用 `ISTORE 1` 保存波函数
+    2. 第二次：`ISF=1`，计算 triplet TDDFT，使用 `ISTORE 2` 保存波函数
+    3. 第三次：设置 `ISOC 2`、`NFILES 2` 等，基于前两次存储的 TDDFT 波函数做 SOC 后处理，并可用 `IDIAG 2` 对 SOC 修正的哈密顿量做精确对角化。  
+       - 示例参见 BDF 自带算例：`/Users/bsuo/bdf/bdf-pkg-full/tests/input/test109.inp`（CH2S LC-BLYP/def2-QZVP TDDFT-SOC 计算）
+       - 详细说明参见：`research/module_organization/TDDFT.md`
 
 ### 4. 基组名称
 - 直接映射（可能需要大小写调整）

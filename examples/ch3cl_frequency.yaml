@@ -1,0 +1,30 @@
+# Example: CH3Cl frequency calculation
+# This example is based on the BDF manual example
+# Module order: COMPASS → BDFOPT (hess only) → XUANYUAN → SCF → RESP (norder 2)
+
+task:
+  type: frequency
+  description: "CH3Cl frequency calculation with B3LYP/def2-SV(P)"
+
+molecule:
+  name: "CH3Cl"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - C   -0.93557703   0.15971089   0.58828595
+    - H   -1.71170348  -0.52644336   0.21665897
+    - H   -1.26240747   1.20299703   0.46170050
+    - H   -0.72835075  -0.04452039   1.64971607
+    - Cl   0.56770184  -0.09691413  -0.35697029
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: def2-sv(p)
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+

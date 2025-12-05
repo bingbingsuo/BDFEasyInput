@@ -1,0 +1,27 @@
+# 水分子结构优化示例
+
+task:
+  type: optimize
+  description: "H2O geometry optimization with B3LYP/cc-pVDZ"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000  0.0000  0.1173
+    - H  0.0000  0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  geometry_optimization:
+    solver: 1  # BDF native optimizer
+    max_cycle: 50
+    tol_grad: 1e-4
+    tol_ene: 1e-6

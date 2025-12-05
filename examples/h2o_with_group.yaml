@@ -1,0 +1,29 @@
+# 水分子 RHF 单点能计算示例（带点群设置）
+
+task:
+  type: energy
+  description: "H2O RHF single point energy calculation with point group"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    # 坐标格式: ATOM X Y Z (单位: angstrom)
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: hf
+  basis: cc-pvdz
+
+settings:
+  compass:
+    symmetry:
+      group: C2v  # 点群设置，大小写不敏感，自动补括号
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+

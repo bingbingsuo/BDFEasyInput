@@ -1,0 +1,36 @@
+# Example: Water molecule frequency calculation
+# This example demonstrates a ground state frequency calculation
+# Module order: COMPASS → BDFOPT (hess only) → XUANYUAN → SCF → RESP (norder 2)
+
+task:
+  type: frequency
+  description: "H2O ground state frequency calculation with B3LYP/cc-pVDZ"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+  geometry_optimization:
+    # For frequency calculation, hessian mode is automatically set to 'only'
+    # You can also specify thermochemistry settings here
+    thermochemistry:
+      temperature: 298.15  # Kelvin
+      pressure: 1.0       # atm
+      scale_factor: 1.0   # Frequency scaling factor (also supports 'frequency_scale')
+      electronic_degeneracy: 1
+

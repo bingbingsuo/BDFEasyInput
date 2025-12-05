@@ -1,0 +1,37 @@
+# Example: Water molecule geometry optimization + frequency calculation
+# This example demonstrates opt+freq using hess final mode
+# Module order: COMPASS → BDFOPT (hess final) → XUANYUAN → SCF → RESP (norder 2)
+
+task:
+  type: optimize
+  description: "H2O geometry optimization + frequency calculation with B3LYP/cc-pVDZ"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+  geometry_optimization:
+    solver: 1
+    hessian:
+      mode: final  # Calculate Hessian after optimization completes
+    thermochemistry:
+      temperature: 298.15
+      pressure: 1.0
+      scale_factor: 1.0
+      electronic_degeneracy: 1
+

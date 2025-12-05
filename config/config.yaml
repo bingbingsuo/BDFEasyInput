@@ -1,0 +1,123 @@
+# BDFEasyInput 全局配置文件
+# 此文件包含执行、AI 和分析相关的所有配置
+# 复制此文件并根据需要修改
+
+# ============================================================================
+# 执行配置 (Execution)
+# ============================================================================
+execution:
+  # 执行类型：'direct' 或 'bdfautotest'
+  type: direct  # 默认使用直接执行模式
+  
+  # 直接执行模式配置（当 type: direct 时）
+  direct:
+    # BDF 安装目录（必需）
+    bdf_home: "/Users/bsuo/bdf/BDFAutotest/bdf-pkg-full/build/bdf-pkg-full"
+    
+    # 临时文件目录（可选，默认 "/tmp/$RANDOM"）
+    # 支持 $RANDOM 占位符，每次运行生成随机目录名避免冲突
+    bdf_tmpdir: "/tmp/$RANDOM"
+    
+    # OpenMP 配置（可选）
+    omp_num_threads: 4  # null 表示使用 CPU 核心数
+    omp_stacksize: "512M"
+  
+  # BDFAutotest 模式配置（当 type: bdfautotest 时）
+  bdfautotest:
+    # BDFAutotest 工程路径（必需）
+    path: "/path/to/BDFAutoTest"
+    
+    # 配置文件路径（可选，默认使用 BDFAutotest 的 config/config.yaml）
+    config_file: null
+  
+  # 默认超时时间（秒）
+  timeout: 3600
+
+# ============================================================================
+# AI 配置 (AI)
+# ============================================================================
+ai:
+  # 是否启用 AI 功能
+  enabled: true
+  
+  # 默认使用的 AI 提供商
+  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
+  
+  # AI 提供商配置
+  providers:
+    # Ollama 本地模型（推荐用于本地使用）
+    ollama:
+      enabled: true
+      base_url: "http://localhost:11434"
+      model: "llama3"  # 可用的模型: llama3, llama2, mistral 等
+      timeout: 60
+    
+    # OpenAI API（需要 API 密钥）
+    openai:
+      enabled: false
+      api_key_env: "OPENAI_API_KEY"  # 环境变量名
+      model: "gpt-4"  # 或 "gpt-3.5-turbo"
+      timeout: 60
+    
+    # Anthropic Claude API（需要 API 密钥）
+    anthropic:
+      enabled: false
+      api_key_env: "ANTHROPIC_API_KEY"  # 环境变量名
+      model: "claude-3-sonnet-20240229"
+      timeout: 60
+  
+  # 默认 AI 参数
+  defaults:
+    temperature: 0.7  # 控制输出的随机性 (0.0-1.0)
+    max_tokens: 2000  # 最大生成 token 数
+  
+  # 任务规划设置
+  planning:
+    auto_fill: true          # 是否自动补充缺失参数
+    suggest_methods: true     # 是否提供方法推荐
+    suggest_optimization: true # 是否提供优化建议
+
+# ============================================================================
+# 分析配置 (Analysis)
+# ============================================================================
+analysis:
+  # 是否启用结果分析
+  enabled: true
+  
+  # AI 配置（用于结果分析）
+  ai:
+    # 使用的 AI 提供商（继承自 ai.default_provider，可覆盖）
+    provider: null  # null 表示使用 ai.default_provider
+    
+    # 模型名称（继承自对应 provider 的 model，可覆盖）
+    model: null
+    
+    # 温度参数（控制随机性）
+    temperature: 0.7
+  
+  # 输出配置
+  output:
+    # 报告格式
+    format: "markdown"  # 选项: "markdown", "html", "text"
+    
+    # 报告内容选项
+    include_raw_data: true        # 是否包含原始数据
+    include_recommendations: true # 是否包含建议
+    include_expert_insights: true # 是否包含专家见解
+  
+  # 专家模式配置
+  expert_mode:
+    enabled: true
+    depth: "detailed"  # 选项: "brief", "standard", "detailed"
+  
+  # 解析配置
+  parsing:
+    extract_all: true  # 是否提取所有数据
+    extract:
+      energy: true      # 能量
+      geometry: true    # 几何结构
+      frequencies: true # 频率
+      properties: true  # 其他性质
+      warnings: true   # 警告
+      errors: true     # 错误
+

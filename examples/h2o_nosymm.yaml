@@ -1,0 +1,29 @@
+# 水分子 RHF 单点能计算示例（不使用对称性）
+
+task:
+  type: energy
+  description: "H2O RHF single point energy calculation without symmetry"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    # 坐标格式: ATOM X Y Z (单位: angstrom)
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: hf
+  basis: cc-pvdz
+
+settings:
+  compass:
+    symmetry:
+      no_symmetry: true  # 强制不使用对称性，与 group 互斥，nosymm 优先
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+

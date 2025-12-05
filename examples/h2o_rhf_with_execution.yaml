@@ -1,0 +1,39 @@
+# H2O RHF Single Point Energy Calculation with Direct BDF Execution
+# 示例：包含执行配置的 YAML 文件
+
+task:
+  type: energy
+  description: "H2O single point energy calculation with RHF/cc-pVDZ"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000  0.0000  0.1173
+    - H  0.0000  0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: hf
+  basis: cc-pvdz
+
+# 执行配置
+execution:
+  # 执行类型：'direct' 或 'bdfautotest'
+  type: direct
+  
+  # 直接执行模式配置（当 type: direct 时）
+  bdf_home: "/path/to/bdf/installation"  # BDF 安装目录（必需）
+  bdf_tmpdir: "/tmp/$RANDOM"              # BDF 临时文件目录（可选，默认 "/tmp/$RANDOM"）
+                                          # 支持 $RANDOM 占位符，每次运行生成随机目录名避免冲突
+  omp_num_threads: 8                      # OpenMP 线程数（可选，默认使用 CPU 核心数）
+  omp_stacksize: "512M"                   # OpenMP 栈大小（可选，默认 "512M"）
+
+# 如果使用 BDFAutotest 模式，配置如下：
+# execution:
+#   type: bdfautotest
+#   bdfautotest_path: "/path/to/BDFAutoTest"
+#   config_file: "/path/to/BDFAutoTest/config/config.yaml"  # 可选
+

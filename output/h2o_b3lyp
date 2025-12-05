@@ -1,0 +1,22 @@
+$COMPASS
+Title
+ Water
+Basis
+ cc-pvdz
+Geometry
+ O        0.000000     0.000000     0.117300
+ H        0.000000     0.757200    -0.469200
+ H        0.000000    -0.757200    -0.469200
+End geometry
+Check
+SAORB
+$END
+
+$XUANYUAN
+$END
+
+$SCF
+RKS
+dft functional
+ b3lyp
+$END

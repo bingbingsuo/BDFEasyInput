@@ -1,0 +1,27 @@
+# 水分子 PBE0 单点能计算示例
+
+task:
+  type: energy
+  description: "H2O PBE0 single point energy calculation"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    # 坐标格式: ATOM X Y Z (单位: angstrom)
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+
