@@ -22,6 +22,14 @@ from .converter import BDFConverter  # noqa: F401
 from .validator import BDFValidator, ValidationError  # noqa: F401
 from .config import load_config, find_config_file, get_execution_config, get_ai_config, get_analysis_config  # noqa: F401
 
+# AI module (optional import)
+try:
+    from .ai import TaskPlanner, PlanningError  # noqa: F401
+    from .ai.client import OllamaClient, OpenAIClient, AnthropicClient  # noqa: F401
+    AI_AVAILABLE = True
+except ImportError:
+    AI_AVAILABLE = False
+
 # Execution module (optional import)
 try:
     from .execution import BDFAutotestRunner, BDFDirectRunner, create_runner  # noqa: F401
@@ -44,6 +52,8 @@ try:
         'load_xc_database',
         'validate_functional',
     ]
+    if AI_AVAILABLE:
+        __all__.extend(['TaskPlanner', 'PlanningError', 'OllamaClient', 'OpenAIClient', 'AnthropicClient'])
 except ImportError:
     __all__ = [
         'BDFConverter',
@@ -61,3 +71,5 @@ except ImportError:
         'load_xc_database',
         'validate_functional',
     ]
+    if AI_AVAILABLE:
+        __all__.extend(['TaskPlanner', 'PlanningError', 'OllamaClient', 'OpenAIClient', 'AnthropicClient'])

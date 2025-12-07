@@ -88,13 +88,16 @@ ollama>=0.1.0          # Ollama 本地模型支持
 
 ```bash
 # AI 规划任务
-bdfeasyinput ai-plan "计算水分子的单点能，使用 PBE0 方法" -o task.yaml
+bdfeasyinput ai plan "计算水分子的单点能，使用 PBE0 方法" -o task.yaml
 
-# 交互式对话
-bdfeasyinput ai-chat
+# 流式规划输出
+bdfeasyinput ai plan "..." --stream -o task.yaml
+
+# 交互式对话（默认流式）
+bdfeasyinput ai chat --stream
 
 # 指定 AI 提供商
-bdfeasyinput ai-plan "..." --provider ollama --model llama3
+bdfeasyinput ai plan "..." --provider ollama --model llama3
 ```
 
 ### 2. Python API
@@ -147,18 +150,18 @@ AI: "好的，我建议使用 PBE0 泛函和 def2-TZVP 基组..."
 
 ## 📅 开发计划
 
-### 阶段 2（部分）
+### 阶段 2（完成）
 - [x] AI 模块设计文档
-- [ ] AI 客户端接口
-- [ ] Ollama 客户端实现
-- [ ] 基础提示词模板
+- [x] AI 客户端接口
+- [x] Ollama 客户端实现
+- [x] 基础提示词模板
 
-### 阶段 3（主要）
-- [ ] 完整任务规划器
-- [ ] YAML 生成和验证
-- [ ] 交互式对话
-- [ ] 方法推荐器
-- [ ] 提示词优化
+### 阶段 3（进行中）
+- [x] 完整任务规划器（含重试与流式）
+- [x] YAML 生成和验证（保存前校验与警告）
+- [x] 交互式对话（支持流式输出）
+- [x] 方法推荐器（规则与推荐文本）
+- [ ] 提示词优化（持续迭代）
 
 ## 🔄 与现有功能的关系
 
@@ -220,9 +223,8 @@ ai:
 1. AI 功能是可选的，需要安装额外依赖
 2. 本地模型需要先安装和启动（如 Ollama）
 3. 远程 API 需要配置 API 密钥
-4. AI 生成的 YAML 会自动验证，但仍建议检查
+4. AI 生成的 YAML 会自动验证；交互保存前进行校验，如有错误阻止保存
 
 ---
 
 **AI 功能将大大提升用户体验，让非专家用户也能轻松使用 BDF 进行量子化学计算！** 🎉
-

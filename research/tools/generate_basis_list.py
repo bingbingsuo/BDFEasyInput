@@ -37,25 +37,25 @@ def parse_basisname_file(file_path: str) -> List[Dict]:
     
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-        for line_num, line in enumerate(f, 1):
-            line = line.strip()
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
                 
                 # 跳过空行
                 if not line:
                     continue
                 
-                # 跳过注释行（以 # 开头或包含注释标记如 "a.e. rel."）
-                if line.startswith('#') or 'a.e. rel.' in line or 'ecp' in line.lower() and 'the maximum' in line.lower():
-                continue
-            
+                # 跳过注释行（以 # 开头或包含注释标记如 "a.e. rel.")
+                if line.startswith('#') or 'a.e. rel.' in line or ('ecp' in line.lower() and 'the maximum' in line.lower()):
+                    continue
+                
                 # 解析行（使用空格分隔，可能有多个空格）
                 # 格式：基组名    相对论标志    有效核势标志
                 # 示例：STO-3G                          no          no
                 parts = [p for p in line.split() if p]  # 移除空字符串
-            if len(parts) < 1:
-                continue
-            
-            basis_name = parts[0]
+                if len(parts) < 1:
+                    continue
+                
+                basis_name = parts[0]
                 
                 # 解析相对论和 ECP 标志
                 # 第二列是相对论标志，第三列是 ECP 标志
@@ -190,3 +190,27 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 兼容旧测试脚本的函数名
+def read_bdf_basis_file(file_path: str):
+    items = parse_basisname_file(file_path)
+    # 转换为旧格式键名与字符串标志
+    converted = []
+    for b in items:
+        converted.append({
+            'name': b['bdf_name'],
+            'relativistic': 'yes' if b['relativistic'] else 'no',
+            'ecp': 'yes' if b['ecp'] else 'no',
+        })
+    return converted
+
+def generate_basis_mapping(basis_list: List[Dict]):
+    # 接受旧格式列表，转换为新映射结构
+    normalized = []
+    for b in basis_list:
+        normalized.append({
+            'bdf_name': b.get('name', ''),
+            'relativistic': str(b.get('relativistic', 'no')).lower() == 'yes',
+            'ecp': str(b.get('ecp', 'no')).lower() == 'yes',
+        })
+    return generate_yaml_mapping(normalized)
