@@ -8,11 +8,22 @@ import os
 from typing import List, Dict, Optional, Iterator
 
 try:
+    # Try new API (openai >= 1.0.0)
     from openai import OpenAI
     OPENAI_AVAILABLE = True
+    OPENAI_NEW_API = True
 except ImportError:
-    OPENAI_AVAILABLE = False
-    OpenAI = None
+    try:
+        # Try old API (openai < 1.0.0)
+        import openai
+        OPENAI_AVAILABLE = True
+        OPENAI_NEW_API = False
+        OpenAI = None
+    except ImportError:
+        OPENAI_AVAILABLE = False
+        OPENAI_NEW_API = False
+        OpenAI = None
+        openai = None
 
 from .base import AIClient
 

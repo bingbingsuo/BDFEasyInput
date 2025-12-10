@@ -72,6 +72,7 @@ class BDFDirectRunner:
         self,
         input_file: str,
         timeout: Optional[int] = None,
+        use_debug_dir: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         """
@@ -80,6 +81,7 @@ class BDFDirectRunner:
         Args:
             input_file: BDF 输入文件路径（.inp 文件）
             timeout: 超时时间（秒，可选）
+            use_debug_dir: 是否使用 bdfeasyinput/debug 作为工作目录（用于测试）
             **kwargs: 其他参数（暂未使用）
         
         Returns:
@@ -102,9 +104,25 @@ class BDFDirectRunner:
         if input_path.suffix.lower() != '.inp':
             raise ValueError(f"Input file must have .inp extension, got: {input_path.suffix}")
         
-        # 工作目录：输入文件所在目录（将设置为 BDF_WORKDIR）
-        work_dir = input_path.parent
-        work_dir.mkdir(parents=True, exist_ok=True)
+        # 工作目录：如果 use_debug_dir=True，使用 debug 目录，否则使用输入文件所在目录
+        # debug 目录位于项目根目录（与 bdfeasyinput 平级），用于测试
+        if use_debug_dir:
+            # 从 bdfeasyinput/execution/bdf_direct.py 向上三级到项目根目录
+            project_root = Path(__file__).parent.parent.parent
+            debug_dir = project_root / "debug"
+            work_dir = debug_dir
+            work_dir.mkdir(parents=True, exist_ok=True)
+            # 将输入文件复制到 debug 目录
+            debug_input_file = work_dir / input_path.name
+            import shutil
+            shutil.copy2(input_path, debug_input_file)
+            # 使用 debug 目录中的输入文件
+            input_file_for_bdf = debug_input_file.name
+        else:
+            work_dir = input_path.parent
+            work_dir.mkdir(parents=True, exist_ok=True)
+            # 使用原始输入文件名
+            input_file_for_bdf = input_path.name
         
         # 输出文件路径（在 BDF_WORKDIR 中）
         # 输入文件名：name.inp
@@ -129,7 +147,7 @@ class BDFDirectRunner:
         cmd = [
             str(self.bdf_executable),
             "-r",
-            input_path.name  # 只使用文件名，因为工作目录已设置为输入文件目录
+            input_file_for_bdf  # 使用工作目录中的输入文件名
         ]
         
         # 准备环境变量

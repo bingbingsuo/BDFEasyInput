@@ -14,7 +14,14 @@ from .converter import BDFConverter
 from .validator import BDFValidator, ValidationError
 from .ai.parser.response_parser import parse_ai_response, AIResponseParseError
 from .ai import TaskPlanner, PlanningError
-from .ai.client import OllamaClient, OpenAIClient, AnthropicClient, AIClient
+from .ai.client import (
+    OllamaClient, 
+    OpenAIClient, 
+    AnthropicClient, 
+    AIClient,
+    OpenRouterClient,
+    create_openai_compatible_client,
+)
 
 
 def get_ai_client_from_config(config_path: Optional[str] = None) -> AIClient:
@@ -100,8 +107,56 @@ def get_ai_client_from_config(config_path: Optional[str] = None) -> AIClient:
                 )
             except ValueError as e:
                 raise click.ClickException(str(e))
+        
+        elif provider_name == "openrouter":
+            model = provider_config.get("model", "openai/gpt-4")
+            api_key = os.getenv(provider_config.get("api_key_env", "OPENROUTER_API_KEY"))
+            base_url = provider_config.get("base_url")
+            timeout = provider_config.get("timeout", 60)
+            
+            try:
+                client = OpenRouterClient(
+                    model=model,
+                    api_key=api_key,
+                    base_url=base_url,
+                    timeout=timeout
+                )
+            except ImportError:
+                raise click.ClickException(
+                    "OpenAI package is not installed. "
+                    "Install it with: pip install openai>=1.0.0"
+                )
+            except ValueError as e:
+                raise click.ClickException(str(e))
+        
+        elif provider_name in ["together", "groq", "deepseek", "mistral", "perplexity"]:
+            # Use OpenAI-compatible client factory
+            model = provider_config.get("model")
+            api_key = os.getenv(provider_config.get("api_key_env", f"{provider_name.upper()}_API_KEY"))
+            base_url = provider_config.get("base_url")
+            timeout = provider_config.get("timeout", 60)
+            
+            try:
+                client = create_openai_compatible_client(
+                    service=provider_name,
+                    model=model,
+                    api_key=api_key,
+                    base_url=base_url,
+                    timeout=timeout
+                )
+            except ImportError:
+                raise click.ClickException(
+                    "OpenAI package is not installed. "
+                    "Install it with: pip install openai>=1.0.0"
+                )
+            except ValueError as e:
+                raise click.ClickException(str(e))
+        
         else:
-            raise click.ClickException(f"Unknown provider: {provider_name}")
+            raise click.ClickException(
+                f"Unknown provider: {provider_name}. "
+                f"Supported providers: ollama, openai, anthropic, openrouter, together, groq, deepseek, mistral, perplexity"
+            )
         
         # Check if client is available
         if not client.is_available():
@@ -186,7 +241,7 @@ def ai():
 @click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file path")
 @click.option(
     "--provider",
-    type=click.Choice(["ollama", "openai", "anthropic"]),
+    type=click.Choice(["ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"]),
     help="AI provider to use (overrides config)"
 )
 @click.option("--model", help="Model name (overrides config)")
@@ -232,6 +287,16 @@ def ai_plan(
                 if not api_key:
                     raise click.ClickException("ANTHROPIC_API_KEY environment variable not set")
                 client = AnthropicClient(model=model or "claude-3-sonnet-20240229", api_key=api_key)
+            elif provider == "openrouter":
+                api_key = os.getenv("OPENROUTER_API_KEY")
+                if not api_key:
+                    raise click.ClickException("OPENROUTER_API_KEY environment variable not set")
+                client = OpenRouterClient(model=model or "openai/gpt-4", api_key=api_key)
+            elif provider in ["together", "groq", "deepseek", "mistral", "perplexity"]:
+                client = create_openai_compatible_client(
+                    service=provider,
+                    model=model
+                )
             else:
                 client = get_ai_client_from_config(config)
         else:
@@ -280,7 +345,10 @@ def ai_plan(
 @ai.command("chat")
 @click.option("-o", "--output", type=click.Path(), help="Output YAML file")
 @click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file path")
-@click.option("--provider", type=click.Choice(["ollama", "openai", "anthropic"]))
+@click.option(
+    "--provider", 
+    type=click.Choice(["ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"])
+)
 @click.option("--model", help="Model name")
 @click.option("--stream/--no-stream", default=True, help="Stream AI output in real-time")
 def ai_chat(output: Optional[str], config: Optional[str], provider: Optional[str], model: Optional[str], stream: bool):
@@ -307,6 +375,16 @@ def ai_chat(output: Optional[str], config: Optional[str], provider: Optional[str
                 if not api_key:
                     raise click.ClickException("ANTHROPIC_API_KEY environment variable not set")
                 client = AnthropicClient(model=model or "claude-3-sonnet-20240229", api_key=api_key)
+            elif provider == "openrouter":
+                api_key = os.getenv("OPENROUTER_API_KEY")
+                if not api_key:
+                    raise click.ClickException("OPENROUTER_API_KEY environment variable not set")
+                client = OpenRouterClient(model=model or "openai/gpt-4", api_key=api_key)
+            elif provider in ["together", "groq", "deepseek", "mistral", "perplexity"]:
+                client = create_openai_compatible_client(
+                    service=provider,
+                    model=model
+                )
         else:
             client = get_ai_client_from_config(config)
         
@@ -396,6 +474,271 @@ def ai_chat(output: Optional[str], config: Optional[str], provider: Optional[str
         
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@main.command()
+@click.argument("input_file", type=click.Path(exists=True))
+@click.option("-o", "--output-dir", type=click.Path(), help="Output directory for results")
+@click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file path")
+@click.option("--timeout", type=int, help="Timeout in seconds")
+@click.option("--use-debug-dir", is_flag=True, help="Use bdfeasyinput/debug as working directory for testing")
+def run(input_file: str, output_dir: Optional[str], config: Optional[str], timeout: Optional[int], use_debug_dir: bool):
+    """Run BDF calculation from input file."""
+    try:
+        from .config import load_config, merge_config_with_defaults
+        from .execution import create_runner
+        
+        # Load configuration
+        yaml_config = load_config(config) if config else None
+        if yaml_config:
+            yaml_config = merge_config_with_defaults(yaml_config)
+        
+        # Create runner
+        runner = create_runner(config=yaml_config)
+        
+        # Determine output directory
+        if output_dir:
+            output_path = Path(output_dir)
+        else:
+            # Use input file directory
+            input_path = Path(input_file)
+            output_path = input_path.parent
+        
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Run calculation
+        click.echo(f"Running BDF calculation from: {input_file}", err=True)
+        click.echo(f"Output directory: {output_path}", err=True)
+        
+        # Pass use_debug_dir to runner if it's a BDFDirectRunner
+        run_kwargs = {
+            'timeout': timeout
+        }
+        # Check if runner supports use_debug_dir parameter
+        import inspect
+        run_signature = inspect.signature(runner.run)
+        if 'use_debug_dir' in run_signature.parameters:
+            run_kwargs['use_debug_dir'] = use_debug_dir
+        
+        result = runner.run(input_file, **run_kwargs)
+        
+        # Display results
+        if result.get('status') == 'success':
+            click.echo(f"✓ Calculation completed successfully", err=True)
+            if result.get('output_file'):
+                click.echo(f"Output file: {result['output_file']}", err=True)
+            if result.get('error_file'):
+                click.echo(f"Error file: {result.get('error_file')}", err=True)
+        else:
+            click.echo(f"✗ Calculation failed: {result.get('error', 'Unknown error')}", err=True)
+            sys.exit(1)
+            
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@main.command()
+@click.argument("output_file", type=click.Path(exists=True))
+@click.option("-i", "--input", type=click.Path(exists=True), help="BDF input file (optional)")
+@click.option("-e", "--error", type=click.Path(exists=True), help="Error file (optional)")
+@click.option("-o", "--output", type=click.Path(), help="Output report file")
+@click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file path")
+@click.option("--format", type=click.Choice(["markdown", "html", "text"]), default="markdown", help="Report format")
+@click.option("--task-type", help="Task type (e.g., energy, optimize, frequency)")
+def analyze(
+    output_file: str,
+    input: Optional[str],
+    error: Optional[str],
+    output: Optional[str],
+    config: Optional[str],
+    format: str,
+    task_type: Optional[str]
+):
+    """Analyze BDF calculation results using AI."""
+    try:
+        from .config import load_config, merge_config_with_defaults, get_ai_config
+        from .analysis import QuantumChemistryAnalyzer, AnalysisReportGenerator
+        from .analysis.parser import BDFOutputParser
+        
+        # Get AI client
+        client = get_ai_client_from_config(config)
+        
+        # Create analyzer
+        analyzer = QuantumChemistryAnalyzer(ai_client=client)
+        
+        # Analyze
+        click.echo("Analyzing results with AI...", err=True)
+        analysis_result = analyzer.analyze(
+            output_file=output_file,
+            input_file=input,
+            error_file=error,
+            task_type=task_type
+        )
+        
+        # Parse output for report
+        parser = BDFOutputParser()
+        parsed_data = parser.parse(output_file)
+        
+        # Generate report
+        report_generator = AnalysisReportGenerator(format=format)
+        report = report_generator.generate(
+            analysis_result=analysis_result,
+            parsed_data=parsed_data,
+            output_file=output
+        )
+        
+        if output:
+            click.echo(f"Analysis report written to: {output}")
+        else:
+            click.echo("\n" + "=" * 50)
+            click.echo(report)
+            
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command()
+@click.argument("query", required=False)
+@click.option("-o", "--output-dir", type=click.Path(), default="./results", help="Output directory")
+@click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file path")
+@click.option("--run/--no-run", default=False, help="Run calculation after generating input")
+@click.option("--analyze/--no-analyze", default=False, help="Analyze results after calculation")
+@click.option("--provider", type=click.Choice(["ollama", "openai", "anthropic"]), help="AI provider")
+@click.option("--model", help="AI model name")
+def workflow(
+    query: Optional[str],
+    output_dir: str,
+    config: Optional[str],
+    run: bool,
+    analyze: bool,
+    provider: Optional[str],
+    model: Optional[str]
+):
+    """Complete workflow: plan → convert → run → analyze."""
+    try:
+        from pathlib import Path
+        from .config import load_config, merge_config_with_defaults
+        from .converter import BDFConverter
+        from .execution import create_runner
+        from .analysis import QuantumChemistryAnalyzer, AnalysisReportGenerator
+        from .analysis.parser import BDFOutputParser
+        
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Step 1: Plan task
+        if not query:
+            query = click.prompt("Please describe your calculation task")
+        
+        click.echo("Step 1: Planning task with AI...", err=True)
+        client = get_ai_client_from_config(config)
+        if provider or model:
+            if provider == "ollama":
+                client = OllamaClient(model_name=model or "llama3")
+            elif provider == "openai":
+                api_key = os.getenv("OPENAI_API_KEY")
+                if not api_key:
+                    raise click.ClickException("OPENAI_API_KEY environment variable not set")
+                client = OpenAIClient(model=model or "gpt-4", api_key=api_key)
+            elif provider == "anthropic":
+                api_key = os.getenv("ANTHROPIC_API_KEY")
+                if not api_key:
+                    raise click.ClickException("ANTHROPIC_API_KEY environment variable not set")
+                client = AnthropicClient(model=model or "claude-3-sonnet-20240229", api_key=api_key)
+            elif provider == "openrouter":
+                api_key = os.getenv("OPENROUTER_API_KEY")
+                if not api_key:
+                    raise click.ClickException("OPENROUTER_API_KEY environment variable not set")
+                client = OpenRouterClient(model=model or "openai/gpt-4", api_key=api_key)
+            elif provider in ["together", "groq", "deepseek", "mistral", "perplexity"]:
+                client = create_openai_compatible_client(
+                    service=provider,
+                    model=model
+                )
+        
+        from .ai import TaskPlanner
+        planner = TaskPlanner(ai_client=client)
+        task_config = planner.plan(query)
+        
+        # Save YAML
+        yaml_file = output_path / "task.yaml"
+        with open(yaml_file, 'w', encoding='utf-8') as f:
+            yaml.dump(task_config, f, default_flow_style=False, allow_unicode=True)
+        click.echo(f"✓ Task configuration saved to: {yaml_file}", err=True)
+        
+        # Step 2: Convert to BDF
+        click.echo("Step 2: Converting to BDF input...", err=True)
+        converter = BDFConverter()
+        bdf_content = converter.convert(task_config)
+        
+        bdf_input_file = output_path / "bdf_input.inp"
+        with open(bdf_input_file, 'w') as f:
+            f.write(bdf_content)
+        click.echo(f"✓ BDF input file written to: {bdf_input_file}", err=True)
+        
+        # Step 3: Run calculation (if requested)
+        execution_result = None
+        if run:
+            click.echo("Step 3: Running BDF calculation...", err=True)
+            yaml_config = load_config(config) if config else None
+            if yaml_config:
+                yaml_config = merge_config_with_defaults(yaml_config)
+            
+            runner = create_runner(config=yaml_config)
+            execution_result = runner.run(
+                str(bdf_input_file),
+                output_dir=str(output_path)
+            )
+            
+            if execution_result.get('status') == 'success':
+                click.echo(f"✓ Calculation completed successfully", err=True)
+            else:
+                click.echo(f"✗ Calculation failed: {execution_result.get('error', 'Unknown error')}", err=True)
+                if not analyze:  # If analyze is not requested, exit
+                    sys.exit(1)
+        
+        # Step 4: Analyze results (if requested and calculation succeeded)
+        if analyze and execution_result and execution_result.get('status') == 'success':
+            click.echo("Step 4: Analyzing results with AI...", err=True)
+            
+            output_file = execution_result.get('output_file')
+            if not output_file:
+                click.echo("Warning: No output file found, skipping analysis", err=True)
+            else:
+                analyzer = QuantumChemistryAnalyzer(ai_client=client)
+                analysis_result = analyzer.analyze(
+                    output_file=output_file,
+                    input_file=str(bdf_input_file),
+                    error_file=execution_result.get('error_file'),
+                    task_type=task_config.get('task', {}).get('type')
+                )
+                
+                parser = BDFOutputParser()
+                parsed_data = parser.parse(output_file)
+                
+                report_generator = AnalysisReportGenerator(format="markdown")
+                report_file = output_path / "analysis_report.md"
+                report = report_generator.generate(
+                    analysis_result=analysis_result,
+                    parsed_data=parsed_data,
+                    output_file=str(report_file)
+                )
+                
+                click.echo(f"✓ Analysis report written to: {report_file}", err=True)
+        elif analyze and not run:
+            click.echo("Warning: --analyze requires --run. Skipping analysis.", err=True)
+        
+        click.echo("\n✓ Workflow completed successfully!", err=True)
+        
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 

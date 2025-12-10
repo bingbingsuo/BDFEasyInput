@@ -5,6 +5,7 @@ This module generates the RESP block for BDF input files.
 """
 
 from typing import Dict, Any, List, Optional, Union
+from .passthrough import append_passthrough_lines
 
 
 def generate_resp_block(
@@ -101,6 +102,19 @@ def generate_resp_block(
         lines.append("solneqss")
     if resp_solvent.get('state_specific_equilibrium'):
         lines.append("soleqss")
+
+    # Passthrough for RESP
+    protected = {
+        'method',
+        'norder',
+        'nfiles',
+        'iroot',
+        'print_level',
+        'maxmem',
+        'solvent',
+        'geom',
+    }
+    append_passthrough_lines(lines, resp_settings, protected_keys=protected)
     
     lines.append("$END")
     

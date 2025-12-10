@@ -25,8 +25,13 @@
 # 复制示例文件
 cp config/config.yaml.example config/config.yaml
 
+# 可选：复制 AI 参数配置文件
+cp config/ai_config.example.yaml config/ai_config.yaml
+
 # 编辑配置文件
 vim config/config.yaml
+# 如果需要，编辑 AI 参数配置
+vim config/ai_config.yaml
 ```
 
 ### 2. 最小配置示例
@@ -80,7 +85,13 @@ execution:
 
 ### AI 配置 (ai)
 
-#### 基本配置
+#### 配置文件分离
+
+AI 配置分为两部分：
+1. **`config.yaml`** - 包含 AI 供应商配置（providers）
+2. **`ai_config.yaml`** - 包含 AI 参数设置（defaults, planning 等）
+
+#### 基本配置（config.yaml）
 
 ```yaml
 ai:
@@ -94,7 +105,24 @@ ai:
       model: "llama3"
 ```
 
+#### AI 参数配置（ai_config.yaml，可选）
+
+```yaml
+ai:
+  defaults:
+    temperature: 0.7
+    max_tokens: 2000
+    use_streaming: false
+  
+  planning:
+    auto_fill: true
+    suggest_methods: true
+    suggest_optimization: true
+```
+
 #### 使用 OpenAI
+
+在 `config.yaml` 中：
 
 ```yaml
 ai:

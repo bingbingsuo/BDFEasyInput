@@ -1,36 +1,9 @@
-# AI 配置文件示例
+# AI 参数配置文件示例
+# 此文件用于配置 AI 相关的参数设置，不包含供应商配置
+# 供应商配置请参考 config.yaml 中的 ai.providers 部分
 # 复制此文件为 ai_config.yaml 并根据需要修改
 
 ai:
-  # 默认使用的 AI 提供商
-  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
-  
-  # 是否启用 AI 功能
-  enabled: true
-  
-  providers:
-    # Ollama 本地模型配置
-    ollama:
-      enabled: true
-      base_url: "http://localhost:11434"
-      model: "llama3"  # 可用的模型: llama3, llama2, mistral 等
-      timeout: 60  # 请求超时时间（秒）
-    
-    # OpenAI API 配置
-    openai:
-      enabled: false  # 设置为 true 以启用
-      api_key_env: "OPENAI_API_KEY"  # 环境变量名
-      model: "gpt-4"  # 或 "gpt-3.5-turbo"
-      base_url: "https://api.openai.com/v1"  # 可自定义 API 端点
-      timeout: 60
-    
-    # Anthropic Claude API 配置
-    anthropic:
-      enabled: false  # 设置为 true 以启用
-      api_key_env: "ANTHROPIC_API_KEY"  # 环境变量名
-      model: "claude-3-sonnet-20240229"  # 或其他 Claude 模型
-      timeout: 60
-  
   # 默认 AI 参数
   defaults:
     temperature: 0.7  # 控制输出的随机性 (0.0-1.0)
@@ -46,12 +19,11 @@ ai:
     # 是否提供优化建议
     suggest_optimization: true
   
-  # 提示词设置
+  # 提示词设置（可选）
   prompts:
-    # 系统提示词文件路径
-    system_prompt_file: "prompts/system.txt"
-    # 示例文件路径
-    examples_file: "prompts/examples.yaml"
+    # 系统提示词文件路径（可选）
+    system_prompt_file: null  # 例如: "prompts/system.txt"
+    # 示例文件路径（可选）
+    examples_file: null  # 例如: "prompts/examples.yaml"
     # 是否包含专业知识库
     include_knowledge_base: true
-

@@ -5,6 +5,7 @@ This module generates the TDDFT block for BDF input files.
 """
 
 from typing import Dict, Any, List, Optional
+from .passthrough import append_passthrough_lines
 
 
 def generate_tddft_block(
@@ -106,6 +107,24 @@ def generate_tddft_block(
     if current_tddft_settings.get('linear_response_equilibrium'):
         lines.append("soleqlr")
     
+    # Passthrough for TDDFT
+    protected = {
+        'spin_flip',
+        'n_states',
+        'tda',
+        'diagonalization_method',
+        'energy_window',
+        'store_wavefunction',
+        'crit_vec',
+        'crit_e',
+        'print_level',
+        'linear_response_non_equilibrium',
+        'linear_response_equilibrium',
+        'isf',
+        'istore',
+    }
+    append_passthrough_lines(lines, current_tddft_settings, protected_keys=protected)
+
     lines.append("$END")
     
     return lines

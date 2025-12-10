@@ -1,0 +1,20 @@
+method:
+  basis: cc-pvdz
+  functional: pbe0
+  type: dft
+molecule:
+  charge: 0
+  coordinates:
+  - O  0.0000 0.0000 0.1173
+  - H  0.0000 0.7572 -0.4692
+  - H  0.0000 -0.7572 -0.4692
+  multiplicity: 1
+  name: Water
+  units: angstrom
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+task:
+  description: H2O single point energy calculation
+  type: energy

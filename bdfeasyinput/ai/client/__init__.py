@@ -22,10 +22,33 @@ try:
 except ImportError:
     AnthropicClient = None
 
+try:
+    from .openrouter_client import OpenRouterClient  # noqa: F401
+except ImportError:
+    OpenRouterClient = None
+
+try:
+    from .openai_compatible import (
+        create_openai_compatible_client,
+        get_available_services,
+        get_service_config,
+        SERVICE_CONFIGS,
+    )  # noqa: F401
+except ImportError:
+    create_openai_compatible_client = None
+    get_available_services = None
+    get_service_config = None
+    SERVICE_CONFIGS = None
+
 __all__ = [
     'AIClient',
     'OllamaClient',
     'OpenAIClient',
     'AnthropicClient',
+    'OpenRouterClient',
+    'create_openai_compatible_client',
+    'get_available_services',
+    'get_service_config',
+    'SERVICE_CONFIGS',
 ]
 

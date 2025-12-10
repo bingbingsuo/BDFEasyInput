@@ -52,14 +52,17 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     """
     加载配置文件
     
+    会自动加载 config.yaml 和 ai_config.yaml（如果存在），并合并它们。
+    config.yaml 包含供应商配置，ai_config.yaml 包含 AI 参数设置。
+    
     Args:
         config_path: 配置文件路径（可选）
     
     Returns:
-        配置字典
+        配置字典（已合并）
     
     Raises:
-        FileNotFoundError: 如果配置文件不存在
+        FileNotFoundError: 如果主配置文件不存在
         yaml.YAMLError: 如果 YAML 格式错误
     """
     config_file = find_config_file(config_path)
@@ -70,11 +73,40 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
             f"Please create a config file at {config_file} or set BDFEASYINPUT_CONFIG environment variable."
         )
     
+    # 加载主配置文件
     with open(config_file, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     
     if config is None:
         config = {}
+    
+    # 尝试加载 ai_config.yaml（如果存在）
+    ai_config_file = config_file.parent / "ai_config.yaml"
+    if ai_config_file.exists():
+        try:
+            with open(ai_config_file, 'r', encoding='utf-8') as f:
+                ai_config = yaml.safe_load(f)
+            
+            if ai_config and 'ai' in ai_config:
+                # 合并 AI 配置（ai_config.yaml 中的设置会覆盖 config.yaml 中的）
+                if 'ai' not in config:
+                    config['ai'] = {}
+                
+                # 深度合并 AI 配置
+                def deep_merge(base: Dict, update: Dict) -> Dict:
+                    result = base.copy()
+                    for key, value in update.items():
+                        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                            result[key] = deep_merge(result[key], value)
+                        else:
+                            result[key] = value
+                    return result
+                
+                config['ai'] = deep_merge(config['ai'], ai_config['ai'])
+        except Exception as e:
+            # 如果加载 ai_config.yaml 失败，只记录警告，不影响主配置
+            import warnings
+            warnings.warn(f"Failed to load ai_config.yaml: {e}")
     
     return config
 

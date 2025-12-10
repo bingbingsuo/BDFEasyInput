@@ -6,6 +6,7 @@ This module generates the SCF block for BDF input files.
 
 from typing import Dict, Any, List
 from ..xc_functional import process_functional_input
+from .passthrough import append_passthrough_lines
 from ..utils import select_scf_method
 
 
@@ -63,6 +64,22 @@ def generate_scf_block(config: Dict[str, Any]) -> List[str]:
     # Spin multiplicity - REQUIRED field, always add to SCF block
     lines.append("Spin")
     lines.append(f" {multiplicity}")
+
+    # Always add molden keyword to save wavefunction in molden format
+    lines.append("molden")
+
+    # Convergence threshold:
+    # BDF 默认能量收敛阈值为 1.0E-08，无需显式设置。
+    # 若用户显式提供且与默认不同，则使用 THRENE 关键词设置。
+    convergence = scf_settings.get('convergence')
+    if convergence is not None:
+        try:
+            conv_val = float(convergence)
+            if abs(conv_val - 1e-8) > 0:  # 用户提供且不同于默认
+                lines.append("THRENE")
+                lines.append(f" {conv_val:.1E}")
+        except (TypeError, ValueError):
+            pass
     
     # Solvent settings
     solvent_settings = scf_settings.get('solvent', {})
@@ -203,7 +220,21 @@ def generate_scf_block(config: Dict[str, Any]) -> List[str]:
         # Save COSMO data
         if solvent_settings.get('cosmosave'):
             lines.append("cosmosave")
-    
+
+    # Passthrough: user-defined SCF keywords
+    protected = {
+        'charge',
+        'spin',
+        'convergence',
+        'occupied',
+        'solvent',
+        'dft',
+        'functional',
+        'molden',
+        'threne',
+    }
+    append_passthrough_lines(lines, scf_settings, protected_keys=protected)
+
     lines.append("$END")
     
     return lines

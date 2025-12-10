@@ -63,6 +63,7 @@ class BDFAutotestRunner:
         input_file: str,
         output_dir: Optional[str] = None,
         timeout: Optional[int] = None,
+        use_debug_dir: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         """
@@ -97,7 +98,20 @@ class BDFAutotestRunner:
             raise ValueError(f"Input file must have .inp extension, got: {input_path.suffix}")
         
         # 确定输出目录
-        if output_dir:
+        # 如果 use_debug_dir=True，使用项目根目录的 debug 目录
+        if use_debug_dir:
+            # 从 bdfeasyinput/execution/bdfautotest.py 向上三级到项目根目录
+            project_root = Path(__file__).parent.parent.parent
+            debug_dir = project_root / "debug"
+            output_path = debug_dir
+            output_path.mkdir(parents=True, exist_ok=True)
+            # 将输入文件复制到 debug 目录
+            debug_input_file = output_path / input_path.name
+            import shutil
+            shutil.copy2(input_path, debug_input_file)
+            # 使用 debug 目录中的输入文件
+            input_path = debug_input_file
+        elif output_dir:
             output_path = Path(output_dir)
             output_path.mkdir(parents=True, exist_ok=True)
         else:
@@ -108,10 +122,11 @@ class BDFAutotestRunner:
         log_file = output_path / input_path.with_suffix('.log').name
         
         # 调用 BDFAutotest 的 run-input 命令
-        # 命令格式：python orchestrator.py run-input input.inp --config config.yaml
+        # 命令格式：python3 -m src.orchestrator run-input input.inp --config config.yaml
+        # 需要在 BDFAutoTest 目录下运行
         cmd = [
             'python3',
-            str(self.orchestrator_script),
+            '-m', 'src.orchestrator',
             'run-input',
             str(input_path),
             '--config', str(self.config_file)
@@ -126,9 +141,14 @@ class BDFAutotestRunner:
         
         try:
             # 运行命令
+            # 需要在 BDFAutoTest 目录下运行，并设置 PYTHONPATH
+            env = os.environ.copy()
+            env['PYTHONPATH'] = str(self.bdfautotest_path) + (os.pathsep + env.get('PYTHONPATH', ''))
+            
             process = subprocess.run(
                 cmd,
-                cwd=str(output_path),
+                cwd=str(self.bdfautotest_path),  # 在 BDFAutoTest 目录下运行
+                env=env,  # 设置环境变量
                 capture_output=True,
                 text=True,
                 timeout=timeout,

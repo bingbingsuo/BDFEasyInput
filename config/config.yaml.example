@@ -40,7 +40,7 @@ ai:
   enabled: true
   
   # 默认使用的 AI 提供商
-  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
+  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"
   
   # AI 提供商配置
   providers:
@@ -64,17 +64,58 @@ ai:
       api_key_env: "ANTHROPIC_API_KEY"  # 环境变量名
       model: "claude-3-sonnet-20240229"
       timeout: 60
+    
+    # OpenRouter（OpenAI 兼容，支持多个模型提供商）
+    # 访问 https://openrouter.ai/models 查看可用模型
+    openrouter:
+      enabled: false
+      api_key_env: "OPENROUTER_API_KEY"  # 环境变量名
+      base_url: "https://openrouter.ai/api/v1"  # 可选，默认值
+      model: "openai/gpt-4"  # 模型格式: "provider/model-name"
+      timeout: 60
+    
+    # Together AI（OpenAI 兼容）
+    together:
+      enabled: false
+      api_key_env: "TOGETHER_API_KEY"  # 环境变量名
+      base_url: "https://api.together.xyz/v1"  # 可选，默认值
+      model: "meta-llama/Llama-2-70b-chat-hf"  # 查看 https://together.ai/models
+      timeout: 60
+    
+    # Groq（OpenAI 兼容，快速推理）
+    groq:
+      enabled: false
+      api_key_env: "GROQ_API_KEY"  # 环境变量名
+      base_url: "https://api.groq.com/openai/v1"  # 可选，默认值
+      model: "llama-3-70b-8192"  # 查看 https://console.groq.com/docs/models
+      timeout: 60
+    
+    # DeepSeek（OpenAI 兼容）
+    deepseek:
+      enabled: false
+      api_key_env: "DEEPSEEK_API_KEY"  # 环境变量名
+      base_url: "https://api.deepseek.com/v1"  # 可选，默认值
+      model: "deepseek-chat"  # 查看 https://platform.deepseek.com/api-docs
+      timeout: 60
+    
+    # Mistral AI（OpenAI 兼容）
+    mistral:
+      enabled: false
+      api_key_env: "MISTRAL_API_KEY"  # 环境变量名
+      base_url: "https://api.mistral.ai/v1"  # 可选，默认值
+      model: "mistral-large-latest"  # 查看 https://docs.mistral.ai/models
+      timeout: 60
+    
+    # Perplexity（OpenAI 兼容）
+    perplexity:
+      enabled: false
+      api_key_env: "PERPLEXITY_API_KEY"  # 环境变量名
+      base_url: "https://api.perplexity.ai"  # 可选，默认值
+      model: "pplx-70b-online"  # 查看 https://docs.perplexity.ai
+      timeout: 60
   
-  # 默认 AI 参数
-  defaults:
-    temperature: 0.7  # 控制输出的随机性 (0.0-1.0)
-    max_tokens: 2000  # 最大生成 token 数
-  
-  # 任务规划设置
-  planning:
-    auto_fill: true          # 是否自动补充缺失参数
-    suggest_methods: true     # 是否提供方法推荐
-    suggest_optimization: true # 是否提供优化建议
+  # 注意：AI 参数设置（defaults, planning 等）请参考 ai_config.yaml
+  # 此文件仅包含 AI 供应商配置
 
 # ============================================================================
 # 分析配置 (Analysis)
@@ -119,4 +160,3 @@ analysis:
       properties: true  # 其他性质
       warnings: true   # 警告
       errors: true     # 错误
-

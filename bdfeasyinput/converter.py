@@ -21,6 +21,7 @@ from .modules import (
     generate_xuanyuan_block,
     generate_scf_block,
     generate_tddft_block,
+    generate_mp2_block,
     generate_bdfopt_block,
     generate_resp_block
 )
@@ -150,6 +151,8 @@ class BDFConverter:
             blocks.append(self.generate_compass_block(config))
             blocks.append(self.generate_xuanyuan_block(config))
             blocks.append(self.generate_scf_block(config))
+            if settings.get('mp2'):
+                blocks.append(generate_mp2_block(config))
         elif task_type == 'tddft':
             # TDDFT calculation module order:
             # 1. COMPASS: Define molecular structure and basis set
@@ -159,6 +162,8 @@ class BDFConverter:
             blocks.append(self.generate_compass_block(config))
             blocks.append(self.generate_xuanyuan_block(config))
             blocks.append(self.generate_scf_block(config))
+            if settings.get('mp2'):
+                blocks.append(generate_mp2_block(config))
             
             # Check for SOC calculation
             soc_settings = tddft_settings.get('soc', {})
@@ -215,6 +220,8 @@ class BDFConverter:
             blocks.append(self.generate_bdfopt_block(config))
             blocks.append(self.generate_xuanyuan_block(config))
             blocks.append(self.generate_scf_block(config))
+            if settings.get('mp2'):
+                blocks.append(generate_mp2_block(config))
             
             # Check for hess final mode (opt+freq)
             opt_settings = settings.get('geometry_optimization', {})
@@ -258,6 +265,8 @@ class BDFConverter:
             blocks.append(self.generate_bdfopt_block(freq_config))
             blocks.append(self.generate_xuanyuan_block(config))
             blocks.append(self.generate_scf_block(config))
+            if settings.get('mp2'):
+                blocks.append(generate_mp2_block(config))
             
             # RESP block for Hessian calculation (norder=2)
             # Check if this is TDDFT frequency calculation

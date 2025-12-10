@@ -7,12 +7,12 @@
 # ============================================================================
 execution:
   # 执行类型：'direct' 或 'bdfautotest'
-  type: direct  # 默认使用直接执行模式
+  type: bdfautotest  # 使用 BDFAutoTest 模式
   
   # 直接执行模式配置（当 type: direct 时）
   direct:
     # BDF 安装目录（必需）
-    bdf_home: "/Users/bsuo/bdf/BDFAutotest/bdf-pkg-full/build/bdf-pkg-full"
+    bdf_home: "/Users/bsuo/bdf/bdf-pkg-full/build_1/bdf-pkg-full"
     
     # 临时文件目录（可选，默认 "/tmp/$RANDOM"）
     # 支持 $RANDOM 占位符，每次运行生成随机目录名避免冲突
@@ -25,7 +25,7 @@ execution:
   # BDFAutotest 模式配置（当 type: bdfautotest 时）
   bdfautotest:
     # BDFAutotest 工程路径（必需）
-    path: "/path/to/BDFAutoTest"
+    path: "/Users/bsuo/bdf/BDFAutoTest"
     
     # 配置文件路径（可选，默认使用 BDFAutotest 的 config/config.yaml）
     config_file: null
@@ -41,7 +41,7 @@ ai:
   enabled: true
   
   # 默认使用的 AI 提供商
-  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic"
+  default_provider: "openrouter"  # 选项: "ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"
   
   # AI 提供商配置
   providers:
@@ -65,17 +65,58 @@ ai:
       api_key_env: "ANTHROPIC_API_KEY"  # 环境变量名
       model: "claude-3-sonnet-20240229"
       timeout: 60
+    
+    # OpenRouter（OpenAI 兼容，支持多个模型提供商）
+    # 访问 https://openrouter.ai/models 查看可用模型
+    openrouter:
+      enabled: true
+      api_key_env: "OPENAI_API_KEY"  # 环境变量名
+      base_url: "https://openrouter.ai/api/v1"  # 可选，默认值
+      model: "mistralai/mistral-7b-instruct:free"  # 模型格式: "provider/model-name" (已测试可用)
+      timeout: 60
+    
+    # Together AI（OpenAI 兼容）
+    together:
+      enabled: false
+      api_key_env: "TOGETHER_API_KEY"  # 环境变量名
+      base_url: "https://api.together.xyz/v1"  # 可选，默认值
+      model: "meta-llama/Llama-2-70b-chat-hf"  # 查看 https://together.ai/models
+      timeout: 60
+    
+    # Groq（OpenAI 兼容，快速推理）
+    groq:
+      enabled: false
+      api_key_env: "GROQ_API_KEY"  # 环境变量名
+      base_url: "https://api.groq.com/openai/v1"  # 可选，默认值
+      model: "llama-3-70b-8192"  # 查看 https://console.groq.com/docs/models
+      timeout: 60
+    
+    # DeepSeek（OpenAI 兼容）
+    deepseek:
+      enabled: false
+      api_key_env: "DEEPSEEK_API_KEY"  # 环境变量名
+      base_url: "https://api.deepseek.com/v1"  # 可选，默认值
+      model: "deepseek-chat"  # 查看 https://platform.deepseek.com/api-docs
+      timeout: 60
+    
+    # Mistral AI（OpenAI 兼容）
+    mistral:
+      enabled: false
+      api_key_env: "MISTRAL_API_KEY"  # 环境变量名
+      base_url: "https://api.mistral.ai/v1"  # 可选，默认值
+      model: "mistral-large-latest"  # 查看 https://docs.mistral.ai/models
+      timeout: 60
+    
+    # Perplexity（OpenAI 兼容）
+    perplexity:
+      enabled: false
+      api_key_env: "PERPLEXITY_API_KEY"  # 环境变量名
+      base_url: "https://api.perplexity.ai"  # 可选，默认值
+      model: "pplx-70b-online"  # 查看 https://docs.perplexity.ai
+      timeout: 60
   
-  # 默认 AI 参数
-  defaults:
-    temperature: 0.7  # 控制输出的随机性 (0.0-1.0)
-    max_tokens: 2000  # 最大生成 token 数
-  
-  # 任务规划设置
-  planning:
-    auto_fill: true          # 是否自动补充缺失参数
-    suggest_methods: true     # 是否提供方法推荐
-    suggest_optimization: true # 是否提供优化建议
+  # 注意：AI 参数设置（defaults, planning 等）请参考 ai_config.yaml
+  # 此文件仅包含 AI 供应商配置
 
 # ============================================================================
 # 分析配置 (Analysis)

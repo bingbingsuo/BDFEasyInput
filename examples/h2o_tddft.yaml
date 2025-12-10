@@ -1,0 +1,31 @@
+# Water molecule TDDFT excited-state calculation
+# Single-point TDDFT (singlet) with 3 excited states
+
+task:
+  type: tddft
+  description: "H2O TDDFT singlet excitation energies (3 roots)"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.1173
+    - H  0.0000 0.7572 -0.4692
+    - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+  tddft:
+    spin: singlet
+    nstates: 3
+    roots: 3
+    # optionally: tda: false

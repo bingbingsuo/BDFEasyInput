@@ -5,6 +5,7 @@ This module generates the BDFOPT block for BDF input files.
 """
 
 from typing import Dict, Any, List
+from .passthrough import append_passthrough_lines
 
 
 def generate_bdfopt_block(config: Dict[str, Any]) -> List[str]:
@@ -237,7 +238,35 @@ def generate_bdfopt_block(config: Dict[str, Any]) -> List[str]:
             for coord_line in geometry2:
                 lines.append(f" {coord_line}")
             lines.append("end geometry2")
-    
+
+    # Passthrough for BDFOPT
+    protected = {
+        'solver',
+        'optimization_type',
+        'hessian',
+        'tolerance',
+        'trust',
+        'max_iterations',
+        'remove_imaginary_frequencies',
+        'dimer',
+        'o1numhess',
+        'ncorepergrad',
+        'parhess',
+        'recalchess',
+        'read_hessian',
+        'restart_hessian',
+        'qrrho',
+        'thermochemistry',
+        'constraints',
+        'frozen',
+        'scan',
+        'multistate',
+        'imulti',
+        'noncoupl',
+        'neb',
+    }
+    append_passthrough_lines(lines, opt_settings, protected_keys=protected)
+
     lines.append("$END")
     
     return lines
