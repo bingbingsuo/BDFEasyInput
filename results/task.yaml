@@ -1,13 +1,13 @@
 method:
-  basis: cc-pvdz
-  functional: pbe0
+  basis: 6-31g*
+  functional: b3lyp
   type: dft
 molecule:
   charge: 0
   coordinates:
-  - O  0.0000 0.0000 0.1173
-  - H  0.0000 0.7572 -0.4692
-  - H  0.0000 -0.7572 -0.4692
+  - O 0.0000 0.0000 0.1173
+  - H 0.0000 0.7572 -0.4692
+  - H 0.0000 -0.7572 -0.4692
   multiplicity: 1
   name: Water
   units: angstrom
@@ -16,5 +16,5 @@ settings:
     convergence: 1e-6
     max_iterations: 100
 task:
-  description: H2O single point energy calculation
+  description: Water single point energy calculation
   type: energy

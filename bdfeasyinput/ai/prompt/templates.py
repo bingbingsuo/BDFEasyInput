@@ -71,7 +71,7 @@ method:
 
 settings:
   scf:
-    convergence: 1e-6
+    convergence: 1e-8
     max_iterations: 100"""
     },
     {
@@ -107,11 +107,11 @@ method:
 
 settings:
   scf:
-    convergence: 1e-6
+    convergence: 1e-8
     max_iterations: 100
   optimization:
     max_iterations: 100
-    convergence: 1e-6"""
+    convergence: 1e-8"""
     },
     {
         "user_query": "计算一个过渡金属配合物的激发态",
@@ -136,7 +136,7 @@ method:
 
 settings:
   scf:
-    convergence: 1e-6
+    convergence: 1e-8
     max_iterations: 200
   tddft:
     nstates: 10

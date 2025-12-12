@@ -11,6 +11,8 @@ from ..parser.output_parser import BDFOutputParser
 from ..prompt.analysis_prompts import (
     QUANTUM_CHEMISTRY_EXPERT_SYSTEM_PROMPT,
     build_analysis_prompt,
+    get_system_prompt,
+    Language,
 )
 
 try:
@@ -46,7 +48,8 @@ class QuantumChemistryAnalyzer:
         output_file: str,
         input_file: Optional[str] = None,
         error_file: Optional[str] = None,
-        task_type: Optional[str] = None
+        task_type: Optional[str] = None,
+        language: Language = "zh"
     ) -> Dict[str, Any]:
         """
         分析计算结果
@@ -56,6 +59,7 @@ class QuantumChemistryAnalyzer:
             input_file: BDF 输入文件路径（可选）
             error_file: 错误文件路径（可选）
             task_type: 计算任务类型（可选，如 'energy', 'optimize', 'frequency'）
+            language: 分析语言，'zh' 表示中文，'en' 表示英文
         
         Returns:
             分析结果字典：
@@ -78,12 +82,14 @@ class QuantumChemistryAnalyzer:
             parsed_data=parsed_data,
             input_file=input_file,
             error_file=error_file,
-            task_type=task_type
+            task_type=task_type,
+            language=language
         )
         
         # 3. 调用 AI 分析
+        system_prompt = get_system_prompt(language)
         messages = [
-            {"role": "system", "content": QUANTUM_CHEMISTRY_EXPERT_SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
         ]
         
@@ -91,7 +97,10 @@ class QuantumChemistryAnalyzer:
             response = self.ai_client.chat(messages)
             raw_analysis = response if isinstance(response, str) else response.get('content', '')
         except Exception as e:
-            raw_analysis = f"AI 分析失败: {str(e)}"
+            if language == "en":
+                raw_analysis = f"AI analysis failed: {str(e)}"
+            else:
+                raw_analysis = f"AI 分析失败: {str(e)}"
         
         # 4. 解析 AI 响应（简单版本，直接返回原始文本）
         result = self._parse_analysis_response(raw_analysis, parsed_data)

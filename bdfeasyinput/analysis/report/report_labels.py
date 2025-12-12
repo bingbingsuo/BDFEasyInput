@@ -1,0 +1,395 @@
+"""
+Report Labels in Multiple Languages
+
+This module provides localized labels for report generation.
+"""
+
+from typing import Dict
+
+try:
+    from typing import Literal
+    Language = Literal["zh", "en"]
+except ImportError:
+    Language = str  # Python 3.7 compatibility
+
+
+REPORT_LABELS: Dict[Language, Dict[str, str]] = {
+    "zh": {
+        # Main sections
+        "report_title": "BDF 计算结果分析报告",
+        "generated_time": "生成时间",
+        "calculation_summary": "计算总结",
+        "energy_analysis": "能量分析",
+        "geometry_analysis": "几何结构分析",
+        "convergence_analysis": "收敛性分析",
+        "raw_data": "原始数据",
+        "recommendations": "专业建议",
+        "warnings": "警告信息",
+        "expert_insights": "专家见解",
+        "ai_analysis": "AI 分析结果",
+        
+        # Geometry
+        "geometry": "几何结构",
+        "coordinate_units": "坐标单位",
+        "atomic_coordinates": "原子坐标",
+        "note": "说明",
+        "atom": "原子",
+        
+        # Energy
+        "total_energy": "总能量",
+        "scf_energy": "SCF 能量",
+        "convergence_status": "收敛状态",
+        "converged": "已收敛",
+        "not_converged": "未收敛",
+        
+        # HOMO-LUMO
+        "homo_lumo_orbital_energies": "HOMO-LUMO 轨道能级",
+        "alpha_orbitals": "Alpha 轨道",
+        "beta_orbitals": "Beta 轨道",
+        "homo": "HOMO",
+        "lumo": "LUMO",
+        "homo_lumo_gap": "HOMO-LUMO gap",
+        "warning_small_gap": "警告",
+        "homo_lumo_gap_very_small": "HOMO-LUMO gap 非常小（< 0.5 eV），SCF 收敛可能会很困难。",
+        "improvement_suggestions": "改进建议",
+        "add_vshift_keyword": "在输入文件中添加 `vshift` 关键词，移动虚轨道能级",
+        "vshift_example": "例如：在 SCF 模块中添加 `vshift 0.1` 或更大的值",
+        "helps_convergence": "这有助于改善 SCF 收敛性",
+        "note_small_gap": "注意",
+        "homo_lumo_gap_small": "HOMO-LUMO gap 较小（< 1.0 eV），如果 SCF 收敛困难，可以考虑：",
+        "homo_lumo_gap_normal": "HOMO-LUMO gap 正常，SCF 收敛通常不会有问题",
+        
+        # SCF Energy Components
+        "scf_energy_components": "SCF 能量分量说明",
+        "total_energy_relation": "总能量关系",
+        "e_tot_desc": "BO近似下电子总能量，包含了核排斥能",
+        "e_ele_desc": "电子能量，不含核排斥能",
+        "e_nn_desc": "核排斥能",
+        "relation": "关系",
+        "verify": "验证",
+        "difference": "差异",
+        "one_electron_energy": "单电子能量关系",
+        "e_1e_desc": "单电子能量",
+        "e_ne_desc": "原子核对电子的吸引势能",
+        "e_kin_desc": "电子的动能",
+        "two_electron_and_xc": "双电子和交换相关能",
+        "e_ee_desc": "双电子相互作用能",
+        "includes_coulomb_and_exchange": "包括库伦排斥和电子交换能",
+        "e_xc_desc": "电子交换相关能",
+        "from_dft_calculation": "来自DFT计算的交换相关泛函贡献",
+        "virial_ratio": "维里比 (Virial Ratio)",
+        "virial_ratio_desc": "对于非相对论全电子体系，维里比应该接近 2.0",
+        "good_quality": "维里比接近 2.0，说明计算质量良好",
+        "poor_quality": "维里比偏离 2.0",
+        "may_need_check": "可能需要检查收敛性或基组质量",
+        
+        # SCF Convergence
+        "scf_convergence_criteria": "SCF 收敛标准与结果",
+        "scf_iteration_info": "SCF 迭代信息",
+        "scf_iterations": "SCF 迭代次数",
+        "iterations": "次",
+        "diis_closed_at": "DIIS/VSHIFT 在第",
+        "iterations_after": "次迭代后关闭",
+        "note_diis_closed": "说明：由于计算在收敛后会关闭 DIIS/VSHIFT，所以实际计算了",
+        "convergence_criteria": "收敛标准（阈值）",
+        "threne_desc": "能量变化需要小于此值",
+        "thrden_desc": "密度矩阵RMS变化需要小于此值",
+        "actual_convergence": "实际收敛值",
+        "final_deltae": "最终能量变化",
+        "final_deltad": "最终密度矩阵变化",
+        "meets_criteria": "满足收敛标准",
+        "not_meets_criteria": "未满足收敛标准",
+        "energy_change_small": "能量变化很小，收敛良好",
+        "energy_change_large": "能量变化较大，需检查收敛性",
+        "density_change_small": "密度矩阵变化很小，收敛良好",
+        "density_change_large": "密度矩阵变化较大，需检查收敛性",
+        
+        # Properties
+        "dipole_moment": "偶极矩 (Dipole Moment)",
+        "x_component": "X 分量",
+        "y_component": "Y 分量",
+        "z_component": "Z 分量",
+        "total_dipole": "总偶极矩",
+        "mulliken_analysis": "Mulliken 布居分析",
+        "lowdin_analysis": "Lowdin 布居分析",
+        "atom_label": "原子",
+        "charge": "电荷",
+        "spin_density": "自旋密度",
+        "mulliken_desc": "Mulliken 布居分析基于原子轨道重叠矩阵的分配方法",
+        "lowdin_desc": "Lowdin 布居分析基于对称正交化的原子轨道分配方法",
+        
+        # TDDFT
+        "tddft_results": "TDDFT 计算结果",
+        "tddft_block": "TDDFT 计算块",
+        "calculation_method": "计算方法",
+        "itda_parameter": "ITDA 参数",
+        "tda_note": "说明：采用 TDA 近似 (Tamm–Dancoff Approximation)",
+        "tddft_note": "说明：采用普通 TDDFT (Time-Dependent Density Functional Theory)",
+        "spin_flip_direction": "自旋翻转方向 (ISF)",
+        "spin_flip_parameter": "自旋翻转参数 (ISF)",
+        "spin_flip_calculation": "Spin-Flip 计算",
+        "this_is_spin_flip": "这是自旋翻转 (spin-flip) TDDFT 计算",
+        "isf_not_zero_note": "说明：当 ISF ≠ 0 时，该段 TDDFT 计算为 spin-flip 计算",
+        "spin_flip_feature": "特点：激发态相对于参考态的自旋发生了翻转",
+        "oscillator_zero_important": "重要",
+        "oscillator_zero_note": "spin-flip 计算的振子强度必为零（这是正常的物理现象）",
+        "oscillator_zero_reason": "原因：电偶极算符不涉及自旋，自旋翻转跃迁的振子强度理论上为零",
+        "oscillator_zero_expected": "如果看到振子强度为 0，这是预期的，不是计算错误",
+        "ialda_parameter": "IALDA 参数",
+        "method": "方法",
+        "excited_state_count": "激发态数量",
+        "first_5_states": "前5个激发态",
+        "state": "态",
+        "energy": "能量",
+        "wavelength": "波长",
+        "oscillator_strength": "振子强度",
+        "spin_flip_normal": "spin-flip，正常",
+        "all_oscillator_zero": "所有激发态的振子强度均为 0，这是 spin-flip 计算的正常结果。",
+        "spin_flip_forbidden": "spin-flip 激发涉及自旋翻转，电偶极跃迁禁阻",
+        "magnetic_quadrupole": "这些激发态通常通过磁偶极或电四极跃迁观测",
+        
+        # Geometry note
+        "coord_from_bdf": "坐标从 BDF 输出的 'Atom Cartcoord(Bohr)' 部分提取",
+        "units_bohr": "单位：Bohr（原子单位制）",
+        "bohr_conversion": "1 Bohr = 0.529177 Å（埃）",
+        
+        # TDDFT JK Memory
+        "jk_memory_info": "JK 算符内存信息",
+        "jk_estimated_memory": "估算的JK算符内存",
+        "jk_max_memory": "JK算符最大内存设置",
+        "rpa_roots_per_pass": "RPA每次积分计算可计算的根数",
+        "tda_roots_per_pass": "TDA每次积分计算可计算的根数",
+        "roots_per_pass": "每次积分计算可计算的根数",
+        "n_exit_requested": "用户要求的每个不可约表示的根数",
+        "memory_mb": "MB",
+        "jk_memory_note": "说明：TDDFT先估算需要多少内存来计算JK算符",
+        "jk_max_memory_note": "说明：系统设置的计算JK算符的最大内存",
+        "rpa_roots_note": "说明：如果用TDDFT计算，每次积分计算最多可以计算根数",
+        "tda_roots_note": "说明：TDA计算最多每次积分计算可计算根数，TDA可计算的根的数目是RPA计算的2倍",
+        "efficiency_warning": "效率提示",
+        "roots_greater_than_pass": "用户要求的根数大于每次积分计算可计算的根数",
+        "efficiency_recommendation": "建议使用MEMJKOP关键词增加内存以提高计算效率",
+        "memjkop_format": "MEMJKOP参数格式为\"int+M\"，如1024M，表示每OpenMP线程使用1024兆字节",
+        "memjkop_note": "实际使用内存还需乘以OpenMP线程的数目",
+        "roots_within_limit": "用户要求的根数在每次积分计算可计算的根数范围内，计算效率良好",
+        
+        # Solvent Effect
+        "solvent_effect": "溶剂效应信息",
+        "solvent_method": "溶剂模型方法",
+        "solvent_name": "溶剂名称",
+        "dielectric_constant": "介电常数",
+        "optical_dielectric_constant": "光学介电常数",
+        "tessellation_method": "镶嵌方法",
+        "radius_type": "半径类型",
+        "mesh_accuracy": "网格精度",
+        "num_tesseraes": "镶嵌数量",
+        "implicit_solvent_note": "说明：计算使用了隐式溶剂模型",
+        "solvent_calculation_note": "说明：SCF 计算中使用了隐式溶剂效应",
+        "corrected_vertical_energy": "校正后的垂直激发能",
+        "noneq_solvation_free_energy": "非平衡溶剂化自由能",
+        "eq_solvation_free_energy": "平衡溶剂化自由能",
+        "clr_correction": "激发能校正 (cLR，corrected linear response)",
+        "noneq_method": "非平衡溶剂化方法",
+        "noneq_method_clr": "cLR：非平衡线性响应（线性响应溶剂化校正）",
+        "noneq_method_ptss": "ptSS：态特定非平衡溶剂化（基于 resp 的一阶微扰校正）",
+    },
+    "en": {
+        # Main sections
+        "report_title": "BDF Calculation Results Analysis Report",
+        "generated_time": "Generated Time",
+        "calculation_summary": "Calculation Summary",
+        "energy_analysis": "Energy Analysis",
+        "geometry_analysis": "Geometry Analysis",
+        "convergence_analysis": "Convergence Analysis",
+        "raw_data": "Raw Data",
+        "recommendations": "Professional Recommendations",
+        "warnings": "Warnings",
+        "expert_insights": "Expert Insights",
+        "ai_analysis": "AI Analysis Results",
+        
+        # Geometry
+        "geometry": "Geometry",
+        "coordinate_units": "Coordinate Units",
+        "atomic_coordinates": "Atomic Coordinates",
+        "note": "Note",
+        "atom": "Atom",
+        
+        # Energy
+        "total_energy": "Total Energy",
+        "scf_energy": "SCF Energy",
+        "convergence_status": "Convergence Status",
+        "converged": "Converged",
+        "not_converged": "Not converged",
+        
+        # HOMO-LUMO
+        "homo_lumo_orbital_energies": "HOMO-LUMO Orbital Energies",
+        "alpha_orbitals": "Alpha Orbitals",
+        "beta_orbitals": "Beta Orbitals",
+        "homo": "HOMO",
+        "lumo": "LUMO",
+        "homo_lumo_gap": "HOMO-LUMO gap",
+        "warning_small_gap": "Warning",
+        "homo_lumo_gap_very_small": "HOMO-LUMO gap is very small (< 0.5 eV), SCF convergence may be difficult.",
+        "improvement_suggestions": "Improvement Suggestions",
+        "add_vshift_keyword": "Add `vshift` keyword in input file to shift virtual orbital energies",
+        "vshift_example": "For example: Add `vshift 0.1` or larger value in SCF module",
+        "helps_convergence": "This helps improve SCF convergence",
+        "note_small_gap": "Note",
+        "homo_lumo_gap_small": "HOMO-LUMO gap is small (< 1.0 eV), if SCF convergence is difficult, consider:",
+        "homo_lumo_gap_normal": "HOMO-LUMO gap is normal, SCF convergence should not be problematic",
+        
+        # SCF Energy Components
+        "scf_energy_components": "SCF Energy Component Descriptions",
+        "total_energy_relation": "Total Energy Relation",
+        "e_tot_desc": "Total electronic energy in BO approximation, includes nuclear repulsion",
+        "e_ele_desc": "Electronic energy, excluding nuclear repulsion",
+        "e_nn_desc": "Nuclear repulsion energy",
+        "relation": "Relation",
+        "verify": "Verification",
+        "difference": "Difference",
+        "one_electron_energy": "One-Electron Energy Relation",
+        "e_1e_desc": "One-electron energy",
+        "e_ne_desc": "Nuclear-electron attraction potential energy",
+        "e_kin_desc": "Electronic kinetic energy",
+        "two_electron_and_xc": "Two-Electron and Exchange-Correlation Energy",
+        "e_ee_desc": "Two-electron interaction energy",
+        "includes_coulomb_and_exchange": "Includes Coulomb repulsion and electron exchange",
+        "e_xc_desc": "Exchange-correlation energy",
+        "from_dft_calculation": "From DFT exchange-correlation functional contribution",
+        "virial_ratio": "Virial Ratio",
+        "virial_ratio_desc": "For non-relativistic all-electron systems, virial ratio should be close to 2.0",
+        "good_quality": "Virial ratio close to 2.0 indicates good calculation quality",
+        "poor_quality": "Virial ratio deviates from 2.0",
+        "may_need_check": "May need to check convergence or basis set quality",
+        
+        # SCF Convergence
+        "scf_convergence_criteria": "SCF Convergence Criteria and Results",
+        "scf_iteration_info": "SCF Iteration Information",
+        "scf_iterations": "SCF Iterations",
+        "iterations": "iterations",
+        "diis_closed_at": "DIIS/VSHIFT closed after iteration",
+        "iterations_after": "",
+        "note_diis_closed": "Note: Since DIIS/VSHIFT is closed after convergence, actual calculation used",
+        "convergence_criteria": "Convergence Criteria (Thresholds)",
+        "threne_desc": "Energy change must be smaller than this value",
+        "thrden_desc": "Density matrix RMS change must be smaller than this value",
+        "actual_convergence": "Actual Convergence Values",
+        "final_deltae": "Final Energy Change",
+        "final_deltad": "Final Density Matrix Change",
+        "meets_criteria": "Meets convergence criteria",
+        "not_meets_criteria": "Does not meet convergence criteria",
+        "energy_change_small": "Energy change is very small, convergence is good",
+        "energy_change_large": "Energy change is large, convergence needs checking",
+        "density_change_small": "Density matrix change is very small, convergence is good",
+        "density_change_large": "Density matrix change is large, convergence needs checking",
+        
+        # Properties
+        "dipole_moment": "Dipole Moment",
+        "x_component": "X Component",
+        "y_component": "Y Component",
+        "z_component": "Z Component",
+        "total_dipole": "Total Dipole Moment",
+        "mulliken_analysis": "Mulliken Population Analysis",
+        "lowdin_analysis": "Lowdin Population Analysis",
+        "atom_label": "Atom",
+        "charge": "Charge",
+        "spin_density": "Spin Density",
+        "mulliken_desc": "Mulliken population analysis based on atomic orbital overlap matrix assignment method",
+        "lowdin_desc": "Lowdin population analysis based on symmetric orthogonalized atomic orbital assignment method",
+        
+        # TDDFT
+        "tddft_results": "TDDFT Calculation Results",
+        "tddft_block": "TDDFT Calculation Block",
+        "calculation_method": "Calculation Method",
+        "itda_parameter": "ITDA Parameter",
+        "tda_note": "Note: Using TDA approximation (Tamm–Dancoff Approximation)",
+        "tddft_note": "Note: Using standard TDDFT (Time-Dependent Density Functional Theory)",
+        "spin_flip_direction": "Spin-Flip Direction (ISF)",
+        "spin_flip_parameter": "Spin-Flip Parameter (ISF)",
+        "spin_flip_calculation": "Spin-Flip Calculation",
+        "this_is_spin_flip": "This is a spin-flip TDDFT calculation",
+        "isf_not_zero_note": "Note: When ISF ≠ 0, this TDDFT block is a spin-flip calculation",
+        "spin_flip_feature": "Feature: The excited state has a flipped spin relative to the reference state",
+        "oscillator_zero_important": "Important",
+        "oscillator_zero_note": "Oscillator strengths in spin-flip calculations are necessarily zero (normal physical phenomenon)",
+        "oscillator_zero_reason": "Reason: Electric dipole operator does not involve spin, so spin-flip transition oscillator strengths are theoretically zero",
+        "oscillator_zero_expected": "If oscillator strength is 0, this is expected, not a calculation error",
+        "ialda_parameter": "IALDA Parameter",
+        "method": "Method",
+        "excited_state_count": "Number of Excited States",
+        "first_5_states": "First 5 Excited States",
+        "state": "State",
+        "energy": "Energy",
+        "wavelength": "Wavelength",
+        "oscillator_strength": "Oscillator Strength",
+        "spin_flip_normal": "spin-flip, normal",
+        "all_oscillator_zero": "All excited states have oscillator strengths of 0, which is a normal result of spin-flip calculations.",
+        "spin_flip_forbidden": "Spin-flip excitations involve spin reversal, electric dipole transitions are forbidden",
+        "magnetic_quadrupole": "These excited states are usually observed through magnetic dipole or electric quadrupole transitions",
+        
+        # Geometry note
+        "coord_from_bdf": "Coordinates extracted from 'Atom Cartcoord(Bohr)' section in BDF output",
+        "units_bohr": "Units: Bohr (atomic units)",
+        "bohr_conversion": "1 Bohr = 0.529177 Å",
+        
+        # TDDFT JK Memory
+        "jk_memory_info": "JK Operator Memory Information",
+        "jk_estimated_memory": "Estimated Memory for JK Operator",
+        "jk_max_memory": "Maximum Memory to Calculate JK Operator",
+        "rpa_roots_per_pass": "Roots per Pass for RPA",
+        "tda_roots_per_pass": "Roots per Pass for TDA",
+        "roots_per_pass": "Roots per Pass",
+        "n_exit_requested": "Requested Roots per Irrep",
+        "memory_mb": "MB",
+        "jk_memory_note": "Note: TDDFT first estimates memory needed to calculate JK operator",
+        "jk_max_memory_note": "Note: Maximum memory setting for calculating JK operator",
+        "rpa_roots_note": "Note: For TDDFT calculation, maximum roots per integral calculation pass",
+        "tda_roots_note": "Note: For TDA calculation, maximum roots per integral calculation pass. TDA can calculate 2x more roots than RPA",
+        "efficiency_warning": "Efficiency Warning",
+        "roots_greater_than_pass": "Requested roots per irrep is greater than roots per pass",
+        "efficiency_recommendation": "Recommendation: Use MEMJKOP keyword to increase memory for better efficiency",
+        "memjkop_format": "MEMJKOP parameter format: \"int+M\", e.g., 1024M, means 1024 MB per OpenMP thread",
+        "memjkop_note": "Actual memory usage = value × number of OpenMP threads",
+        "roots_within_limit": "Requested roots are within roots per pass limit, calculation efficiency is good",
+        
+        # Solvent Effect
+        "solvent_effect": "Solvent Effect Information",
+        "solvent_method": "Solvent Model Method",
+        "solvent_name": "Solvent Name",
+        "dielectric_constant": "Dielectric Constant",
+        "optical_dielectric_constant": "Optical Dielectric Constant",
+        "tessellation_method": "Method of Tessellation",
+        "radius_type": "Type of Radius",
+        "mesh_accuracy": "Accuracy of Mesh",
+        "num_tesseraes": "Number of Tesseraes",
+        "implicit_solvent_note": "Note: Implicit solvent model was used in the calculation",
+        "solvent_calculation_note": "Note: Implicit solvent effect was used in SCF calculation",
+        "corrected_vertical_energy": "Corrected Vertical Absorption Energy",
+        "noneq_solvation_free_energy": "Nonequilibrium Solvation Free Energy",
+        "eq_solvation_free_energy": "Equilibrium Solvation Free Energy",
+        "clr_correction": "Excitation Energy Correction (cLR: corrected linear response)",
+        "noneq_method": "Non-equilibrium Solvation Method",
+        "noneq_method_clr": "cLR: non-equilibrium linear response (solvent LR correction)",
+        "noneq_method_ptss": "ptSS: state-specific non-equilibrium solvation (resp-based perturbative correction)",
+    }
+}
+
+
+def get_label(key: str, language: Language = "zh") -> str:
+    """
+    Get localized label
+    
+    Args:
+        key: Label key
+        language: Language code, "zh" for Chinese, "en" for English
+    
+    Returns:
+        Localized label string
+    """
+    labels = REPORT_LABELS.get(language, REPORT_LABELS["zh"])
+    return labels.get(key, key)
+
+
+def get_separator(language: Language = "zh") -> str:
+    """Get separator character based on language (colon in Chinese, colon in English)"""
+    return "：" if language == "zh" else ":"

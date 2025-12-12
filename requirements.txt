@@ -20,11 +20,11 @@ mypy>=1.0
 # AI 功能依赖（可选）
 openai>=1.0.0          # OpenAI API 支持
 anthropic>=0.3.0       # Anthropic Claude API 支持
-ollama>=0.1.0          # Ollama 本地模型支持（可选）
+# ollama>=0.1.0       # Ollama 本地模型支持（可选，用户自行安装）
 # langchain>=0.1.0     # 可选：LangChain 支持（用于复杂 AI 工作流）
 
-# 数据标准化依赖
-jsonschema>=4.0.0      # JSON Schema 验证
-jsonlines>=3.0.0       # JSONL 文件处理
-pandas>=1.5.0          # 可选：用于 Parquet 格式导出
+# 数据标准化依赖（可选）
+# jsonschema>=4.0.0      # JSON Schema 验证（可选）
+# jsonlines>=3.0.0       # JSONL 文件处理（可选）
+# pandas>=1.5.0          # 可选：用于 Parquet 格式导出
 

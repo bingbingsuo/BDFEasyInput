@@ -565,6 +565,11 @@ def analyze(
         # Get AI client
         client = get_ai_client_from_config(config)
         
+        # Get language setting from config
+        analysis_config = config.get('analysis', {})
+        ai_config = analysis_config.get('ai', {})
+        language = ai_config.get('language', 'zh')  # Default to Chinese
+        
         # Create analyzer
         analyzer = QuantumChemistryAnalyzer(ai_client=client)
         
@@ -574,7 +579,8 @@ def analyze(
             output_file=output_file,
             input_file=input,
             error_file=error,
-            task_type=task_type
+            task_type=task_type,
+            language=language
         )
         
         # Parse output for report
@@ -582,7 +588,7 @@ def analyze(
         parsed_data = parser.parse(output_file)
         
         # Generate report
-        report_generator = AnalysisReportGenerator(format=format)
+        report_generator = AnalysisReportGenerator(format=format, language=language)
         report = report_generator.generate(
             analysis_result=analysis_result,
             parsed_data=parsed_data,

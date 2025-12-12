@@ -8,6 +8,7 @@ from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 import yaml
 import warnings
+import copy
 
 from .validator import BDFValidator, ValidationError
 from .utils import (
@@ -206,8 +207,43 @@ class BDFConverter:
                 triplet_config['settings']['tddft'] = {**tddft_settings, **triplet_settings}
                 blocks.append(self.generate_tddft_block(triplet_config, tddft_block_settings=triplet_settings, isf=1))
             else:
-                # Single TDDFT block (default: singlet, isf=0)
-                blocks.append(self.generate_tddft_block(config))
+                solvent_effect = tddft_settings.get('solvent_effect', {})
+                mode = (solvent_effect.get('mode') or "").lower()
+                
+                if mode == "ptss":
+                    # State-specific non-equilibrium solvation (ptSS, resp-based)
+                    # Emit two TDDFT blocks (as in reference template), then RESP with solneqss/solneqlr
+                    ptss_tddft_settings = {**tddft_settings, 'linear_response_non_equilibrium': True}
+                    blocks.append(self.generate_tddft_block(config, tddft_block_settings=ptss_tddft_settings, istore=1))
+                    blocks.append(self.generate_tddft_block(config, tddft_block_settings=ptss_tddft_settings, istore=1))
+                    
+                    resp_config = copy.deepcopy(config)
+                    resp_settings = resp_config.setdefault('settings', {}).setdefault('resp', {})
+                    resp_settings.setdefault('method', 2)   # TDDFT response
+                    resp_settings.setdefault('norder', 0)   # energy correction only
+                    resp_settings.setdefault('nfiles', solvent_effect.get('resp_nfiles', 1))
+                    resp_settings.setdefault('iroot', solvent_effect.get('resp_iroot', 1))
+                    resp_solvent = resp_settings.setdefault('solvent', {})
+                    resp_solvent.setdefault('linear_response_non_equilibrium', True)
+                    resp_solvent.setdefault('state_specific_non_equilibrium', True)
+                    if solvent_effect.get('state_specific_equilibrium'):
+                        resp_solvent.setdefault('state_specific_equilibrium', True)
+                    
+                    blocks.append(self.generate_resp_block(
+                        resp_config,
+                        method=resp_settings.get('method'),
+                        norder=resp_settings.get('norder'),
+                        nfiles=resp_settings.get('nfiles'),
+                        iroot=resp_settings.get('iroot')
+                    ))
+                else:
+                    # Default / linear-response non-equilibrium (cLR)
+                    if mode == "clr":
+                        clr_settings = {**tddft_settings, 'linear_response_non_equilibrium': True}
+                        blocks.append(self.generate_tddft_block(config, tddft_block_settings=clr_settings))
+                    else:
+                        # Single TDDFT block (default: singlet, isf=0)
+                        blocks.append(self.generate_tddft_block(config))
         elif task_type == 'optimize':
             # Geometry optimization module order:
             # 1. COMPASS: Define molecular structure and basis set

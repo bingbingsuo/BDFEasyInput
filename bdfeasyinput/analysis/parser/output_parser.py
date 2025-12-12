@@ -93,6 +93,7 @@ class BDFOutputParser:
             'frequencies': [],
             'properties': {},
             'optimization': {},
+            'tddft': [],
             'warnings': [],
             'errors': [],
         }
@@ -117,7 +118,12 @@ class BDFOutputParser:
         result['optimization'] = self.extract_optimization_info(content)
 
         # 提取激发态信息（如果有，TDDFT）
-        result['excited_states'] = self.extract_excited_states(content)
+        result['tddft'] = self.extract_tddft_calculations(content)
+        # 兼容旧字段：若存在 TDDFT 结果则取第一段激发态，否则回退旧解析
+        if result['tddft']:
+            result['excited_states'] = result['tddft'][0].get('states', [])
+        else:
+            result['excited_states'] = self.extract_excited_states(content)
         
         # 提取警告和错误
         result['warnings'] = self.extract_warnings(content)
@@ -312,6 +318,172 @@ class BDFOutputParser:
         
         return frequencies
 
+    def extract_tddft_calculations(self, content: str) -> List[Dict[str, Any]]:
+        """
+        提取 TDDFT 计算块（支持多次计算，例如不同 isf/ialda）
+        返回列表，每个元素包含元数据和对应激发态表
+        """
+        calculations: List[Dict[str, Any]] = []
+
+        # 通过出现的 "Spin change:" 分割，每段到下一次出现或文件结尾
+        spin_matches = list(re.finditer(r"Spin change\s*:", content, re.IGNORECASE))
+        for idx, match in enumerate(spin_matches):
+            start = match.start()
+            end = spin_matches[idx + 1].start() if idx + 1 < len(spin_matches) else len(content)
+            block = content[start:end]
+            meta_block = block[:5000]  # 仅取当前块开头用于元数据，避免跨越到下一次 TDDFT 配置
+            # 元数据检索范围：当前块开头，如缺失再向前回溯但不跨到后续块
+            meta_scope_before = content[max(0, start - 100000):start]
+            isf = None
+            ialda = None
+            itda = None
+            method = None
+            tda = False
+            approximation_method = None
+
+            isf_match = re.search(r'isf\s*=?\s*([+-]?\d+)', meta_block, re.IGNORECASE)
+            if not isf_match:
+                matches = list(re.finditer(r'isf\s*=?\s*([+-]?\d+)', meta_scope_before, re.IGNORECASE))
+                isf_match = matches[-1] if matches else None
+            if isf_match:
+                try:
+                    isf = int(isf_match.group(1))
+                except ValueError:
+                    isf = None
+
+            ialda_match = re.search(r'ialda\s*=?\s*([+-]?\d+)', meta_block, re.IGNORECASE)
+            if not ialda_match:
+                matches = list(re.finditer(r'ialda\s*=?\s*([+-]?\d+)', meta_scope_before, re.IGNORECASE))
+                ialda_match = matches[-1] if matches else None
+            if ialda_match:
+                try:
+                    ialda = int(ialda_match.group(1))
+                except ValueError:
+                    ialda = None
+
+            # 解析 itda 参数（TDA 近似标志）
+            itda_match = re.search(r'itda\s*=?\s*(\d+)', meta_block, re.IGNORECASE)
+            if not itda_match:
+                matches = list(re.finditer(r'itda\s*=?\s*(\d+)', meta_scope_before, re.IGNORECASE))
+                itda_match = matches[-1] if matches else None
+            if itda_match:
+                try:
+                    itda = int(itda_match.group(1))
+                except ValueError:
+                    itda = None
+
+            method_match = re.search(r'\[method\]\s*\n\s*([^\n]+)', meta_block, re.IGNORECASE)
+            if not method_match:
+                matches = list(re.finditer(r'\[method\]\s*\n\s*([^\n]+)', meta_scope_before, re.IGNORECASE))
+                method_match = matches[-1] if matches else None
+            if method_match:
+                method = method_match.group(1).strip()
+
+            # 确定是否使用 TDA 近似：
+            # 1. 优先使用 itda 参数（最可靠）
+            # 2. 如果没有 itda，检查 [method] 中是否明确标注 RPA 或 TDA
+            # 3. 如果都没有，默认是 TDDFT (RPA)，因为 BDF 默认使用 RPA
+            if itda is not None:
+                tda = (itda == 1)
+                if itda == 1:
+                    approximation_method = "TDA (Tamm–Dancoff Approximation)"
+                elif itda == 0:
+                    approximation_method = "TDDFT (Time-Dependent Density Functional Theory)"
+            else:
+                # 如果没有找到 itda，检查 [method] 字段
+                # 如果 method 中包含 "RPA"，明确是 TDDFT (RPA)
+                # 注意：输出中可能同时提到 RPA 和 TDA（因为会显示两种方法的根数限制），
+                # 但实际使用的方法应该从 [method] 字段判断
+                if method:
+                    # 检查 method 字段中是否明确标注了 RPA
+                    if re.search(r'\bRPA\b', method, re.IGNORECASE):
+                        tda = False
+                        approximation_method = "TDDFT (Time-Dependent Density Functional Theory)"
+                    elif re.search(r'\bTDA\b', method, re.IGNORECASE):
+                        tda = True
+                        approximation_method = "TDA (Tamm–Dancoff Approximation)"
+                    else:
+                        # 如果 method 中没有明确标识，默认是 TDDFT (RPA)
+                        tda = False
+                        approximation_method = "TDDFT (Time-Dependent Density Functional Theory)"
+                else:
+                    # 如果连 method 字段都没有，默认是 TDDFT (RPA)
+                    # 因为 BDF 默认使用 RPA，只有明确指定 itda=1 才使用 TDA
+                    tda = False
+                    approximation_method = "TDDFT (Time-Dependent Density Functional Theory)"
+            
+            # 提取 JK 算符内存信息
+            # 格式：Estimated memory for JK operator: 0.141 M
+            jk_estimated_match = re.search(r'Estimated\s+memory\s+for\s+JK\s+operator:\s+([\d.]+)\s+M', meta_scope_before, re.IGNORECASE)
+            jk_estimated_memory = None
+            if jk_estimated_match:
+                try:
+                    jk_estimated_memory = float(jk_estimated_match.group(1))
+                except ValueError:
+                    pass
+            
+            # 格式：Maximum memory to calculate JK operator: 512.000 M
+            jk_max_memory_match = re.search(r'Maximum\s+memory\s+to\s+calculate\s+JK\s+operator:\s+([\d.]+)\s+M', meta_scope_before, re.IGNORECASE)
+            jk_max_memory = None
+            if jk_max_memory_match:
+                try:
+                    jk_max_memory = float(jk_max_memory_match.group(1))
+                except ValueError:
+                    pass
+            
+            # 提取每次可计算的根数
+            # 格式：Allow to calculate 2 roots at one pass for RPA
+            rpa_roots_match = re.search(r'Allow\s+to\s+calculate\s+(\d+)\s+roots\s+at\s+one\s+pass\s+for\s+RPA', meta_scope_before, re.IGNORECASE)
+            rpa_roots_per_pass = None
+            if rpa_roots_match:
+                try:
+                    rpa_roots_per_pass = int(rpa_roots_match.group(1))
+                except ValueError:
+                    pass
+            
+            # 格式：Allow to calculate 4 roots at one pass for TDA
+            tda_roots_match = re.search(r'Allow\s+to\s+calculate\s+(\d+)\s+roots\s+at\s+one\s+pass\s+for\s+TDA', meta_scope_before, re.IGNORECASE)
+            tda_roots_per_pass = None
+            if tda_roots_match:
+                try:
+                    tda_roots_per_pass = int(tda_roots_match.group(1))
+                except ValueError:
+                    pass
+            
+            # 提取用户要求的根数（Nexit）
+            # 格式：Nexit: 4 (每个不可约表示计算的根数)
+            nexit_match = re.search(r'Nexit:\s+(\d+)', meta_scope_before, re.IGNORECASE)
+            n_exit = None
+            if nexit_match:
+                try:
+                    n_exit = int(nexit_match.group(1))
+                except ValueError:
+                    pass
+            
+            # 根据是否使用TDA确定每次可计算的根数
+            roots_per_pass = tda_roots_per_pass if tda else rpa_roots_per_pass
+
+            states = self._parse_excited_states_block(block)
+            calculations.append({
+                'isf': isf,
+                'ialda': ialda,
+                'itda': itda,
+                'method': method,
+                'tda': tda,
+                'approximation_method': approximation_method,
+                'spin_flip_direction': 'down' if isf == -1 else ('up' if isf == 1 else None),
+                'states': states,
+                # JK 内存信息
+                'jk_estimated_memory_mb': jk_estimated_memory,
+                'jk_max_memory_mb': jk_max_memory,
+                'rpa_roots_per_pass': rpa_roots_per_pass,
+                'tda_roots_per_pass': tda_roots_per_pass,
+                'roots_per_pass': roots_per_pass,
+                'n_exit': n_exit,  # 用户要求的每个不可约表示的根数
+            })
+
+        return calculations
+
     def extract_excited_states(self, content: str) -> List[Dict[str, Any]]:
         """
         提取激发态能量与振子强度（TDDFT汇总表）
@@ -358,6 +530,54 @@ class BDFOutputParser:
             try:
                 idx = int(parts[0])
                 exsym = parts[1]  # 记录不可约表示
+                energy_ev = float(parts[4])
+                wavelength_nm = float(parts[6])
+                osc = float(parts[8])
+                d_s2 = float(parts[9]) if len(parts) > 9 else None
+                dominant = " ".join(parts[10:]) if len(parts) > 10 else ""
+                states.append({
+                    'index': idx,
+                    'symmetry': exsym,
+                    'energy_ev': energy_ev,
+                    'wavelength_nm': wavelength_nm,
+                    'oscillator_strength': osc,
+                    'delta_s2': d_s2,
+                    'dominant': dominant.strip()
+                })
+            except (ValueError, IndexError):
+                continue
+
+        return states
+
+    def _parse_excited_states_block(self, block: str) -> List[Dict[str, Any]]:
+        """
+        解析单个 TDDFT 块中的激发态表
+        """
+        states: List[Dict[str, Any]] = []
+
+        lines = block.splitlines()
+        start_idx = None
+        for i, line in enumerate(lines):
+            if re.search(r"No\.\s+Pair\s+ExSym", line):
+                start_idx = i + 1
+                break
+        if start_idx is None:
+            return states
+
+        started = False
+        for line in lines[start_idx:]:
+            if not line.strip() or line.strip().startswith('***'):
+                if started:
+                    break
+                else:
+                    continue
+            started = True
+            parts = line.split()
+            if len(parts) < 9:
+                continue
+            try:
+                idx = int(parts[0])
+                exsym = parts[1]
                 energy_ev = float(parts[4])
                 wavelength_nm = float(parts[6])
                 osc = float(parts[8])
@@ -571,6 +791,7 @@ class BDFOutputParser:
             
             # 提取各种能量分量
             energy_components = {
+                'E_tot': r'E_tot\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
                 'E_ele': r'E_ele\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
                 'E_nn': r'E_nn\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
                 'E_1e': r'E_1e\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
@@ -596,6 +817,220 @@ class BDFOutputParser:
                 except (ValueError, IndexError):
                     pass
         
+        # 提取 SCF 收敛标准（THRENE 和 THRDEN）
+        threne_match = re.search(r'THRENE\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d+)', content, re.IGNORECASE)
+        if threne_match:
+            try:
+                properties['scf_conv_thresh_ene'] = float(threne_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        thrden_match = re.search(r'THRDEN\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d+)', content, re.IGNORECASE)
+        if thrden_match:
+            try:
+                properties['scf_conv_thresh_den'] = float(thrden_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取最终收敛值（Final DeltaE 和 Final DeltaD）
+        deltae_match = re.search(r'Final\s+DeltaE\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)', content, re.IGNORECASE)
+        if deltae_match:
+            try:
+                properties['final_deltae'] = float(deltae_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        deltad_match = re.search(r'Final\s+DeltaD\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)', content, re.IGNORECASE)
+        if deltad_match:
+            try:
+                properties['final_deltad'] = float(deltad_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取 SCF 迭代次数
+        # 格式：diis/vshift is closed at iter =   9
+        # 注意：如果显示 iter = 9，实际SCF计算用了10次（iter 0到iter 9）
+        diis_close_match = re.search(r'diis/vshift\s+is\s+closed\s+at\s+iter\s*=\s*(\d+)', content, re.IGNORECASE)
+        if diis_close_match:
+            try:
+                iter_when_closed = int(diis_close_match.group(1))
+                # 实际迭代次数 = iter_when_closed + 1（因为从0开始计数）
+                properties['scf_iterations'] = iter_when_closed + 1
+                properties['scf_iter_when_diis_closed'] = iter_when_closed
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取溶剂效应信息
+        solvent_section = re.search(
+            r'\*Initializing\s+informations\s+for\s+solvent\s+effect\.\.\..*?(?=\n\n|\n\[|\n\|\||Check\s+basis|\n\s*\[init_smh\]|$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+        
+        if solvent_section:
+            section = solvent_section.group(0)
+            solvent_info = {}
+            
+            # 提取溶剂模型方法
+            method_match = re.search(r'Method:\s*(\w+)', section, re.IGNORECASE)
+            if method_match:
+                solvent_info['method'] = method_match.group(1).strip()
+            
+            # 提取溶剂名称
+            solvent_match = re.search(r'Solvent:\s*(\w+)', section, re.IGNORECASE)
+            if solvent_match:
+                solvent_info['solvent'] = solvent_match.group(1).strip()
+            
+            # 提取介电常数
+            dielectric_match = re.search(r'Dielectric\s+constant:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)', section, re.IGNORECASE)
+            if dielectric_match:
+                try:
+                    solvent_info['dielectric_constant'] = float(dielectric_match.group(1))
+                except (ValueError, IndexError):
+                    pass
+            
+            # 提取光学介电常数
+            optical_dielectric_match = re.search(r'Optical\s+dielectric\s+constant:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)', section, re.IGNORECASE)
+            if optical_dielectric_match:
+                try:
+                    solvent_info['optical_dielectric_constant'] = float(optical_dielectric_match.group(1))
+                except (ValueError, IndexError):
+                    pass
+            
+            # 提取镶嵌方法
+            tessellation_match = re.search(r'Method\s+of\s+tessellation:\s*(\w+)', section, re.IGNORECASE)
+            if tessellation_match:
+                solvent_info['tessellation_method'] = tessellation_match.group(1).strip()
+            
+            # 提取半径类型
+            radius_type_match = re.search(r'Type\s+of\s+Radius:\s*([^\n]+)', section, re.IGNORECASE)
+            if radius_type_match:
+                solvent_info['radius_type'] = radius_type_match.group(1).strip()
+            
+            # 提取网格精度
+            mesh_accuracy_match = re.search(r'Accuracy\s+of\s+Mesh:\s*([^\n(]+)', section, re.IGNORECASE)
+            if mesh_accuracy_match:
+                solvent_info['mesh_accuracy'] = mesh_accuracy_match.group(1).strip()
+            
+            # 提取镶嵌数量
+            tesseraes_match = re.search(r'Number\s+of\s+tesseraes:\s*(\d+)', section, re.IGNORECASE)
+            if tesseraes_match:
+                try:
+                    solvent_info['num_tesseraes'] = int(tesseraes_match.group(1))
+                except (ValueError, IndexError):
+                    pass
+            
+            # 如果提取到了任何溶剂信息，添加到 properties 中
+            if solvent_info:
+                properties['solvent'] = solvent_info
+        
+        # 检查是否有隐式溶剂计算的提示（即使没有详细的溶剂信息部分）
+        if re.search(r'Implicit\s+solvent\s+calculation\s+used', content, re.IGNORECASE):
+            if 'solvent' not in properties:
+                properties['solvent'] = {}
+            properties['solvent']['implicit_solvent'] = True
+        
+        # 提取非平衡溶剂化校正信息（cLR）
+        # 格式：
+        # *State   1  ->  0
+        #  Corrected vertical absorption energy               =    3.7217 eV
+        #  Nonequilibrium solvation free energy               =   -0.0634 eV
+        #  Equilibrium solvation free energy                  =   -0.1744 eV
+        #  -------------------------------------------------------------------------------
+        #  Excitation energy correction(cLR)                  =   -0.0377 eV
+        noneq_pattern = re.compile(
+            r'\*State\s+(\d+)\s+->\s+(\d+)\s*\n'
+            r'\s*Corrected\s+vertical\s+absorption\s+energy\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s*eV\s*\n'
+            r'\s*Nonequilibrium\s+solvation\s+free\s+energy\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s*eV\s*\n'
+            r'\s*Equilibrium\s+solvation\s+free\s+energy\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s*eV\s*\n'
+            r'(?:.*?\n)?\s*Excitation\s+energy\s+correction\(cLR\)\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s*eV',
+            re.IGNORECASE
+        )
+        noneq_matches = list(noneq_pattern.finditer(content))
+        if noneq_matches:
+            corrections = []
+            seen = set()
+            for m in noneq_matches:
+                try:
+                    entry = {
+                        'state_index': int(m.group(1)),
+                        'to_state': int(m.group(2)),
+                        'corrected_vertical_energy_ev': float(m.group(3)),
+                        'noneq_solvation_free_energy_ev': float(m.group(4)),
+                        'eq_solvation_free_energy_ev': float(m.group(5)),
+                        'excitation_energy_correction_ev': float(m.group(6)),
+                    }
+                    key = tuple(entry.items())
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    corrections.append(entry)
+                except (ValueError, IndexError):
+                    continue
+            if corrections:
+                properties['solvent_noneq_corrections'] = corrections
+                # 标记非平衡溶剂化方法为 state-specific (ptSS)
+                properties['solvent_noneq_method'] = "ptSS_state_specific"
+        
+        # 如果未检测到 ptSS，但存在 solneqlr 关键字，标记为 cLR 线性响应
+        if 'solvent_noneq_method' not in properties:
+            if re.search(r'\bsolneqlr\b', content, re.IGNORECASE):
+                properties['solvent_noneq_method'] = "clr_linear_response"
+        
+        # 提取 HOMO-LUMO gap
+        # 格式：HOMO-LUMO gap:       0.13091934 au       3.56249790 eV
+        gap_match = re.search(r'HOMO-LUMO\s+gap:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+au\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+eV', content, re.IGNORECASE)
+        if gap_match:
+            try:
+                properties['homo_lumo_gap'] = {
+                    'au': float(gap_match.group(1)),
+                    'ev': float(gap_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取 HOMO 和 LUMO 轨道能量（Alpha 和 Beta）
+        # 格式：Alpha   HOMO energy:      -0.24291496 au      -6.61005529 eV  Irrep: B2
+        homo_alpha_match = re.search(r'Alpha\s+HOMO\s+energy:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+au\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+eV', content, re.IGNORECASE)
+        if homo_alpha_match:
+            try:
+                properties['homo_alpha'] = {
+                    'au': float(homo_alpha_match.group(1)),
+                    'ev': float(homo_alpha_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        lumo_alpha_match = re.search(r'Alpha\s+LUMO\s+energy:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+au\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+eV', content, re.IGNORECASE)
+        if lumo_alpha_match:
+            try:
+                properties['lumo_alpha'] = {
+                    'au': float(lumo_alpha_match.group(1)),
+                    'ev': float(lumo_alpha_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        homo_beta_match = re.search(r'Beta\s+HOMO\s+energy:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+au\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+eV', content, re.IGNORECASE)
+        if homo_beta_match:
+            try:
+                properties['homo_beta'] = {
+                    'au': float(homo_beta_match.group(1)),
+                    'ev': float(homo_beta_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        lumo_beta_match = re.search(r'Beta\s+LUMO\s+energy:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+au\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+eV', content, re.IGNORECASE)
+        if lumo_beta_match:
+            try:
+                properties['lumo_beta'] = {
+                    'au': float(lumo_beta_match.group(1)),
+                    'ev': float(lumo_beta_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
         # 提取偶极矩（BDF 格式）
         dipole_section = re.search(
             r'\[Dipole\s+moment:.*?Totl:\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
@@ -617,23 +1052,54 @@ class BDFOutputParser:
         
         # 提取 Mulliken 布居分析
         mulliken_section = re.search(
-            r'\[Mulliken\s+Population\s+Analysis\].*?Atomic\s+charges:.*?(?=\n\n|\n\[|\n\|\||$)',
+            r'\[Mulliken\s+Population\s+Analysis\].*?(?=\n\s*\[|\n\n|\n\|\||$)',
             content,
             re.IGNORECASE | re.DOTALL
         )
         
         if mulliken_section:
             section = mulliken_section.group(0)
-            # 匹配格式：1O      -0.3061
+            # 匹配格式：1C      -0.1309    2.0149  (原子编号+元素符号, 电荷, 自旋密度)
             charges = {}
-            charge_pattern = r'(\d+\w+)\s+([-+]?\d+\.\d+)'
-            matches = re.finditer(charge_pattern, section)
+            spin_densities = {}
+            # 匹配格式：    1C      -0.1309    2.0149
+            charge_pattern = r'^\s*(\d+\w+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s*$'
+            matches = re.finditer(charge_pattern, section, re.MULTILINE)
             for match in matches:
                 atom_label = match.group(1)
                 charge = float(match.group(2))
+                spin_density = float(match.group(3))
                 charges[atom_label] = charge
+                spin_densities[atom_label] = spin_density
             if charges:
                 properties['mulliken_charges'] = charges
+            if spin_densities:
+                properties['mulliken_spin_densities'] = spin_densities
+        
+        # 提取 Lowdin 布居分析
+        lowdin_section = re.search(
+            r'\[Lowdin\s+Population\s+Analysis\].*?(?=\n\s*\[|\n\n|\n\|\||$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+        
+        if lowdin_section:
+            section = lowdin_section.group(0)
+            # 匹配格式：1C      -0.0189    1.9349  (原子编号+元素符号, 电荷, 自旋密度)
+            charges = {}
+            spin_densities = {}
+            charge_pattern = r'^\s*(\d+\w+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s*$'
+            matches = re.finditer(charge_pattern, section, re.MULTILINE)
+            for match in matches:
+                atom_label = match.group(1)
+                charge = float(match.group(2))
+                spin_density = float(match.group(3))
+                charges[atom_label] = charge
+                spin_densities[atom_label] = spin_density
+            if charges:
+                properties['lowdin_charges'] = charges
+            if spin_densities:
+                properties['lowdin_spin_densities'] = spin_densities
         
         return properties
 

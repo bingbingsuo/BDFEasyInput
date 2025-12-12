@@ -41,7 +41,7 @@ ai:
   enabled: true
   
   # 默认使用的 AI 提供商
-  default_provider: "openrouter"  # 选项: "ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"
+  default_provider: "ollama"  # 选项: "ollama", "openai", "anthropic", "openrouter", "together", "groq", "deepseek", "mistral", "perplexity"
   
   # AI 提供商配置
   providers:
@@ -49,8 +49,8 @@ ai:
     ollama:
       enabled: true
       base_url: "http://192.168.124.148:11434"
-      model: "llama3.1:70b"  # 可用的模型: llama3, llama2, mistral 等
-      timeout: 120
+      model: "gpt-oss:120b"  # 可用的模型: llama3, llama2, mistral 等
+      timeout: 180
     
     # OpenAI API（需要 API 密钥）
     openai:
@@ -135,6 +135,9 @@ analysis:
     
     # 温度参数（控制随机性）
     temperature: 0.7
+    
+    # 分析语言：'zh' (中文) 或 'en' (英文)
+    language: en  # 选项: "zh", "en"
   
   # 输出配置
   output:

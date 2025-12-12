@@ -12,9 +12,10 @@ BDFEasyInput 旨在让用户通过简洁、直观的配置方式或自然语言�
 - 🤖 **AI 辅助规划**：通过自然语言描述，AI 自动规划计算任务并生成输入
 - 🔄 **自动转换**：智能映射常用计算方法和基组到 BDF 格式
 - ✅ **输入验证**：自动检查参数有效性和兼容性
-- 🚀 **自动执行**：集成 BDFAutotest，自动运行 BDF 计算 ⭐ NEW
-- 🔬 **AI 结果分析**：基于量子化学专家模式，AI 自动分析计算结果 ⭐ NEW
-- 📊 **数据标准化**：标准化分析结果，支持 LLM 模型训练 ⭐ NEW
+- 🚀 **自动执行**：集成 BDFAutotest，自动运行 BDF 计算
+- 🔬 **AI 结果分析**：基于量子化学专家模式，AI 自动分析计算结果
+- 💧 **激发态溶剂效应**：支持 cLR 和 ptSS 非平衡溶剂化校正 ⭐ NEW
+- 📊 **完整工作流**：从任务规划到结果分析的一站式解决方案
 - 🧪 **多种计算类型**：支持单点能、几何优化、频率计算等
 - 🏠 **本地模型支持**：支持 Ollama 等本地模型，保护数据隐私
 - 🔧 **易于扩展**：模块化设计，方便添加新功能
@@ -36,16 +37,18 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+**注意**：安装后，请使用 `python -m bdfeasyinput.cli` 而不是 `bdfeasyinput` 命令（详见 [安装说明](INSTALL.md)）。
+
 ### 使用示例
 
 #### 方式 1：AI 辅助（自然语言）
 
 ```bash
 # 使用自然语言描述任务，AI 自动生成 YAML
-bdfeasyinput ai-plan "计算水分子的单点能，使用 PBE0 方法和 cc-pVDZ 基组" -o task.yaml
+python -m bdfeasyinput.cli ai-plan "计算水分子的单点能，使用 PBE0 方法和 cc-pVDZ 基组" -o task.yaml
 
 # 然后转换为 BDF 输入
-bdfeasyinput convert task.yaml -o bdf_input.inp
+python -m bdfeasyinput.cli convert task.yaml -o bdf_input.inp
 ```
 
 #### 方式 2：YAML 输入（传统方式）
@@ -73,14 +76,14 @@ method:
 
 ```bash
 # 生成 BDF 输入文件
-bdfeasyinput convert example.yaml -o bdf_input.inp
+python -m bdfeasyinput.cli convert example.yaml -o bdf_input.inp
 ```
 
 #### 方式 3：交互式 AI 对话
 
 ```bash
 # 启动交互式对话
-bdfeasyinput ai-chat
+python -m bdfeasyinput.cli ai-chat
 
 # AI 会引导您完成计算任务的规划
 ```
@@ -89,16 +92,16 @@ bdfeasyinput ai-chat
 
 ```bash
 # 完整工作流：从自然语言到分析报告
-bdfeasyinput workflow "计算水分子的单点能，使用 PBE0 方法" \
+python -m bdfeasyinput.cli workflow "计算水分子的单点能，使用 PBE0 方法" \
   --run \
   --analyze \
   --output-dir ./results
 
 # 只运行计算
-bdfeasyinput run bdf_input.inp --output-dir ./results
+python -m bdfeasyinput.cli run bdf_input.inp --output-dir ./results
 
 # 只分析已有结果
-bdfeasyinput analyze output.out --input bdf_input.inp
+python -m bdfeasyinput.cli analyze output.out --input bdf_input.inp
 ```
 
 ## AI 功能配置
@@ -114,7 +117,7 @@ ollama pull llama3
 
 2. 配置使用本地模型：
 ```bash
-bdfeasyinput ai-plan "..." --provider ollama --model llama3
+python -m bdfeasyinput.cli ai-plan "..." --provider ollama --model llama3
 ```
 
 ### 使用远程 API
@@ -128,63 +131,72 @@ export ANTHROPIC_API_KEY=your_key_here
 
 然后使用：
 ```bash
-bdfeasyinput ai-plan "..." --provider openai --model gpt-4
+python -m bdfeasyinput.cli ai-plan "..." --provider openai --model gpt-4
 ```
 
 详细配置请参考 [AI 使用示例](examples/ai_usage_example.md)
 
 ## 项目状态
 
-🚧 **开发中** - 核心转换器基本完成
+✅ **核心功能已完成** - 支持完整的 BDF 计算工作流
 
-### ✅ 已完成
+### ✅ 已完成功能
 
 #### 核心功能
 - ✅ **YAML 到 BDF 转换器**：完整的转换引擎
-  - SCF 单点能量计算
-  - TDDFT 激发态计算（单态、三态、SOC）
+  - SCF 单点能量计算（RHF, UHF, RKS, UKS, ROKS）
+  - TDDFT 激发态计算（单态、三态、SOC、Spin-flip）
   - 结构优化（基态、激发态）
-  - 溶剂化效应支持（基态、激发态）
-- ✅ **关键词映射系统**：9 个核心模块的完整关键词映射
-- ✅ **模块编排文档**：5 个主要计算类型的详细文档
-- ✅ **转换示例**：10+ 个 YAML 示例文件
+  - 频率计算（Hessian）
+  - **溶剂化效应支持**：
+    - 基态溶剂化（IEFPCM, COSMO, CPCM, SMD 等）
+    - **激发态非平衡溶剂化** ⭐ NEW
+      - cLR（线性响应非平衡溶剂化）
+      - ptSS（态特定微扰理论非平衡溶剂化）
+- ✅ **执行模块**：支持直接执行和 BDFAutotest 模式
+- ✅ **分析模块**：完整的输出解析和 AI 分析
+  - 能量、几何结构、频率提取
+  - SCF 收敛分析
+  - TDDFT 激发态分析
+  - **溶剂效应分析**（含非平衡校正）⭐ NEW
+  - 多格式报告生成（Markdown, HTML, Text）
+  - 中英文双语支持
+- ✅ **AI 模块**：任务规划和结果分析
+  - 9 个 AI 服务商支持（Ollama, OpenAI, Anthropic, OpenRouter 等）
+  - 自然语言任务规划
+  - 专家级结果分析
 
 #### 文档系统
-- ✅ 项目规划文档
-- ✅ AI 模块设计
-- ✅ 架构设计
-- ✅ 模块编排文档（SCF、TDDFT、结构优化、基组、溶剂化）
-- ✅ 转换示例文档
-- ✅ 研究进展文档
+- ✅ 完整的项目文档（43+ 文档文件）
+- ✅ 开发文档（位于 `docs/dev/`）
+- ✅ 用户指南和示例
 
-### 🔄 进行中
+### 📊 项目统计
 
-- ⏳ 频率计算支持
-- ⏳ 输入验证增强
-- ⏳ 代码重构（拆分大文件）
+- **代码文件**：46+ Python 文件
+- **测试文件**：15+ 测试文件
+- **示例文件**：24+ 示例
+- **支持的计算类型**：5+ 种
+- **支持的 AI 服务商**：9 个
 
-### ⏳ 待实施
-
-- ⏳ AI 模块实现
-- ⏳ BDFAutotest 集成
-- ⏳ 结果分析模块
-- ⏳ MP2、MCSCF 等高级计算支持
-
-**详细进度**：参见 [WORK_PROGRESS.md](WORK_PROGRESS.md)
-
-详细规划请参见：
-- [项目规划](PROJECT_PLAN.md)
-- [架构设计](ARCHITECTURE.md)
-- [AI 模块设计](AI_MODULE_DESIGN.md) ⭐ NEW
-- [实施路线图](IMPLEMENTATION_ROADMAP.md)
+**详细进度**：参见 [docs/dev/CURRENT_STATUS_2025.md](docs/dev/CURRENT_STATUS_2025.md)
 
 ## 文档
 
-- [项目规划文档](PROJECT_PLAN.md)
-- [架构设计文档](ARCHITECTURE.md)
-- [AI 模块设计](AI_MODULE_DESIGN.md) ⭐ NEW
-- [快速开始指南](QUICKSTART.md)
-- [实施路线图](IMPLEMENTATION_ROADMAP.md)
+### 用户文档
+- **[完整使用手册](docs/USER_MANUAL.md)** ⭐ 推荐阅读
+- [AI 提供商指南](docs/ai_providers_guide.md)
+- [坐标格式说明](docs/coordinate_format.md)
+- [用户指南大纲](docs/user_guide_outline.md)
+
+### 开发文档（docs/dev/）
+- [当前状态总结](docs/dev/CURRENT_STATUS_2025.md) ⭐ NEW
+- [项目规划](docs/dev/PROJECT_PLAN.md)
+- [架构设计](docs/dev/ARCHITECTURE.md)
+- [AI 模块设计](docs/dev/AI_MODULE_DESIGN.md)
+- [实施路线图](docs/dev/IMPLEMENTATION_ROADMAP.md)
+- [快速开始指南](docs/dev/QUICKSTART.md)
+- [功能总结](docs/dev/FEATURES_SUMMARY.md)
 - [示例文件](examples/)
 
 ## 贡献
