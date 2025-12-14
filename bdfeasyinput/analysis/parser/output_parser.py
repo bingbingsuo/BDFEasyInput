@@ -154,7 +154,7 @@ class BDFOutputParser:
 
         # 提取轨道占据信息（如果有）
         # 注意：需要先提取SCF方法信息，以便正确判断限制性/非限制性方法
-        scf_method = result.get('properties', {}).get('scf_method')
+        # 直接使用上面提取的scf_method变量，而不是从result中重新获取
         occupation_info = self.extract_occupation_info(content, scf_method=scf_method)
         if occupation_info:
             result['properties']['occupation'] = occupation_info
