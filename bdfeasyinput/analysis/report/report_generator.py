@@ -542,6 +542,215 @@ class AnalysisReportGenerator:
                     lines.append(f"**{note_label}**{sep} {lowdin_desc}")
                     lines.append("")
             
+            # 对称群信息
+            symmetry = properties.get('symmetry')
+            if symmetry:
+                lines.append("")
+                symmetry_title = get_label("symmetry_group_info", language)
+                lines.append(f"### {symmetry_title}")
+                lines.append("")
+                
+                detected_group = symmetry.get('detected_group')
+                user_group = symmetry.get('user_set_group')
+                abelian_subgroup = symmetry.get('largest_abelian_subgroup')
+                noper = symmetry.get('noper')
+                abelian_noper = symmetry.get('abelian_subgroup_noper')
+                symmetry_check = symmetry.get('symmetry_check')
+                is_subgroup = symmetry.get('is_subgroup')
+                
+                if detected_group:
+                    detected_label = get_label("detected_point_group", language)
+                    lines.append(f"**{detected_label}**{sep} {detected_group}")
+                    detected_note = get_label("detected_group_note", language)
+                    lines.append(f"  - {detected_note}")
+                    lines.append("")
+                
+                if user_group:
+                    user_label = get_label("user_set_point_group", language)
+                    lines.append(f"**{user_label}**{sep} {user_group}")
+                    user_note = get_label("user_group_note", language)
+                    lines.append(f"  - {user_note}")
+                    if is_subgroup is not None:
+                        is_subgroup_label = get_label("is_subgroup", language)
+                        yes_no = get_label("yes" if is_subgroup else "no", language)
+                        lines.append(f"  - **{is_subgroup_label}**{sep} {yes_no}")
+                        if is_subgroup:
+                            subgroup_note = get_label("subgroup_note", language)
+                            lines.append(f"    - {subgroup_note}")
+                    lines.append("")
+                
+                if abelian_subgroup:
+                    abelian_label = get_label("largest_abelian_subgroup", language)
+                    lines.append(f"**{abelian_label}**{sep} {abelian_subgroup}")
+                    if abelian_noper is not None:
+                        abelian_noper_label = get_label("abelian_subgroup_operations", language)
+                        lines.append(f"  - **{abelian_noper_label}**{sep} {abelian_noper}")
+                    abelian_note = get_label("abelian_subgroup_note", language)
+                    lines.append(f"  - {abelian_note}")
+                    lines.append("")
+                
+                if noper is not None:
+                    noper_label = get_label("number_of_operations", language)
+                    lines.append(f"**{noper_label}**{sep} {noper}")
+                    lines.append("")
+                
+                if symmetry_check:
+                    check_label = get_label("symmetry_check", language)
+                    lines.append(f"**{check_label}**{sep} {symmetry_check}")
+                    lines.append("")
+                
+                symmetry_note_label = get_label("symmetry_note", language)
+                symmetry_note_text = get_label("symmetry_note_text", language)
+                lines.append(f"**{symmetry_note_label}**{sep} {symmetry_note_text}")
+                lines.append("")
+            
+            # 不可约表示信息
+            irreps = properties.get('irreps')
+            if irreps:
+                lines.append("")
+                irrep_title = get_label("irrep_info", language)
+                lines.append(f"### {irrep_title}")
+                lines.append("")
+                
+                total_basis = irreps.get('total_basis_functions')
+                total_orbitals = irreps.get('total_orbitals')
+                number_of_irreps = irreps.get('number_of_irreps')
+                irrep_list = irreps.get('irreps', [])
+                
+                if total_basis is not None:
+                    basis_label = get_label("total_basis_functions", language)
+                    lines.append(f"**{basis_label}**{sep} {total_basis}")
+                    basis_note = get_label("basis_functions_note", language)
+                    lines.append(f"  - {basis_note}")
+                    lines.append("")
+                
+                if number_of_irreps is not None:
+                    num_irreps_label = get_label("number_of_irreps", language)
+                    lines.append(f"**{num_irreps_label}**{sep} {number_of_irreps}")
+                    lines.append("")
+                
+                if total_orbitals is not None:
+                    orbitals_label = get_label("total_orbitals", language)
+                    lines.append(f"**{orbitals_label}**{sep} {total_orbitals}")
+                    orbitals_note = get_label("orbitals_note", language)
+                    lines.append(f"  - {orbitals_note}")
+                    lines.append("")
+                
+                if irrep_list:
+                    irrep_table_label = get_label("irrep_table", language)
+                    lines.append(f"**{irrep_table_label}**{sep}")
+                    lines.append("")
+                    
+                    irrep_label_text = get_label("irrep", language)
+                    norb_label = get_label("orbitals_per_irrep", language)
+                    lines.append(f"| {irrep_label_text} | {norb_label} |")
+                    lines.append("|------|------|")
+                    
+                    for irrep_data in irrep_list:
+                        irrep_name = irrep_data.get('irrep', '')
+                        norb = irrep_data.get('norb', 0)
+                        lines.append(f"| {irrep_name} | {norb} |")
+                    
+                    lines.append("")
+                    irrep_note_label = get_label("irrep_note", language)
+                    irrep_note_text = get_label("irrep_note_text", language)
+                    lines.append(f"**{irrep_note_label}**{sep} {irrep_note_text}")
+                    lines.append("")
+            
+            # 轨道占据信息
+            occupation = properties.get('occupation')
+            if occupation:
+                lines.append("")
+                occupation_title = get_label("orbital_occupation_info", language)
+                lines.append(f"### {occupation_title}")
+                lines.append("")
+                
+                irreps = occupation.get('irreps', [])
+                alpha_occ = occupation.get('alpha_occupation', [])
+                beta_occ = occupation.get('beta_occupation', [])
+                total_alpha = occupation.get('total_alpha_electrons')
+                total_beta = occupation.get('total_beta_electrons')
+                total_electrons = occupation.get('total_electrons')
+                ground_state_irrep = occupation.get('ground_state_irrep')
+                is_rhf_rks = occupation.get('is_rhf_rks', False)
+                
+                if total_alpha is not None:
+                    alpha_label = get_label("total_alpha_electrons", language)
+                    lines.append(f"**{alpha_label}**{sep} {total_alpha:.2f}")
+                    if is_rhf_rks:
+                        rhf_note = get_label("rhf_rks_note", language)
+                        lines.append(f"  - {rhf_note}")
+                    lines.append("")
+                
+                if total_beta is not None:
+                    beta_label = get_label("total_beta_electrons", language)
+                    lines.append(f"**{beta_label}**{sep} {total_beta:.2f}")
+                    lines.append("")
+                
+                if total_electrons is not None:
+                    total_label = get_label("total_electrons", language)
+                    lines.append(f"**{total_label}**{sep} {total_electrons:.2f}")
+                    lines.append("")
+                
+                if ground_state_irrep:
+                    ground_label = get_label("ground_state_irrep", language)
+                    lines.append(f"**{ground_label}**{sep} {ground_state_irrep}")
+                    ground_note = get_label("ground_state_note", language)
+                    lines.append(f"  - {ground_note}")
+                    lines.append("")
+                
+                if irreps and (alpha_occ or beta_occ):
+                    table_label = get_label("occupation_table", language)
+                    lines.append(f"**{table_label}**{sep}")
+                    lines.append("")
+                    
+                    irrep_label_text = get_label("irrep_label", language)
+                    alpha_occ_label = get_label("alpha_occ", language)
+                    beta_occ_label = get_label("beta_occ", language)
+                    
+                    # 表头
+                    if beta_occ:
+                        lines.append(f"| {irrep_label_text} | {alpha_occ_label} | {beta_occ_label} |")
+                        lines.append("|------|------|------|")
+                    else:
+                        lines.append(f"| {irrep_label_text} | {alpha_occ_label} |")
+                        lines.append("|------|------|")
+                    
+                    # 数据行
+                    max_len = max(len(irreps), len(alpha_occ), len(beta_occ) if beta_occ else 0)
+                    for i in range(max_len):
+                        irrep_name = irreps[i] if i < len(irreps) else ""
+                        alpha_val = alpha_occ[i] if i < len(alpha_occ) else 0.0
+                        if beta_occ:
+                            beta_val = beta_occ[i] if i < len(beta_occ) else 0.0
+                            lines.append(f"| {irrep_name} | {alpha_val:.2f} | {beta_val:.2f} |")
+                        else:
+                            lines.append(f"| {irrep_name} | {alpha_val:.2f} |")
+                    
+                    lines.append("")
+                    occupation_note_label = get_label("occupation_note", language)
+                    occupation_note_text = get_label("occupation_note_text", language)
+                    lines.append(f"**{occupation_note_label}**{sep} {occupation_note_text}")
+                    lines.append("")
+            
+            # SCF State Symmetry信息
+            scf_state_symmetry = properties.get('scf_state_symmetry')
+            if scf_state_symmetry:
+                lines.append("")
+                scf_state_title = get_label("scf_state_symmetry_info", language)
+                lines.append(f"### {scf_state_title}")
+                lines.append("")
+                
+                irrep = scf_state_symmetry.get('irrep')
+                if irrep:
+                    irrep_label = get_label("scf_state_symmetry_irrep", language)
+                    lines.append(f"**{irrep_label}**{sep} {irrep}")
+                    lines.append("")
+                    scf_state_note_label = get_label("scf_state_symmetry_note", language)
+                    scf_state_note_text = get_label("scf_state_symmetry_note_text", language)
+                    lines.append(f"**{scf_state_note_label}**{sep} {scf_state_note_text}")
+                    lines.append("")
+            
             # 显示溶剂效应信息
             solvent = properties.get('solvent')
             if solvent:
@@ -809,6 +1018,70 @@ class AnalysisReportGenerator:
                             lines.append(f"  - {spin_flip_forbidden}")
                             lines.append(f"  - {mag_quad}")
                     lines.append("")
+            
+            # RESP模块的激发态梯度信息
+            properties = parsed_data.get('properties', {}) if parsed_data else {}
+            resp_gradient = properties.get('resp_gradient')
+            if resp_gradient:
+                lines.append("")
+                resp_gradient_title = get_label("resp_gradient_info", language)
+                lines.append(f"### {resp_gradient_title}")
+                lines.append("")
+                
+                primary_root = resp_gradient.get('primary_root')
+                target_roots = resp_gradient.get('target_roots', [])
+                root_counts = resp_gradient.get('root_counts', {})
+                total_calcs = resp_gradient.get('total_gradient_calculations', 0)
+                description = resp_gradient.get('description', '')
+                
+                if primary_root:
+                    primary_root_label = get_label("primary_excited_state_root", language)
+                    if language == "en":
+                        lines.append(f"- **{primary_root_label}**: Root {primary_root} (the lowest-energy excited state)")
+                    else:
+                        lines.append(f"- **{primary_root_label}**: Root {primary_root}（能量最低的激发态）")
+                
+                if target_roots:
+                    if len(target_roots) == 1:
+                        root_label = get_label("calculated_excited_state_roots", language)
+                        if language == "en":
+                            lines.append(f"- **{root_label}**: Root {target_roots[0]}")
+                        else:
+                            lines.append(f"- **{root_label}**: Root {target_roots[0]}")
+                    else:
+                        root_label = get_label("calculated_excited_state_roots", language)
+                        roots_str = ", ".join([f"Root {r}" for r in target_roots])
+                        if language == "en":
+                            lines.append(f"- **{root_label}**: {roots_str}")
+                        else:
+                            lines.append(f"- **{root_label}**: {roots_str}")
+                
+                if root_counts:
+                    root_iter_label = get_label("gradient_iteration_counts", language)
+                    lines.append(f"- **{root_iter_label}**:")
+                    for root_num in sorted(root_counts.keys()):
+                        count = root_counts[root_num]
+                        if language == "en":
+                            lines.append(f"  - Root {root_num}: {count} iterations")
+                        else:
+                            lines.append(f"  - Root {root_num}: {count} 次迭代")
+                
+                if total_calcs:
+                    total_calcs_label = get_label("total_gradient_calculations", language)
+                    if language == "en":
+                        lines.append(f"- **{total_calcs_label}**: {total_calcs} gradient calculations")
+                    else:
+                        lines.append(f"- **{total_calcs_label}**: {total_calcs} 次梯度计算")
+                
+                if description:
+                    lines.append("")
+                    resp_gradient_desc = get_label("resp_gradient_description", language)
+                    lines.append(f"**{resp_gradient_desc}**: {description}")
+                
+                lines.append("")
+                resp_gradient_note_label = get_label("resp_gradient_note", language)
+                resp_gradient_note_text = get_label("resp_gradient_note_text", language)
+                lines.append(f"**{resp_gradient_note_label}**: {resp_gradient_note_text}")
             
             lines.append("")
         

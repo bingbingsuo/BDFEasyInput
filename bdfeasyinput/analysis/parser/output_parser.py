@@ -108,11 +108,23 @@ class BDFOutputParser:
         # 提取几何结构
         result['geometry'] = self.extract_geometry(content)
         
-        # 提取频率
-        result['frequencies'] = self.extract_frequencies(content)
+        # 提取频率（现在返回字典，包含振动和平动/转动频率）
+        freq_data = self.extract_frequencies(content)
+        result['frequencies'] = freq_data.get('all', [])  # 向后兼容：保持列表格式
+        result['frequency_data'] = freq_data  # 新的结构化数据
         
         # 提取额外性质
         result['properties'] = self.extract_properties(content)
+        
+        # 提取SCF方法类型（如果有）
+        scf_method = self.extract_scf_method(content)
+        if scf_method:
+            result['properties']['scf_method'] = scf_method
+        
+        # 提取热力学数据
+        thermochemistry = self.extract_thermochemistry(content)
+        if thermochemistry:
+            result['properties']['thermochemistry'] = thermochemistry
         
         # 提取优化信息（如果有）
         result['optimization'] = self.extract_optimization_info(content)
@@ -125,6 +137,33 @@ class BDFOutputParser:
         else:
             result['excited_states'] = self.extract_excited_states(content)
         
+        # 提取resp模块的激发态梯度计算信息（如果有）
+        resp_gradient_info = self.extract_resp_gradient_info(content)
+        if resp_gradient_info:
+            result['properties']['resp_gradient'] = resp_gradient_info
+
+        # 提取对称群信息（如果有）
+        symmetry_info = self.extract_symmetry_info(content)
+        if symmetry_info:
+            result['properties']['symmetry'] = symmetry_info
+
+        # 提取不可约表示和分子轨道信息（如果有）
+        irrep_info = self.extract_irrep_info(content)
+        if irrep_info:
+            result['properties']['irreps'] = irrep_info
+
+        # 提取轨道占据信息（如果有）
+        # 注意：需要先提取SCF方法信息，以便正确判断限制性/非限制性方法
+        scf_method = result.get('properties', {}).get('scf_method')
+        occupation_info = self.extract_occupation_info(content, scf_method=scf_method)
+        if occupation_info:
+            result['properties']['occupation'] = occupation_info
+
+        # 提取SCF State symmetry（如果有）
+        scf_state_symmetry = self.extract_scf_state_symmetry(content)
+        if scf_state_symmetry:
+            result['properties']['scf_state_symmetry'] = scf_state_symmetry
+
         # 提取警告和错误
         result['warnings'] = self.extract_warnings(content)
         result['errors'] = self.extract_errors(content)
@@ -263,60 +302,105 @@ class BDFOutputParser:
         
         return geometry
     
-    def extract_frequencies(self, content: str) -> List[float]:
-        """提取频率（如果有）"""
-        frequencies = []
+    def extract_frequencies(self, content: str) -> Dict[str, Any]:
+        """
+        提取频率（如果有）
         
-        # BDF 格式：频率通常在 "Vibrational frequencies" 或类似部分
-        # 格式可能是：频率值（cm-1）或频率值（Hz）
+        Returns:
+            包含振动频率和平动/转动频率的字典：
+            {
+                'vibrations': [频率列表],
+                'translations_rotations': [频率列表],
+                'all': [所有频率列表]  # 为了向后兼容
+            }
+        """
+        vibrations = []
+        translations_rotations = []
         
-        # 查找频率部分（通常在 Hessian 计算后）
-        freq_section_patterns = [
-            r'Vibrational\s+frequencies.*?(?=\n\n|\n\[|\n\|\||$)',
-            r'Normal\s+mode.*?frequencies.*?(?=\n\n|\n\[|\n\|\||$)',
-            r'Frequency.*?analysis.*?(?=\n\n|\n\[|\n\|\||$)',
-        ]
+        # BDF 格式：区分 "Results of vibrations:" 和 "Results of translations and rotations:"
         
-        freq_section = None
-        for pattern in freq_section_patterns:
-            match = re.search(pattern, content, re.IGNORECASE | re.DOTALL)
-            if match:
-                freq_section = match.group(0)
-                break
+        # 提取振动频率部分
+        vib_section_match = re.search(
+            r'Results\s+of\s+vibrations:.*?(?=Results\s+of\s+translations|$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
         
-        # 如果在频率部分找到，提取频率值
-        if freq_section:
-            # 匹配频率值（通常是正数，单位 cm-1）
-            # 格式：数字（可能带符号，虚频为负）
-            freq_pattern = r'([-+]?\d+\.\d+)\s*cm[-1]|([-+]?\d+\.\d+)\s*Hz|([-+]?\d+\.\d+)(?=\s*(?:cm|Hz|wavenumber))'
-            matches = re.finditer(freq_pattern, freq_section, re.IGNORECASE)
+        if vib_section_match:
+            vib_section = vib_section_match.group(0)
+            # 在振动部分查找 "Frequencies" 行
+            freq_line_pattern = r'^\s*Frequencies\s+([-+]?\d+\.\d+(?:\s+[-+]?\d+\.\d+)*)'
+            matches = re.finditer(freq_line_pattern, vib_section, re.IGNORECASE | re.MULTILINE)
+            seen = set()
             for match in matches:
-                for group in match.groups():
-                    if group:
-                        try:
-                            freq = float(group)
-                            frequencies.append(freq)
-                        except ValueError:
-                            continue
-        
-        # 如果没有找到频率部分，尝试通用模式
-        if not frequencies:
-            frequency_patterns = [
-                r'Frequency\s*[:=]\s*([-+]?\d+\.?\d*)',
-                r'Vibrational\s+frequency\s*[:=]\s*([-+]?\d+\.?\d*)',
-                r'Freq\s*[:=]\s*([-+]?\d+\.?\d*)',
-            ]
-            
-            for pattern in frequency_patterns:
-                matches = re.finditer(pattern, content, re.IGNORECASE)
-                for match in matches:
+                freq_line = match.group(1)
+                freq_values = re.findall(r'([-+]?\d+\.\d+)', freq_line)
+                for freq_str in freq_values:
                     try:
-                        freq = float(match.group(1))
-                        frequencies.append(freq)
-                    except (ValueError, IndexError):
+                        freq = float(freq_str)
+                        if freq not in seen:
+                            vibrations.append(freq)
+                            seen.add(freq)
+                    except ValueError:
                         continue
         
-        return frequencies
+        # 提取平动/转动频率部分
+        trans_rot_section_match = re.search(
+            r'Results\s+of\s+translations\s+and\s+rotations:.*?(?=\n\s*\*\*\*|Thermal\s+Contributions|\n\s*\[|$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+        
+        if trans_rot_section_match:
+            trans_rot_section = trans_rot_section_match.group(0)
+            # 在平动/转动部分查找 "Frequencies" 行
+            freq_line_pattern = r'^\s*Frequencies\s+([-+]?\d+\.\d+(?:\s+[-+]?\d+\.\d+)*)'
+            matches = re.finditer(freq_line_pattern, trans_rot_section, re.IGNORECASE | re.MULTILINE)
+            seen = set()
+            for match in matches:
+                freq_line = match.group(1)
+                freq_values = re.findall(r'([-+]?\d+\.\d+)', freq_line)
+                for freq_str in freq_values:
+                    try:
+                        freq = float(freq_str)
+                        if freq not in seen:
+                            translations_rotations.append(freq)
+                            seen.add(freq)
+                    except ValueError:
+                        continue
+        
+        # 如果没有找到明确的分区，尝试通用方法（向后兼容）
+        if not vibrations and not translations_rotations:
+            freq_line_pattern = r'^\s*Frequencies\s+([-+]?\d+\.\d+(?:\s+[-+]?\d+\.\d+)*)'
+            matches = re.finditer(freq_line_pattern, content, re.IGNORECASE | re.MULTILINE)
+            seen = set()
+            all_freqs = []
+            for match in matches:
+                freq_line = match.group(1)
+                freq_values = re.findall(r'([-+]?\d+\.\d+)', freq_line)
+                for freq_str in freq_values:
+                    try:
+                        freq = float(freq_str)
+                        if freq not in seen:
+                            all_freqs.append(freq)
+                            seen.add(freq)
+                    except ValueError:
+                        continue
+            # 如果没有明确区分，将所有频率都归为振动频率（向后兼容）
+            if all_freqs:
+                vibrations = all_freqs
+        
+        # 排序频率
+        vibrations.sort()
+        translations_rotations.sort()
+        all_frequencies = vibrations + translations_rotations
+        all_frequencies.sort()
+        
+        return {
+            'vibrations': vibrations,
+            'translations_rotations': translations_rotations,
+            'all': all_frequencies  # 向后兼容
+        }
 
     def extract_tddft_calculations(self, content: str) -> List[Dict[str, Any]]:
         """
@@ -670,6 +754,32 @@ class BDFOutputParser:
         
         opt_info['steps'] = steps
         
+        # 检查优化收敛消息（多种格式）
+        # 格式1: "Good Job, Geometry Optimization converged in X iterations!"
+        good_job_match = re.search(
+            r'Good\s+Job[,\s]+Geometry\s+Optimization\s+converged\s+in\s+(\d+)\s+iterations?',
+            content,
+            re.IGNORECASE
+        )
+        if good_job_match:
+            opt_info['converged'] = True
+            try:
+                opt_info['iterations'] = int(good_job_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 格式2: "Total number of iterations: X"
+        total_iter_match = re.search(
+            r'Total\s+number\s+of\s+iterations:\s*(\d+)',
+            content,
+            re.IGNORECASE
+        )
+        if total_iter_match and 'iterations' not in opt_info:
+            try:
+                opt_info['iterations'] = int(total_iter_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
         # 提取收敛信息
         # 查找包含收敛检查的更大范围（包括前面的收敛标准）
         converge_section = re.search(
@@ -681,8 +791,8 @@ class BDFOutputParser:
         if converge_section:
             section = converge_section.group(0)
             
-            # 检查是否收敛
-            if re.search(r'Geom\.\s+converge\s*:.*?Yes', section, re.IGNORECASE):
+            # 检查是否收敛（如果还没检测到）
+            if not opt_info.get('converged') and re.search(r'Geom\.\s+converge\s*:.*?Yes', section, re.IGNORECASE):
                 opt_info['converged'] = True
             
             # 提取收敛标准
@@ -735,6 +845,163 @@ class BDFOutputParser:
         
         return opt_info
     
+    def extract_thermochemistry(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取热力学数据
+        
+        Returns:
+            包含热力学数据的字典，如果未找到则返回 None
+        """
+        thermochemistry = {}
+        
+        # 查找热力学部分
+        # 更宽松的匹配模式，因为可能有不同的分隔符
+        thermo_section_match = re.search(
+            r'Thermal\s+Contributions\s+to\s+Energies.*?(?:Sum\s+of\s+electronic\s+and\s+thermal\s+Free\s+Energies.*?[-+]?\d+\.\d+).*?(?=\n\s*\*\*\*|$|\n\s*\[)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+        
+        # 如果没找到，尝试更简单的模式
+        if not thermo_section_match:
+            thermo_section_match = re.search(
+                r'Zero-point\s+Energy.*?Sum\s+of\s+electronic.*?Free\s+Energies.*?[-+]?\d+\.\d+.*?(?=\n\s*===|$)',
+                content,
+                re.IGNORECASE | re.DOTALL
+            )
+        
+        if not thermo_section_match:
+            return None
+        
+        thermo_section = thermo_section_match.group(0)
+        
+        # 提取温度
+        temp_match = re.search(r'Temperature\s*=\s*([-+]?\d+\.?\d*)\s*Kelvin', thermo_section, re.IGNORECASE)
+        if temp_match:
+            try:
+                thermochemistry['temperature'] = float(temp_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取压力
+        press_match = re.search(r'Pressure\s*=\s*([-+]?\d+\.?\d*)\s*Atm', thermo_section, re.IGNORECASE)
+        if press_match:
+            try:
+                thermochemistry['pressure'] = float(press_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取零点能（ZPE）
+        zpe_match = re.search(
+            r'Zero-point\s+Energy\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if zpe_match:
+            try:
+                thermochemistry['zero_point_energy'] = {
+                    'hartree': float(zpe_match.group(1)),
+                    'kcal_per_mol': float(zpe_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取热校正能
+        thermal_energy_match = re.search(
+            r'Thermal\s+correction\s+to\s+Energy\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if thermal_energy_match:
+            try:
+                thermochemistry['thermal_correction_energy'] = {
+                    'hartree': float(thermal_energy_match.group(1)),
+                    'kcal_per_mol': float(thermal_energy_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取热校正焓
+        thermal_enthalpy_match = re.search(
+            r'Thermal\s+correction\s+to\s+Enthalpy\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if thermal_enthalpy_match:
+            try:
+                thermochemistry['thermal_correction_enthalpy'] = {
+                    'hartree': float(thermal_enthalpy_match.group(1)),
+                    'kcal_per_mol': float(thermal_enthalpy_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取热校正 Gibbs 自由能
+        thermal_gibbs_match = re.search(
+            r'Thermal\s+correction\s+to\s+Gibbs\s+Free\s+Energy\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if thermal_gibbs_match:
+            try:
+                thermochemistry['thermal_correction_gibbs'] = {
+                    'hartree': float(thermal_gibbs_match.group(1)),
+                    'kcal_per_mol': float(thermal_gibbs_match.group(2))
+                }
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取组合能量（电子能 + 各种校正）
+        # Sum of electronic and zero-point Energies
+        zpe_sum_match = re.search(
+            r'Sum\s+of\s+electronic\s+and\s+zero-point\s+Energies\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if zpe_sum_match:
+            try:
+                thermochemistry['electronic_plus_zpe'] = float(zpe_sum_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # Sum of electronic and thermal Energies
+        thermal_sum_match = re.search(
+            r'Sum\s+of\s+electronic\s+and\s+thermal\s+Energies\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if thermal_sum_match:
+            try:
+                thermochemistry['electronic_plus_thermal'] = float(thermal_sum_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # Sum of electronic and thermal Enthalpies
+        enthalpy_sum_match = re.search(
+            r'Sum\s+of\s+electronic\s+and\s+thermal\s+Enthalpies\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if enthalpy_sum_match:
+            try:
+                thermochemistry['electronic_plus_enthalpy'] = float(enthalpy_sum_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # Sum of electronic and thermal Free Energies
+        gibbs_sum_match = re.search(
+            r'Sum\s+of\s+electronic\s+and\s+thermal\s+Free\s+Energies\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            thermo_section,
+            re.IGNORECASE
+        )
+        if gibbs_sum_match:
+            try:
+                thermochemistry['electronic_plus_gibbs'] = float(gibbs_sum_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        return thermochemistry if thermochemistry else None
+    
     def extract_warnings(self, content: str) -> List[str]:
         """提取警告信息"""
         warnings = []
@@ -769,6 +1036,93 @@ class BDFOutputParser:
                     errors.append(error)
         
         return errors
+    
+    def extract_resp_gradient_info(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取resp模块的激发态梯度计算信息
+        
+        BDF在计算TDDFT激发态梯度时，会在resp模块输出类似以下标记：
+        - "<Now following: Root    1>" 或 "<Now following: Root    N>"
+        - "Root    N"
+        
+        这些标记表示正在计算第N个激发态（能量最低的为Root 1）的梯度。
+        由于梯度计算会多次迭代，每个目标激发态的梯度计算可能包含多个这样的标记。
+        
+        Args:
+            content: BDF输出文件内容
+            
+        Returns:
+            包含激发态梯度信息的字典，如果未找到则返回None：
+            {
+                'target_roots': [1, 2, ...],  # 所有被计算梯度的激发态根号列表
+                'root_counts': {1: 18, 2: 5, ...},  # 每个根号出现的次数（迭代次数）
+                'primary_root': 1,  # 主要计算的根号（出现次数最多的）
+                'description': '...'  # 描述信息
+            }
+        """
+        resp_info = {}
+        
+        # 匹配 "<Now following: Root    N>" 格式
+        pattern1 = r'<Now\s+following:\s*Root\s+(\d+)>'
+        matches1 = re.finditer(pattern1, content, re.IGNORECASE)
+        
+        # 匹配 "Root    N" 格式（独立行）
+        pattern2 = r'^\s*Root\s+(\d+)\s*$'
+        matches2 = re.finditer(pattern2, content, re.MULTILINE | re.IGNORECASE)
+        
+        # 收集所有根号
+        root_numbers = []
+        for match in matches1:
+            try:
+                root_num = int(match.group(1))
+                root_numbers.append(root_num)
+            except (ValueError, IndexError):
+                continue
+        
+        for match in matches2:
+            try:
+                root_num = int(match.group(1))
+                root_numbers.append(root_num)
+            except (ValueError, IndexError):
+                continue
+        
+        if not root_numbers:
+            return None
+        
+        # 统计每个根号出现的次数
+        root_counts = {}
+        for root_num in root_numbers:
+            root_counts[root_num] = root_counts.get(root_num, 0) + 1
+        
+        # 获取所有被计算的根号（去重并排序）
+        target_roots = sorted(set(root_numbers))
+        
+        # 确定主要计算的根号（出现次数最多的）
+        primary_root = max(root_counts.items(), key=lambda x: x[1])[0] if root_counts else None
+        
+        resp_info['target_roots'] = target_roots
+        resp_info['root_counts'] = root_counts
+        resp_info['primary_root'] = primary_root
+        resp_info['total_gradient_calculations'] = len(root_numbers)
+        
+        # 生成描述信息（使用英文，因为会在报告中根据语言转换）
+        if primary_root:
+            if len(target_roots) == 1:
+                resp_info['description'] = (
+                    f"Calculated the gradient of TDDFT excited state {primary_root} "
+                    f"(the lowest-energy excited state). Performed {root_counts[primary_root]} gradient calculation iterations."
+                )
+            else:
+                root_desc = ", ".join([f"Root {r} ({root_counts[r]} iterations)" for r in target_roots])
+                resp_info['description'] = (
+                    f"Calculated gradients for multiple TDDFT excited states: {root_desc}. "
+                    f"The primary calculation is for excited state {primary_root} "
+                    f"(Root {primary_root}, appears {root_counts[primary_root]} times)."
+                )
+        else:
+            resp_info['description'] = f"Calculated gradients for multiple TDDFT excited states: {', '.join([f'Root {r}' for r in target_roots])}."
+        
+        return resp_info
     
     def extract_properties(self, content: str) -> Dict[str, Any]:
         """
@@ -929,6 +1283,34 @@ class BDFOutputParser:
             if 'solvent' not in properties:
                 properties['solvent'] = {}
             properties['solvent']['implicit_solvent'] = True
+        
+        # 从简单的格式中提取溶剂信息（如果没有找到详细的溶剂部分）
+        # 格式: "solvent\nwater\nsolmodel\nsmd" 或类似格式
+        if 'solvent' not in properties or not properties['solvent']:
+            # 查找溶剂关键词附近的内容
+            solvent_simple_match = re.search(
+                r'solvent\s*\n\s*(\w+)',
+                content,
+                re.IGNORECASE | re.MULTILINE
+            )
+            if solvent_simple_match:
+                properties['solvent'] = properties.get('solvent', {})
+                properties['solvent']['solvent'] = solvent_simple_match.group(1).strip()
+            
+            # 查找溶剂模型
+            solmodel_match = re.search(
+                r'solmodel\s*\n\s*(\w+)',
+                content,
+                re.IGNORECASE | re.MULTILINE
+            )
+            if solmodel_match:
+                if 'solvent' not in properties:
+                    properties['solvent'] = {}
+                properties['solvent']['method'] = solmodel_match.group(1).strip()
+            
+            # 如果没有找到详细的溶剂部分，但有溶剂相关信息，标记为隐式溶剂
+            if 'solvent' in properties and properties['solvent']:
+                properties['solvent']['implicit_solvent'] = True
         
         # 提取非平衡溶剂化校正信息（cLR）
         # 格式：
@@ -1102,4 +1484,633 @@ class BDFOutputParser:
                 properties['lowdin_spin_densities'] = spin_densities
         
         return properties
+    
+    def extract_scf_method(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取SCF计算方法类型
+        
+        BDF在SCF模块输出中会显示使用的计算方法，如：
+        - RHF: 限制性 Hartree-Fock
+        - UHF: 非限制性 Hartree-Fock
+        - ROHF: 限制性开壳层 Hartree-Fock
+        - RKS: 限制性 Kohn-Sham DFT
+        - UKS: 非限制性 Kohn-Sham DFT
+        - ROKS: 限制性开壳层 Kohn-Sham DFT
+        
+        通常在SCF迭代开始时会显示方法类型。
+        
+        Args:
+            content: BDF输出文件内容
+            
+        Returns:
+            包含SCF方法信息的字典，如果未找到则返回None：
+            {
+                'method': 'RHF',  # 方法类型：RHF/UHF/ROHF/RKS/UKS/ROKS
+                'is_restricted': True,  # 是否为限制性方法（RHF/RKS/ROHF/ROKS）
+                'is_unrestricted': False,  # 是否为非限制性方法（UHF/UKS）
+                'is_rohf': False,  # 是否为限制性开壳层方法（ROHF/ROKS）
+                'is_dft': False,  # 是否为DFT方法（RKS/UKS/ROKS）
+                'is_hf': True,  # 是否为HF方法（RHF/UHF/ROHF）
+            }
+        """
+        scf_method_info = {}
+        
+        # 查找SCF方法类型
+        # 可能在以下位置出现：
+        # 1. SCF迭代开始时的输出
+        # 2. 输入文件回显（$SCF模块）
+        # 3. 方法说明部分
+        
+        # 方法1：查找SCF迭代输出中的方法标识
+        # 格式可能：RHF calculation, UHF calculation等
+        method_patterns = [
+            (r'\b(RHF)\b', 'RHF'),
+            (r'\b(UHF)\b', 'UHF'),
+            (r'\b(ROHF)\b', 'ROHF'),
+            (r'\b(RKS)\b', 'RKS'),
+            (r'\b(UKS)\b', 'UKS'),
+            (r'\b(ROKS)\b', 'ROKS'),
+        ]
+        
+        found_method = None
+        # 优先从输入文件回显部分查找（更准确）
+        # 查找 $SCF ... $end 之间的方法标识
+        scf_input_match = re.search(
+            r'\$SCF[^\$]*?(?=\$|\n\n|\n\|\||$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+        
+        if scf_input_match:
+            scf_input_section = scf_input_match.group(0)
+            # 在SCF输入部分查找方法标识（通常在$SCF和$end之间）
+            for pattern, method_name in method_patterns:
+                if re.search(pattern, scf_input_section, re.IGNORECASE):
+                    found_method = method_name
+                    break
+        
+        # 如果没找到，再从输出部分查找
+        if not found_method:
+            for pattern, method_name in method_patterns:
+                # 在SCF相关部分查找
+                scf_section_match = re.search(
+                    r'\$SCF.*?(?=\$|\n\n|\n\|\||$)',
+                    content,
+                    re.IGNORECASE | re.DOTALL
+                )
+                
+                if scf_section_match:
+                    scf_section = scf_section_match.group(0)
+                    if re.search(pattern, scf_section, re.IGNORECASE):
+                        found_method = method_name
+                        break
+        
+        # 方法2：如果没找到，在整个文件中查找（可能在输出中）
+        if not found_method:
+            for pattern, method_name in method_patterns:
+                # 查找方法名称，但排除一些误匹配（如变量名）
+                # 确保是独立的方法标识
+                match = re.search(rf'\b{method_name}\b', content, re.IGNORECASE)
+                if match:
+                    # 检查上下文，确保是SCF方法而不是其他
+                    start = max(0, match.start() - 50)
+                    end = min(len(content), match.end() + 50)
+                    context = content[start:end].lower()
+                    # 如果上下文包含SCF相关关键词，认为是方法标识
+                    if any(keyword in context for keyword in ['scf', 'method', 'calculation', '$scf']):
+                        found_method = method_name
+                        break
+        
+        if found_method:
+            scf_method_info['method'] = found_method
+            
+            # 判断方法特性
+            scf_method_info['is_restricted'] = found_method in ['RHF', 'RKS', 'ROHF', 'ROKS']
+            scf_method_info['is_unrestricted'] = found_method in ['UHF', 'UKS']
+            scf_method_info['is_rohf'] = found_method in ['ROHF', 'ROKS']
+            scf_method_info['is_dft'] = found_method in ['RKS', 'UKS', 'ROKS']
+            scf_method_info['is_hf'] = found_method in ['RHF', 'UHF', 'ROHF']
+            
+            return scf_method_info
+        
+        return None
+    
+    def extract_symmetry_info(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取对称群信息
+        
+        BDF在compass输出中会包含以下对称群相关信息：
+        - gsym: D06H, noper=   24  (检测到的对称群和操作数)
+        - Point group name D(6H)   (BDF自动判断的对称群)
+        - User set point group as D(6H)   (用户设定的对称群，由compass中关键词group指定)
+        - Largest Abelian Subgroup D(2H)  8  (最大阿贝尔子群)
+        - Symmetry check OK  (对称性检查通过)
+        
+        Args:
+            content: BDF输出文件内容
+            
+        Returns:
+            包含对称群信息的字典，如果未找到则返回None：
+            {
+                'detected_group': 'D(6H)',  # BDF自动检测的对称群
+                'user_set_group': 'D(6H)',  # 用户设定的对称群（如果有）
+                'largest_abelian_subgroup': 'D(2H)',  # 最大阿贝尔子群（如果有）
+                'noper': 24,  # 对称操作数
+                'abelian_subgroup_noper': 8,  # 阿贝尔子群的操作数（如果有）
+                'symmetry_check': 'OK',  # 对称性检查结果
+                'is_subgroup': True/False,  # 用户设定的群是否是检测到的群的子群
+            }
+        """
+        symmetry_info = {}
+        
+        # 提取 gsym 和 noper
+        # 格式：gsym: D06H, noper=   24
+        gsym_match = re.search(r'gsym:\s*([^\s,]+)', content, re.IGNORECASE)
+        if gsym_match:
+            # 将格式从 D06H 转换为 D(6H)
+            gsym_raw = gsym_match.group(1).strip()
+            # 处理格式转换：D06H -> D(6H), C2V -> C(2V), D2H -> D(2H)
+            # 匹配数字后跟字母的模式
+            gsym_normalized = self._normalize_point_group_format(gsym_raw)
+            symmetry_info['detected_group_raw'] = gsym_raw
+            symmetry_info['detected_group'] = gsym_normalized
+        
+        noper_match = re.search(r'noper\s*=\s*(\d+)', content, re.IGNORECASE)
+        if noper_match:
+            try:
+                symmetry_info['noper'] = int(noper_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取 Point group name（BDF自动判断的对称群）
+        # 格式：Point group name D(6H)   
+        point_group_match = re.search(r'Point\s+group\s+name\s+([^\s]+)', content, re.IGNORECASE)
+        if point_group_match:
+            point_group = point_group_match.group(1).strip()
+            symmetry_info['detected_group'] = point_group
+        
+        # 提取 User set point group（用户设定的对称群）
+        # 格式：User set point group as D(6H)   
+        user_group_match = re.search(r'User\s+set\s+point\s+group\s+as\s+([^\s]+)', content, re.IGNORECASE)
+        if user_group_match:
+            user_group = user_group_match.group(1).strip()
+            symmetry_info['user_set_group'] = user_group
+            
+            # 判断用户设定的群是否是检测到的群的子群
+            if 'detected_group' in symmetry_info:
+                detected = symmetry_info['detected_group']
+                # 简单判断：如果用户设定的群和检测到的群相同，或者是其子群
+                # 这里可以做更复杂的子群判断，但通常BDF会检查并报错如果不是子群
+                symmetry_info['is_subgroup'] = (user_group == detected or 
+                                                self._is_likely_subgroup(user_group, detected))
+        
+        # 提取 Largest Abelian Subgroup（最大阿贝尔子群）
+        # 格式：Largest Abelian Subgroup D(2H)                       8
+        abelian_match = re.search(r'Largest\s+Abelian\s+Subgroup\s+([^\s]+)\s+(\d+)', content, re.IGNORECASE)
+        if abelian_match:
+            abelian_group = abelian_match.group(1).strip()
+            abelian_noper = abelian_match.group(2).strip()
+            symmetry_info['largest_abelian_subgroup'] = abelian_group
+            try:
+                symmetry_info['abelian_subgroup_noper'] = int(abelian_noper)
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取 Symmetry check 结果
+        # 格式：Symmetry check OK
+        symmetry_check_match = re.search(r'Symmetry\s+check\s+(\w+)', content, re.IGNORECASE)
+        if symmetry_check_match:
+            symmetry_info['symmetry_check'] = symmetry_check_match.group(1).strip()
+        
+        return symmetry_info if symmetry_info else None
+    
+    def extract_irrep_info(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取不可约表示（Irrep）和分子轨道信息
+        
+        BDF在compass输出中会包含以下信息（新格式，三行在一起）：
+        - Total number of basis functions:     114     114  (总基函数数目)
+        - Number of irreps:   8  (不可约表示数目)
+        - Irrep :   Ag        B1g       B2g       B3g       Au        B1u       B2u       B3u  (不可约表示标记，同一行)
+        - Norb  :     24        18         9         6         6         9        18        24  (每个不可约表示的轨道数，同一行)
+        
+        Args:
+            content: BDF输出文件内容
+            
+        Returns:
+            包含不可约表示信息的字典，如果未找到则返回None：
+            {
+                'total_basis_functions': 114,  # 总基函数数目
+                'number_of_irreps': 8,  # 不可约表示数目
+                'irreps': [  # 不可约表示列表
+                    {
+                        'irrep': 'Ag',  # 不可约表示标记
+                        'norb': 24,  # 该不可约表示的分子轨道数目
+                    },
+                    ...
+                ],
+                'total_orbitals': 114,  # 总分子轨道数（所有不可约表示之和）
+            }
+        """
+        irrep_info = {}
+        
+        # 提取总基函数数目
+        # 格式：Total number of basis functions:     114     114
+        # 注意：可能有两个数字，第一个是alpha，第二个是beta（对于开壳层）
+        total_basis_match = re.search(
+            r'Total\s+number\s+of\s+basis\s+functions:\s+(\d+)(?:\s+(\d+))?',
+            content,
+            re.IGNORECASE
+        )
+        if total_basis_match:
+            try:
+                alpha_basis = int(total_basis_match.group(1))
+                beta_basis = int(total_basis_match.group(2)) if total_basis_match.group(2) else None
+                irrep_info['total_basis_functions'] = alpha_basis
+                if beta_basis is not None:
+                    irrep_info['total_basis_functions_beta'] = beta_basis
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取不可约表示数目
+        # 格式：Number of irreps:   8
+        num_irreps_match = re.search(
+            r'Number\s+of\s+irreps:\s*(\d+)',
+            content,
+            re.IGNORECASE
+        )
+        if num_irreps_match:
+            try:
+                irrep_info['number_of_irreps'] = int(num_irreps_match.group(1))
+            except (ValueError, IndexError):
+                pass
+        
+        # 提取不可约表示和轨道数（新格式：三行在一起）
+        # 格式：
+        #   Number of irreps:   8
+        #   Irrep :   Ag        B1g       B2g       B3g       Au        B1u       B2u       B3u
+        #   Norb  :     24        18         9         6         6         9        18        24
+        
+        lines = content.split('\n')
+        irreps = []
+        
+        # 查找包含这三行的区域
+        for i, line in enumerate(lines):
+            # 查找 "Irrep :" 行（包含所有不可约表示标记）
+            irrep_line_match = re.search(r'Irrep\s*:\s*(.+)', line, re.IGNORECASE)
+            if irrep_line_match:
+                # 提取这一行中的所有不可约表示标记
+                irrep_line = irrep_line_match.group(1).strip()
+                # 不可约表示标记通常格式：字母+可选数字+可选字母（如 Ag, B1g, B2g, B3g, Au, B1u, B2u, B3u）
+                # 使用正则表达式提取所有不可约表示标记
+                irrep_pattern = r'\b([A-Z][0-9]?[a-z]?[0-9]?[a-z]?)\b'
+                irrep_labels = re.findall(irrep_pattern, irrep_line)
+                # 过滤：只保留看起来像不可约表示标记的（长度通常1-5个字符，排除常见英文单词）
+                irrep_labels = [irrep for irrep in irrep_labels 
+                               if 1 <= len(irrep) <= 5 
+                               and not irrep.lower() in ['for', 'iden', 'irep', 'norb', 'irrep']]
+                
+                # 查找下一行的 "Norb :" 行（包含所有轨道数）
+                if i + 1 < len(lines):
+                    norb_line = lines[i + 1]
+                    norb_line_match = re.search(r'Norb\s*:\s*(.+)', norb_line, re.IGNORECASE)
+                    if norb_line_match:
+                        norb_line_content = norb_line_match.group(1).strip()
+                        # 提取所有数字（轨道数）
+                        norb_values = re.findall(r'(\d+)', norb_line_content)
+                        norb_values = [int(val) for val in norb_values]
+                        
+                        # 匹配不可约表示和轨道数
+                        if len(irrep_labels) == len(norb_values):
+                            for irrep_label, norb_value in zip(irrep_labels, norb_values):
+                                irreps.append({
+                                    'irrep': irrep_label,
+                                    'norb': norb_value
+                                })
+                            break  # 找到后退出循环
+        
+        # 如果新格式没找到，尝试旧格式（向后兼容）
+        if not irreps:
+            # 旧格式：每个不可约表示单独列出
+            #   Irrep :     A
+            #   Norb  :     22
+            current_irrep = None
+            for i, line in enumerate(lines):
+                # 匹配 "Irrep :     A" 格式
+                irrep_match = re.search(r'Irrep\s*:\s*([A-Z0-9]+)', line, re.IGNORECASE)
+                if irrep_match:
+                    current_irrep = irrep_match.group(1).strip()
+                
+                # 匹配 "Norb  :     22" 格式
+                norb_match = re.search(r'Norb\s*:\s*(\d+)', line, re.IGNORECASE)
+                if norb_match and current_irrep:
+                    try:
+                        norb_value = int(norb_match.group(1))
+                        # 检查是否已经存在
+                        existing = next((ir for ir in irreps if ir.get('irrep') == current_irrep), None)
+                        if not existing:
+                            irreps.append({
+                                'irrep': current_irrep,
+                                'norb': norb_value
+                            })
+                        current_irrep = None
+                    except (ValueError, IndexError):
+                        pass
+        
+        # 如果找到了不可约表示，添加到结果中
+        if irreps:
+            irrep_info['irreps'] = irreps
+            # 计算总轨道数
+            total_orbitals = sum(ir['norb'] for ir in irreps)
+            irrep_info['total_orbitals'] = total_orbitals
+        
+        return irrep_info if irrep_info else None
+    
+    def extract_occupation_info(self, content: str, scf_method: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+        """
+        提取SCF计算分子轨道占据信息
+        
+        BDF在SCF模块输出中会包含以下信息：
+        [Final occupation pattern: ]
+        Irreps:        Ag      B1g     B2g     B3g     Au      B1u     B2u     B3u 
+        detailed occupation for iden/irep:      1   1
+        1.00 1.00 1.00 1.00 1.00 1.00 0.00 0.00 0.00 0.00
+        ...
+        Alpha       6.00    3.00    1.00    1.00    0.00    1.00    4.00    5.00
+        Beta        6.00    3.00    1.00    1.00    0.00    1.00    4.00    5.00  (对于UHF/UKS)
+        
+        对于RHF/RKS/ROHF/ROKS计算，alpha和beta轨道占据数相同，所以只输出alpha轨道占据数。
+        对于UHF/UKS计算，会分别输出alpha和beta轨道占据数。
+        
+        Args:
+            content: BDF输出文件内容
+            scf_method: 已解析的SCF方法信息（可选），用于判断是否为限制性方法
+            
+        Returns:
+            包含轨道占据信息的字典，如果未找到则返回None：
+            {
+                'irreps': ['Ag', 'B1g', 'B2g', ...],  # 不可约表示标记列表
+                'alpha_occupation': [6.00, 3.00, 1.00, ...],  # Alpha轨道占据数（每个不可约表示）
+                'beta_occupation': [6.00, 3.00, 1.00, ...],  # Beta轨道占据数（RHF/RKS与alpha相同）
+                'total_alpha_electrons': 21.00,  # Alpha电子总数
+                'total_beta_electrons': 21.00,  # Beta电子总数
+                'total_electrons': 42.00,  # 总电子数
+                'is_rhf_rks': True,  # 是否为RHF/RKS计算（alpha=beta）
+                'ground_state_irrep': 'Ag',  # 基态波函数的对称性（第一个不可约表示，全对称表示）
+            }
+        """
+        occupation_info = {}
+        
+        # 查找 [Final occupation pattern: ] 部分
+        pattern_section = re.search(
+            r'\[Final\s+occupation\s+pattern:\s*\]',
+            content,
+            re.IGNORECASE
+        )
+        
+        if not pattern_section:
+            return None
+        
+        # 从pattern_section开始提取后续内容（限制在合理范围内，比如5000字符）
+        start_pos = pattern_section.end()
+        section_content = content[start_pos:start_pos + 5000]
+        
+        # 提取不可约表示标记行
+        # 格式：Irreps:        Ag      B1g     B2g     B3g     Au      B1u     B2u     B3u
+        # 注意：不可约表示标记通常包含字母和数字，如 A, A1, B1g, E1u等
+        # 需要匹配到下一行开始之前（通常是"detailed occupation"或"Alpha"行）
+        irrep_line_match = re.search(
+            r'Irreps:\s+([A-Z0-9\s]+?)(?=\n\s*(?:detailed|Alpha|Beta|\n))',
+            section_content,
+            re.IGNORECASE | re.MULTILINE
+        )
+        
+        irreps = []
+        if irrep_line_match:
+            irrep_line = irrep_line_match.group(1)
+            # 提取所有不可约表示标记
+            # 不可约表示标记通常格式：字母+可选数字+可选字母（如 A, A1, B1g, E1u, A1G等）
+            # 排除常见英文单词
+            irrep_pattern = r'\b([A-Z][0-9]?[a-z]?[0-9]?[a-z]?)\b'
+            irrep_matches = re.findall(irrep_pattern, irrep_line)
+            # 进一步过滤：只保留看起来像不可约表示标记的（长度通常1-5个字符）
+            irreps = [irrep for irrep in irrep_matches if 1 <= len(irrep) <= 5 and not irrep.lower() in ['for', 'iden', 'irep']]
+            occupation_info['irreps'] = irreps
+        
+        # 提取Alpha轨道占据数
+        # 格式：Alpha       6.00    3.00    1.00    1.00    0.00    1.00    4.00    5.00
+        alpha_match = re.search(
+            r'Alpha\s+([\d.\s]+)',
+            section_content,
+            re.IGNORECASE
+        )
+        
+        alpha_occupation = []
+        if alpha_match:
+            alpha_line = alpha_match.group(1)
+            # 提取所有数字
+            alpha_values = re.findall(r'(\d+\.\d+)', alpha_line)
+            alpha_occupation = [float(val) for val in alpha_values]
+            occupation_info['alpha_occupation'] = alpha_occupation
+        
+        # 提取Beta轨道占据数（如果有）
+        # 格式：Beta        6.00    3.00    1.00    1.00    0.00    1.00    4.00    5.00
+        beta_match = re.search(
+            r'Beta\s+([\d.\s]+)',
+            section_content,
+            re.IGNORECASE
+        )
+        
+        beta_occupation = []
+        if beta_match:
+            beta_line = beta_match.group(1)
+            beta_values = re.findall(r'(\d+\.\d+)', beta_line)
+            beta_occupation = [float(val) for val in beta_values]
+            occupation_info['beta_occupation'] = beta_occupation
+        else:
+            # 判断是否为限制性方法（RHF/RKS/ROHF/ROKS）
+            # 优先使用传入的SCF方法信息
+            is_restricted = False
+            method_name = None
+            
+            if scf_method and 'method' in scf_method:
+                method_name = scf_method['method']
+                is_restricted = scf_method.get('is_restricted', False)
+            else:
+                # 从content中查找SCF方法标识
+                scf_method_match = re.search(r'\b(RHF|RKS|ROHF|ROKS|UHF|UKS)\b', content, re.IGNORECASE)
+                if scf_method_match:
+                    method_name = scf_method_match.group(1).upper()
+                    is_restricted = method_name in ['RHF', 'RKS', 'ROHF', 'ROKS']
+            
+            # 对于限制性方法（RHF/RKS/ROHF/ROKS），beta占据数等于alpha占据数
+            if is_restricted and alpha_occupation:
+                beta_occupation = alpha_occupation.copy()
+                occupation_info['beta_occupation'] = beta_occupation
+                occupation_info['is_restricted'] = True
+                # 判断具体类型
+                if method_name:
+                    if method_name in ['RHF', 'RKS']:
+                        occupation_info['is_rhf_rks'] = True
+                    elif method_name in ['ROHF', 'ROKS']:
+                        occupation_info['is_rohf_roks'] = True
+                else:
+                    # 默认假设是RHF/RKS
+                    occupation_info['is_rhf_rks'] = True
+            elif not is_restricted:
+                # 非限制性方法（UHF/UKS），但没有找到Beta占据数
+                # 这可能表示输出不完整，记录警告
+                occupation_info['warning'] = "非限制性方法（UHF/UKS）但未找到Beta轨道占据数"
+        
+        # 计算总电子数
+        if alpha_occupation:
+            total_alpha = sum(alpha_occupation)
+            occupation_info['total_alpha_electrons'] = total_alpha
+        
+        if beta_occupation:
+            total_beta = sum(beta_occupation)
+            occupation_info['total_beta_electrons'] = total_beta
+        
+        if alpha_occupation and beta_occupation:
+            total_electrons = sum(alpha_occupation) + sum(beta_occupation)
+            occupation_info['total_electrons'] = total_electrons
+        
+        # 基态波函数的对称性：第一个不可约表示（全对称表示）
+        if irreps:
+            occupation_info['ground_state_irrep'] = irreps[0]
+        
+        # 验证：不可约表示数量应该与占据数数量一致
+        if irreps and alpha_occupation:
+            if len(irreps) != len(alpha_occupation):
+                # 如果不一致，记录警告但不失败
+                occupation_info['warning'] = f"不可约表示数量({len(irreps)})与占据数数量({len(alpha_occupation)})不一致"
+        
+        return occupation_info if occupation_info else None
+    
+    def extract_scf_state_symmetry(self, content: str) -> Optional[Dict[str, Any]]:
+        """
+        提取SCF State symmetry（SCF计算的Slater行列式对称性）
+        
+        BDF在SCF输出中会包含以下信息：
+        SCF State symmetry : Ag
+        
+        这给出了SCF计算的Slater行列式对称性的不可约表示标记。
+        对于闭壳层电子态，这通常与基态波函数的对称性（第一个不可约表示，全对称表示）相同。
+        
+        Args:
+            content: BDF输出文件内容
+            
+        Returns:
+            包含SCF State symmetry信息的字典，如果未找到则返回None：
+            {
+                'irrep': 'Ag',  # 不可约表示标记
+                'description': 'SCF计算的Slater行列式对称性',
+            }
+        """
+        symmetry_info = {}
+        
+        # 查找SCF State symmetry
+        # 格式：SCF State symmetry : Ag
+        pattern = r'SCF\s+State\s+symmetry\s*:\s*([A-Z0-9]+)'
+        match = re.search(pattern, content, re.IGNORECASE)
+        
+        if match:
+            irrep = match.group(1).strip()
+            symmetry_info['irrep'] = irrep
+            symmetry_info['description'] = 'SCF计算的Slater行列式对称性'
+            return symmetry_info
+        
+        return None
+    
+    def _normalize_point_group_format(self, group: str) -> str:
+        """
+        将点群格式从 D06H 转换为 D(6H) 格式
+        
+        Args:
+            group: 原始点群字符串，如 "D06H", "C2V", "D2H"
+            
+        Returns:
+            标准化后的点群字符串，如 "D(6H)", "C(2V)", "D(2H)"
+        """
+        # 如果已经是标准格式（包含括号），直接返回
+        if '(' in group and ')' in group:
+            return group
+        
+        # 匹配模式：字母 + 数字 + 字母（如 D06H, C2V, D2H）
+        # 或者：字母 + 数字（如 C2, D3）
+        pattern = r'^([A-Za-z]+)(\d+)([A-Za-z]*)$'
+        match = re.match(pattern, group)
+        
+        if match:
+            prefix = match.group(1)  # D, C, etc.
+            number = match.group(2)  # 06, 2, etc.
+            suffix = match.group(3)  # H, V, etc.
+            
+            # 移除前导零
+            number = str(int(number))
+            
+            if suffix:
+                return f"{prefix}({number}{suffix})"
+            else:
+                return f"{prefix}({number})"
+        
+        # 如果不匹配，返回原字符串
+        return group
+    
+    def _is_likely_subgroup(self, subgroup: str, parent_group: str) -> bool:
+        """
+        简单判断 subgroup 是否是 parent_group 的子群
+        
+        这是一个简化的判断，主要用于常见情况。
+        完整的子群判断需要群论知识，这里只做基本检查。
+        
+        Args:
+            subgroup: 可能的子群，如 "D(2H)"
+            parent_group: 父群，如 "D(6H)"
+            
+        Returns:
+            True 如果可能是子群，False 否则
+        """
+        # 如果相同，肯定是子群（也是父群本身）
+        if subgroup == parent_group:
+            return True
+        
+        # 提取群的基本信息
+        def extract_group_info(group_str):
+            # 移除括号
+            clean = group_str.replace('(', '').replace(')', '')
+            # 提取字母前缀和数字
+            match = re.match(r'^([A-Za-z]+)(\d+)([A-Za-z]*)$', clean)
+            if match:
+                return {
+                    'prefix': match.group(1),
+                    'number': int(match.group(2)) if match.group(2) else None,
+                    'suffix': match.group(3) if match.group(3) else ''
+                }
+            return None
+        
+        sub_info = extract_group_info(subgroup)
+        parent_info = extract_group_info(parent_group)
+        
+        if not sub_info or not parent_info:
+            return False
+        
+        # 如果前缀不同，通常不是子群（特殊情况除外）
+        if sub_info['prefix'] != parent_info['prefix']:
+            # 特殊情况：C(2V) 可能是 D(2H) 的子群等，这里简化处理
+            return False
+        
+        # 如果数字相同但后缀不同，可能是子群（如 D(2) 是 D(2H) 的子群）
+        if sub_info['number'] == parent_info['number']:
+            # 如果子群没有后缀或后缀更少，可能是子群
+            if not sub_info['suffix'] or len(sub_info['suffix']) < len(parent_info['suffix']):
+                return True
+        
+        # 如果子群的数字是父群数字的因子，可能是子群
+        # 例如：D(2) 可能是 D(6) 的子群（2 是 6 的因子）
+        if sub_info['number'] and parent_info['number']:
+            if parent_info['number'] % sub_info['number'] == 0:
+                return True
+        
+        return False
 
