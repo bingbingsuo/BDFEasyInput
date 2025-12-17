@@ -48,7 +48,7 @@ ai:
     # Ollama 本地模型（推荐用于本地使用）
     ollama:
       enabled: true
-      base_url: "http://192.168.124.148:11434"
+      base_url: "http://192.168.6.230:11434"
       model: "gpt-oss:120b"  # 可用的模型: llama3, llama2, mistral 等
       timeout: 240
     

@@ -180,18 +180,115 @@ class AnalysisReportGenerator:
                 total_energy_label = get_label("total_energy", language)
                 lines.append(f"- **{total_energy_label} (E_tot)**{sep} {energy:.10f} Hartree")
             
-            scf_energy = parsed_data.get('scf_energy')
-            if scf_energy is not None and scf_energy != energy:
-                scf_energy_label = get_label("scf_energy", language)
-                lines.append(f"- **{scf_energy_label}**{sep} {scf_energy:.10f} Hartree")
+            # 显示最后一次 SCF 的能量分解信息（如果有）
+            properties = parsed_data.get('properties', {})
+            final_scf_components = properties.get('final_scf_components')
+            if final_scf_components:
+                lines.append("")
+                if language == "en":
+                    lines.append("**Final SCF Energy Components:**")
+                else:
+                    lines.append("**最后一次 SCF 能量分解信息：**")
+                lines.append("")
+                
+                # 能量分量说明
+                component_labels = {
+                    'E_tot': ('E_tot', 'Total energy (包含核排斥能)'),
+                    'E_ele': ('E_ele', 'Electronic energy (不含核排斥能)'),
+                    'E_sol': ('E_sol', 'Solvation energy (溶剂化能量)'),
+                    'E_nn': ('E_nn', 'Nuclear-nuclear repulsion (核-核排斥能)'),
+                    'E_1e': ('E_1e', 'One-electron energy (单电子能量)'),
+                    'E_ne': ('E_ne', 'Nuclear-electron attraction (核-电子吸引能)'),
+                    'E_kin': ('E_kin', 'Kinetic energy (动能)'),
+                    'E_ee': ('E_ee', 'Electron-electron repulsion (电子-电子排斥能)'),
+                    'E_xc': ('E_xc', 'Exchange-correlation energy (交换相关能)'),
+                    'virial_ratio': ('Virial Ratio', 'Virial ratio (维里比)'),
+                }
+                
+                if language == "en":
+                    component_labels = {
+                        'E_tot': ('E_tot', 'Total energy (includes nuclear repulsion)'),
+                        'E_ele': ('E_ele', 'Electronic energy (excludes nuclear repulsion)'),
+                        'E_sol': ('E_sol', 'Solvation energy'),
+                        'E_nn': ('E_nn', 'Nuclear-nuclear repulsion'),
+                        'E_1e': ('E_1e', 'One-electron energy'),
+                        'E_ne': ('E_ne', 'Nuclear-electron attraction'),
+                        'E_kin': ('E_kin', 'Kinetic energy'),
+                        'E_ee': ('E_ee', 'Electron-electron repulsion'),
+                        'E_xc': ('E_xc', 'Exchange-correlation energy'),
+                        'virial_ratio': ('Virial Ratio', 'Virial ratio'),
+                    }
+                
+                # 按顺序显示能量分量
+                display_order = ['E_tot', 'E_ele', 'E_sol', 'E_nn', 'E_1e', 'E_ne', 'E_kin', 'E_ee', 'E_xc', 'virial_ratio']
+                
+                for key in display_order:
+                    if key in final_scf_components:
+                        label, desc = component_labels.get(key, (key, ''))
+                        value = final_scf_components[key]
+                        if key == 'virial_ratio':
+                            lines.append(f"- **{label}**{sep} {value:.6f} ({desc})")
+                        else:
+                            lines.append(f"- **{label}**{sep} {value:.10f} Hartree ({desc})")
+                
+                lines.append("")
+            
+            # 不再显示SCF能量，直接使用总能量即可
+            # 如果确实需要SCF能量，可以从properties中的E_ele获取
             
             converged = parsed_data.get('converged', False)
             convergence_status_label = get_label("convergence_status", language)
             converged_text = get_label("converged", language) if converged else get_label("not_converged", language)
             lines.append(f"- **{convergence_status_label}**{sep} {converged_text}")
             
-            # SCF 能量分量详细说明
-            properties = parsed_data.get('properties', {})
+            # 显示优化步骤信息（如果有）
+            optimization = parsed_data.get('optimization', {})
+            opt_steps = optimization.get('steps', [])
+            if opt_steps:
+                lines.append("")
+                if language == "en":
+                    opt_steps_title = "### Optimization Steps"
+                else:
+                    opt_steps_title = "### 优化步骤"
+                lines.append(opt_steps_title)
+                lines.append("")
+                
+                # 创建表格
+                if language == "en":
+                    lines.append("| Step | SCF Energy (Hartree) | Force-RMS | Force-Max | Step-RMS | Step-Max |")
+                    lines.append("|------|----------------------|-----------|----------|------------|----------|")
+                else:
+                    lines.append("| 步骤 | SCF 能量 (Hartree) | Force-RMS | Force-Max | Step-RMS | Step-Max |")
+                    lines.append("|------|---------------------|-----------|----------|----------|----------|")
+                
+                for step in opt_steps:
+                    step_num = step.get('step', '')
+                    scf_e = step.get('scf_energy')
+                    if scf_e is not None:
+                        scf_e_str = f"{scf_e:.10f}"
+                    else:
+                        scf_e_str = "N/A"
+                    
+                    force_rms = step.get('force_rms')
+                    force_max = step.get('force_max')
+                    step_rms = step.get('step_rms')
+                    step_max = step.get('step_max')
+                    
+                    # 格式化数值，使用科学计数法显示小值
+                    def format_value(val):
+                        if val is None:
+                            return "N/A"
+                        if abs(val) < 0.001:
+                            return f"{val:.4e}"
+                        else:
+                            return f"{val:.6f}"
+                    
+                    lines.append(f"| {step_num} | {scf_e_str} | {format_value(force_rms)} | {format_value(force_max)} | {format_value(step_rms)} | {format_value(step_max)} |")
+                
+                lines.append("")
+            
+            # 能量分量信息（已在上面的final_scf_components中显示，这里不再重复）
+            # properties 已在上面使用
             
             # HOMO-LUMO gap 信息
             homo_lumo_gap = properties.get('homo_lumo_gap')
@@ -258,43 +355,8 @@ class AnalysisReportGenerator:
                             gap_normal = get_label("homo_lumo_gap_normal", language)
                             lines.append(f"✓ {gap_normal}")
                             lines.append("")
-            if properties:
-                lines.append("")
-                scf_energy_title = get_label("scf_energy_components", language)
-                lines.append(f"### {scf_energy_title}")
-                lines.append("")
-                
-                # E_tot, E_ele, E_nn
-                e_tot = properties.get('E_tot') or energy
-                e_ele = properties.get('E_ele')
-                e_nn = properties.get('E_nn')
-                
-                if e_tot is not None:
-                    total_energy_rel_title = get_label("total_energy_relation", language)
-                    lines.append(f"#### {total_energy_rel_title}")
-                    lines.append("")
-                    relation_label = get_label("relation", language)
-                    lines.append(f"- **E_tot**{sep} {get_label('e_tot_desc', language)}")
-                    lines.append(f"- **E_ele**{sep} {get_label('e_ele_desc', language)}")
-                    lines.append(f"- **E_nn**{sep} {get_label('e_nn_desc', language)}")
-                    lines.append(f"- **{relation_label}**{sep} E_tot = E_ele + E_nn")
-                    lines.append("")
-                    if e_ele is not None:
-                        lines.append(f"  - E_ele = {e_ele:.10f} Hartree")
-                    if e_nn is not None:
-                        lines.append(f"  - E_nn = {e_nn:.10f} Hartree")
-                    if e_tot is not None:
-                        lines.append(f"  - E_tot = {e_tot:.10f} Hartree")
-                    if e_ele is not None and e_nn is not None:
-                        calculated_tot = e_ele + e_nn
-                        verify_label = get_label("verify", language)
-                        diff_label = get_label("difference", language)
-                        if language == "en":
-                            diff_text = f"({diff_label}: {abs(calculated_tot - (e_tot or 0)):.2e})"
-                        else:
-                            diff_text = f"({diff_label}: {abs(calculated_tot - (e_tot or 0)):.2e})"
-                        lines.append(f"  - {verify_label}{sep} E_ele + E_nn = {calculated_tot:.10f} Hartree {diff_text}")
-                    lines.append("")
+            # 不再显示SCF能量分量说明，只显示总能量即可
+            # 如果确实需要能量分量（E_ele, E_nn），可以从properties中获取，但不在报告中显示
                 
                 # E_1e, E_ne, E_kin
                 e_1e = properties.get('E_1e')

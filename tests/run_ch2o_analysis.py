@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-执行 c6h6_tdopt 计算并进行 AI 分析
-苯分子包含溶剂化效应的激发态结构优化
+执行 ch2o 计算并进行 AI 分析
 
 此脚本将：
-1. 运行 c6h6_tdopt.inp 计算（激发态结构优化 + 溶剂效应）
+1. 运行 ch2o.inp 计算（包含隐式溶剂效应）
 2. 解析输出结果
 3. 使用 AI 进行分析
 4. 生成分析报告
@@ -14,7 +13,7 @@ import sys
 from pathlib import Path
 
 # 添加项目路径
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from bdfeasyinput import load_config
@@ -28,12 +27,12 @@ from bdfeasyinput.cli import get_ai_client_from_config
 def main():
     """主函数"""
     print("=" * 70)
-    print("c6h6_tdopt 计算与分析（激发态结构优化 + 溶剂效应）")
+    print("ch2o 计算与分析（隐式溶剂效应）")
     print("=" * 70)
     print()
     
-    # 1. 定位 c6h6_tdopt.inp 文件
-    input_file = str(project_root / "debug" / "c6h6_tdopt.inp")
+    # 1. 定位 ch2o.inp 文件
+    input_file = str(project_root / "debug" / "ch2o.inp")
     input_path = Path(input_file)
     
     if not input_path.exists():
@@ -74,14 +73,13 @@ def main():
         return 1
     
     # 4. 运行计算
-    print("3. 运行 BDF 计算（激发态结构优化 + 溶剂效应）...")
+    print("3. 运行 BDF 计算...")
     print(f"   输入文件: {input_file}")
     print("   正在执行，请稍候...")
-    print("   注意: 此计算包含激发态结构优化和溶剂效应，可能需要较长时间")
     print()
     
     try:
-        result = runner.run(input_file, timeout=7200, use_debug_dir=use_debug_dir)  # 2小时超时
+        result = runner.run(input_file, timeout=3600, use_debug_dir=use_debug_dir)
         
         print("   计算完成!")
         print(f"   状态: {result['status']}")
@@ -165,13 +163,6 @@ def main():
             print(f"     - SCF 能量: {parsed_data['scf_energy']:.10f} Hartree")
         print(f"     - 收敛状态: {'已收敛' if parsed_data.get('converged') else '未收敛'}")
         
-        # 优化信息
-        optimization = parsed_data.get('optimization', {})
-        if optimization:
-            opt_converged = optimization.get('converged', False)
-            opt_iterations = optimization.get('iterations', 0)
-            print(f"     - 结构优化: {'已收敛' if opt_converged else '未收敛'}, 迭代次数: {opt_iterations}")
-        
         # TDDFT 信息
         tddft = parsed_data.get('tddft', [])
         if tddft:
@@ -181,27 +172,6 @@ def main():
                 approx_method = calc.get('approximation_method', '未知')
                 states_count = len(calc.get('states', []))
                 print(f"       * 块 {idx}: ITDA={itda}, 方法={approx_method}, 激发态数={states_count}")
-        
-        # 频率信息
-        freq_data = parsed_data.get('frequency_data', {})
-        vibrations = freq_data.get('vibrations', []) if isinstance(freq_data, dict) else []
-        trans_rots = freq_data.get('translations_rotations', []) if isinstance(freq_data, dict) else []
-        if vibrations or trans_rots:
-            if vibrations:
-                print(f"     - 振动频率数量: {len(vibrations)}")
-            if trans_rots:
-                print(f"     - 平动/转动频率数量: {len(trans_rots)}")
-        
-        # 溶剂效应信息
-        props = parsed_data.get('properties', {})
-        solvent = props.get('solvent', {})
-        if solvent:
-            print(f"     - 溶剂效应: {solvent.get('solvent', '未知')}, 模型: {solvent.get('method', '未知')}")
-        
-        # 热力学数据
-        thermo = props.get('thermochemistry')
-        if thermo:
-            print(f"     - 热力学数据: 已提取")
         
         print()
         
@@ -231,7 +201,7 @@ def main():
             output_file=output_file,
             input_file=input_file,
             error_file=error_file,
-            task_type="optimize",  # 结构优化
+            task_type="scf",  # 可能是 SCF 计算，也可能是其他类型
             language=language
         )
         print("   ✓ AI 分析完成")
@@ -266,8 +236,7 @@ def main():
         print()
         
         # 保存报告到文件
-        report_file = project_root / "docs" / "dev" / "c6h6_tdopt_analysis_report.md"
-        report_file.parent.mkdir(parents=True, exist_ok=True)
+        report_file = project_root / "ch2o_analysis_report.md"
         report_generator.generate(
             analysis_result=analysis_result,
             parsed_data=parsed_data,

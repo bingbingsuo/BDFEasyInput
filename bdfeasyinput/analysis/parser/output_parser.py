@@ -128,6 +128,21 @@ class BDFOutputParser:
         
         # 提取优化信息（如果有）
         result['optimization'] = self.extract_optimization_info(content)
+        
+        # 如果存在优化步骤，尝试从 *.out.tmp 文件中提取每一步的 SCF 能量
+        if result['optimization'].get('steps'):
+            out_tmp_file = output_path.with_suffix('.out.tmp')
+            if out_tmp_file.exists():
+                scf_energies = self.extract_scf_energies_from_tmp(str(out_tmp_file))
+                # 将 SCF 能量合并到优化步骤中
+                for i, step in enumerate(result['optimization']['steps']):
+                    if i < len(scf_energies):
+                        step['scf_energy'] = scf_energies[i]
+                
+                # 提取最后一次 SCF 的能量分解信息
+                final_scf_components = self.extract_final_scf_energy_components(str(out_tmp_file))
+                if final_scf_components:
+                    result['properties']['final_scf_components'] = final_scf_components
 
         # 提取激发态信息（如果有，TDDFT）
         result['tddft'] = self.extract_tddft_calculations(content)
@@ -237,58 +252,154 @@ class BDFOutputParser:
     
     def extract_geometry(self, content: str) -> List[Dict[str, Any]]:
         """
-        提取几何结构
+        提取几何结构（优化版本，提高精度）
         
         Returns:
-            原子坐标列表，每个元素为 {'element': str, 'x': float, 'y': float, 'z': float}
+            原子坐标列表，每个元素为 {
+                'element': str,      # 元素符号
+                'x': float,          # X坐标
+                'y': float,          # Y坐标
+                'z': float,          # Z坐标
+                'units': str,        # 单位 ('bohr' 或 'angstrom')
+                'index': int,        # 原子索引（如果可提取）
+                'charge': float      # 原子电荷（如果可提取）
+            }
         """
         geometry = []
         
-        # BDF 格式：Cartcoord(Bohr) 部分
-        # 格式：Atom  Cartcoord(Bohr)  Charge Basis ...
-        # 例如：O  0.000000  0.000000  0.221665  8.00 ...
-        cartcoord_section = re.search(
-            r'Atom\s+Cartcoord\(Bohr\).*?(?=\n\n|\n\[|\n\|\||$)',
+        # 策略0: 最高优先级 - 提取结构优化后的几何结构（Angstrom单位）
+        # 支持收敛和未收敛两种情况
+        # 查找所有 "Molecular Cartesian Coordinates (X,Y,Z) in Angstrom :" 出现的位置
+        coords_matches = list(re.finditer(
+            r'Molecular\s+Cartesian\s+Coordinates\s+\(X,Y,Z\)\s+in\s+Angstrom\s*:.*?(?=\n\n|\n\s+Force-RMS|\n\s+Redundant|\Z)',
             content,
             re.IGNORECASE | re.DOTALL
-        )
+        ))
         
-        if cartcoord_section:
-            section_content = cartcoord_section.group(0)
-            # 匹配格式：O  0.000000  0.000000  0.221665  8.00 ...
-            # 或：H  0.000000  1.430901  -0.886659  1.00 ...
-            pattern = r'^\s*(\w+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+\d+\.\d+'
+        if coords_matches:
+            # 使用最后一个匹配（最终优化结构，无论是否收敛）
+            last_match = coords_matches[-1]
+            section_content = last_match.group(0)
+            
+            # 检查是否收敛
+            is_converged = False
+            # 检查收敛提示（在当前section或之后）
+            match_end = last_match.end()
+            # 在当前section中查找收敛信息
+            if re.search(r'Geom\.\s+converge\s*:.*?Yes', section_content, re.IGNORECASE):
+                is_converged = True
+            elif re.search(r'Good\s+Job,\s+Geometry\s+Optimization\s+converged', content[:match_end], re.IGNORECASE):
+                is_converged = True
+            # 检查未收敛提示
+            elif re.search(r'Geometry\s+Optimization\s+not\s+converged', content[:match_end], re.IGNORECASE):
+                is_converged = False
+            
+            # 提取坐标部分（跳过标题行）
+            coords_start = re.search(
+                r'Molecular\s+Cartesian\s+Coordinates\s+\(X,Y,Z\)\s+in\s+Angstrom\s*:',
+                section_content,
+                re.IGNORECASE
+            )
+            
+            if coords_start:
+                coords_section = section_content[coords_start.end():].strip()
+                # 匹配格式：元素符号 + 三个坐标（支持科学计数法）
+                # 例如：C           1.12766281      -0.06079459       1.22640622
+                pattern = r'^\s*(\w+)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)'
+                matches = re.finditer(pattern, coords_section, re.MULTILINE)
+                
+                for idx, match in enumerate(matches, start=1):
+                    element = match.group(1).strip()
+                    # 跳过可能的表头或空行
+                    if not element or element.upper() in ['MOLECULAR', 'CARTESIAN', 'COORDINATES', 'ANGSTROM']:
+                        continue
+                    
+                    try:
+                        x = float(match.group(2))
+                        y = float(match.group(3))
+                        z = float(match.group(4))
+                        
+                        geometry.append({
+                            'element': element,
+                            'x': x,
+                            'y': y,
+                            'z': z,
+                            'units': 'angstrom',  # 优化后的结构使用 Angstrom 单位
+                            'index': idx,
+                            'optimized': True,  # 标记为优化后的结构
+                            'converged': is_converged  # 根据实际收敛状态设置
+                        })
+                    except (ValueError, IndexError):
+                        continue
+        
+        # 如果已经提取到优化后的结构（Angstrom单位），就不再提取Cartcoord
+        # 因为优化后的结构是最终结构，优先级更高
+        if geometry and geometry[0].get('units') == 'angstrom' and geometry[0].get('optimized'):
+            return geometry
+        
+        # 策略1: 提取最后的 Cartcoord(Bohr) 部分（最终几何结构）
+        # 查找所有 Cartcoord(Bohr) 部分，取最后一个
+        cartcoord_matches = list(re.finditer(
+            r'Atom\s+Cartcoord\(Bohr\).*?(?=\n\n|\n\[|\n\|\||\nAtom\s+Cartcoord|$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        ))
+        
+        if cartcoord_matches:
+            # 使用最后一个匹配（最终几何结构）
+            last_section = cartcoord_matches[-1]
+            section_content = last_section.group(0)
+            
+            # 改进的正则表达式：更精确匹配坐标行
+            # 格式：元素符号 + 三个坐标（支持科学计数法）+ 电荷（可选）
+            # 例如：C        0.000000     0.000000     0.313990     6.00 ...
+            # 或：  H        0.000000    -1.657230    -0.941970     1.00 ...
+            pattern = r'^\s*(\w+)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)(?:\s+([-+]?\d+\.?\d*))?'
             matches = re.finditer(pattern, section_content, re.MULTILINE)
-            for match in matches:
-                element = match.group(1)
+            
+            for idx, match in enumerate(matches, start=1):
+                element = match.group(1).strip()
+                # 跳过表头行（如果元素符号不是真正的元素）
+                if element.upper() in ['ATOM', 'CARTCOORD', 'CHARGE', 'BASIS']:
+                    continue
+                
                 try:
-                    x, y, z = float(match.group(2)), float(match.group(3)), float(match.group(4))
+                    x = float(match.group(2))
+                    y = float(match.group(3))
+                    z = float(match.group(4))
+                    charge = float(match.group(5)) if match.group(5) else None
+                    
                     geometry.append({
                         'element': element,
                         'x': x,
                         'y': y,
                         'z': z,
-                        'units': 'bohr'  # BDF 输出使用 Bohr 单位
+                        'units': 'bohr',  # BDF 输出使用 Bohr 单位
+                        'index': idx,
+                        'charge': charge
                     })
-                except ValueError:
+                except (ValueError, IndexError):
                     continue
         
-        # 如果没有找到，尝试查找优化后的几何结构
+        # 策略2: 如果没有找到 Cartcoord，尝试查找其他格式的几何结构
         if not geometry:
             # 查找 "Optimized geometry" 或 "Final geometry" 等关键词后的结构
             optimized_section = re.search(
-                r'(?:Optimized|Final|Converged).*?geometry',
+                r'(?:Optimized|Final|Converged).*?geometry.*?(?=\n\n|\n\[|\n\|\||$)',
                 content,
                 re.IGNORECASE | re.DOTALL
             )
             
             if optimized_section:
                 section_content = optimized_section.group(0)
-                # 常见格式：原子符号后跟坐标
-                geometry_pattern = r'(\w+)\s+([-+]?\d+\.?\d*)\s+([-+]?\d+\.?\d*)\s+([-+]?\d+\.?\d*)'
+                # 匹配格式：原子符号后跟坐标（支持科学计数法）
+                geometry_pattern = r'(\w+)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)'
                 matches = re.finditer(geometry_pattern, section_content)
-                for match in matches:
+                for idx, match in enumerate(matches, start=1):
                     element = match.group(1)
+                    # 跳过关键词行
+                    if element.lower() in ['optimized', 'final', 'converged', 'geometry']:
+                        continue
                     try:
                         x, y, z = float(match.group(2)), float(match.group(3)), float(match.group(4))
                         geometry.append({
@@ -296,11 +407,82 @@ class BDFOutputParser:
                             'x': x,
                             'y': y,
                             'z': z,
+                            'units': 'bohr',  # 默认假设为 Bohr
+                            'index': idx
+                        })
+                    except ValueError:
+                        continue
+        
+        # 策略3: 尝试从输入文件格式的几何结构部分提取
+        if not geometry:
+            # 查找 Geometry ... End geometry 块
+            geometry_block = re.search(
+                r'Geometry\s*\n(.*?)End\s+geometry',
+                content,
+                re.IGNORECASE | re.DOTALL
+            )
+            
+            if geometry_block:
+                block_content = geometry_block.group(1)
+                # 匹配格式：元素符号 X Y Z
+                pattern = r'(\w+)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)'
+                matches = re.finditer(pattern, block_content)
+                for idx, match in enumerate(matches, start=1):
+                    element = match.group(1)
+                    if element.lower() in ['geometry', 'end']:
+                        continue
+                    try:
+                        x, y, z = float(match.group(2)), float(match.group(3)), float(match.group(4))
+                        geometry.append({
+                            'element': element,
+                            'x': x,
+                            'y': y,
+                            'z': z,
+                            'units': 'bohr',  # 需要根据输入文件判断，默认 Bohr
+                            'index': idx
                         })
                     except ValueError:
                         continue
         
         return geometry
+    
+    def format_geometry_for_input(self, geometry: List[Dict[str, Any]], units: str = 'angstrom') -> str:
+        """
+        格式化几何结构为下一步计算的输入格式
+        
+        Args:
+            geometry: 几何结构列表（从 extract_geometry 获取）
+            units: 输出单位，'angstrom' 或 'bohr'（默认 'angstrom'）
+        
+        Returns:
+            格式化后的几何结构字符串，每行格式：元素符号 X Y Z（8位小数）
+        """
+        if not geometry:
+            return ""
+        
+        # 转换单位（如果需要）
+        conversion_factor = 1.0
+        if units == 'angstrom':
+            # 如果输入是 bohr，转换为 angstrom
+            if geometry[0].get('units') == 'bohr':
+                conversion_factor = 0.529177  # 1 Bohr = 0.529177 Angstrom
+        elif units == 'bohr':
+            # 如果输入是 angstrom，转换为 bohr
+            if geometry[0].get('units') == 'angstrom':
+                conversion_factor = 1.8897259886  # 1 Angstrom = 1.8897259886 Bohr
+        
+        lines = []
+        for atom in geometry:
+            element = atom.get('element', '')
+            x = atom.get('x', 0.0) * conversion_factor
+            y = atom.get('y', 0.0) * conversion_factor
+            z = atom.get('z', 0.0) * conversion_factor
+            
+            # 格式：元素符号 + 三个坐标（8位小数，右对齐）
+            line = f"{element:>3s}  {x:15.8f}  {y:15.8f}  {z:15.8f}"
+            lines.append(line)
+        
+        return "\n".join(lines)
     
     def extract_frequencies(self, content: str) -> Dict[str, Any]:
         """
@@ -746,10 +928,36 @@ class BDFOutputParser:
                         except (ValueError, IndexError):
                             pass
             
+            # 提取这一步的收敛信息：Force-RMS, Force-Max, Step-RMS, Step-Max
+            force_rms = None
+            force_max = None
+            step_rms = None
+            step_max = None
+            
+            # 查找 "Current values" 行
+            current_values_match = re.search(
+                r'Current\s+values\s*:\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+                step_content,
+                re.IGNORECASE
+            )
+            if current_values_match:
+                try:
+                    force_rms = float(current_values_match.group(1))
+                    force_max = float(current_values_match.group(2))
+                    step_rms = float(current_values_match.group(3))
+                    step_max = float(current_values_match.group(4))
+                except (ValueError, IndexError):
+                    pass
+            
             steps.append({
                 'step': step_num,
                 'energy': energy,
+                'scf_energy': None,  # 将从 *.out.tmp 文件中提取
                 'gradient': gradient,
+                'force_rms': force_rms,
+                'force_max': force_max,
+                'step_rms': step_rms,
+                'step_max': step_max,
             })
         
         opt_info['steps'] = steps
@@ -844,6 +1052,118 @@ class BDFOutputParser:
             opt_info['final_geometry'] = self.extract_geometry(content)
         
         return opt_info
+    
+    def extract_scf_energies_from_tmp(self, tmp_file: str) -> List[float]:
+        """
+        从 *.out.tmp 文件中提取每一步优化步骤的 SCF 能量
+        
+        Args:
+            tmp_file: *.out.tmp 文件路径
+        
+        Returns:
+            SCF 能量列表，按优化步骤顺序排列
+        """
+        scf_energies = []
+        tmp_path = Path(tmp_file)
+        if not tmp_path.exists():
+            return scf_energies
+        
+        with open(tmp_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+        
+        # 查找所有的 "E_tot = " 行，这些是每次优化步骤的最终 SCF 能量
+        # 格式：E_tot =              -114.37036631
+        # 注意：*.out.tmp 文件中可能包含多次 SCF 计算，每次优化步骤对应一次
+        # 我们需要找到每次 "Final scf result" 后的 E_tot
+        
+        # 方法1：查找 "Final scf result" 后的 E_tot
+        final_scf_pattern = r'Final\s+scf\s+result.*?E_tot\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)'
+        matches = re.finditer(final_scf_pattern, content, re.IGNORECASE | re.DOTALL)
+        for match in matches:
+            try:
+                energy = float(match.group(1))
+                scf_energies.append(energy)
+            except (ValueError, IndexError):
+                continue
+        
+        # 如果方法1没有找到，尝试方法2：直接查找所有 E_tot = 行
+        # 但需要过滤掉重复的（同一优化步骤可能有多次迭代）
+        if not scf_energies:
+            e_tot_pattern = r'E_tot\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)'
+            matches = list(re.finditer(e_tot_pattern, content, re.IGNORECASE))
+            # 只取每个 "Final scf result" 块后的第一个 E_tot
+            last_final_pos = -1
+            for match in matches:
+                # 检查这个 E_tot 是否在 "Final scf result" 之后
+                pos = match.start()
+                # 向前查找最近的 "Final scf result"
+                before_text = content[max(0, pos - 500):pos]
+                if re.search(r'Final\s+scf\s+result', before_text, re.IGNORECASE):
+                    try:
+                        energy = float(match.group(1))
+                        # 避免重复（如果能量值相同且位置接近，可能是同一优化步骤）
+                        if not scf_energies or abs(energy - scf_energies[-1]) > 1e-6:
+                            scf_energies.append(energy)
+                    except (ValueError, IndexError):
+                        continue
+        
+        return scf_energies
+    
+    def extract_final_scf_energy_components(self, tmp_file: str) -> Optional[Dict[str, float]]:
+        """
+        从 *.out.tmp 文件中提取最后一次 SCF 计算的能量分解信息
+        
+        Args:
+            tmp_file: *.out.tmp 文件路径
+        
+        Returns:
+            包含能量分解信息的字典，如果未找到则返回 None
+        """
+        tmp_path = Path(tmp_file)
+        if not tmp_path.exists():
+            return None
+        
+        with open(tmp_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+        
+        # 查找最后一个 "Final scf result" 块
+        final_scf_blocks = list(re.finditer(
+            r'Final\s+scf\s+result(.*?)(?=Final\s+scf\s+result|\[Final|$)',
+            content,
+            re.IGNORECASE | re.DOTALL
+        ))
+        
+        if not final_scf_blocks:
+            return None
+        
+        # 取最后一个块
+        last_block = final_scf_blocks[-1].group(1)
+        
+        components = {}
+        
+        # 提取各种能量分量
+        energy_patterns = {
+            'E_tot': r'E_tot\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_ele': r'E_ele\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_sol': r'E_sol\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_nn': r'E_nn\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_1e': r'E_1e\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_ne': r'E_ne\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_kin': r'E_kin\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_ee': r'E_ee\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'E_xc': r'E_xc\s*=\s*([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+            'virial_ratio': r'Virial\s+Ratio\s+([-+]?\d+\.?\d*[Ee]?[-+]?\d*)',
+        }
+        
+        for key, pattern in energy_patterns.items():
+            match = re.search(pattern, last_block, re.IGNORECASE)
+            if match:
+                try:
+                    components[key] = float(match.group(1))
+                except (ValueError, IndexError):
+                    continue
+        
+        return components if components else None
     
     def extract_thermochemistry(self, content: str) -> Optional[Dict[str, Any]]:
         """

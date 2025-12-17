@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-执行 ch2o 计算并进行 AI 分析
+执行 h2o_td 计算并进行 AI 分析
 
 此脚本将：
-1. 运行 ch2o.inp 计算（包含隐式溶剂效应）
+1. 运行 h2o_td.inp 计算
 2. 解析输出结果
 3. 使用 AI 进行分析
 4. 生成分析报告
@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 # 添加项目路径
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from bdfeasyinput import load_config
@@ -27,12 +27,12 @@ from bdfeasyinput.cli import get_ai_client_from_config
 def main():
     """主函数"""
     print("=" * 70)
-    print("ch2o 计算与分析（隐式溶剂效应）")
+    print("h2o_td 计算与分析")
     print("=" * 70)
     print()
     
-    # 1. 定位 ch2o.inp 文件
-    input_file = str(project_root / "debug" / "ch2o.inp")
+    # 1. 定位 h2o_td.inp 文件
+    input_file = "/Users/bsuo/check/bdf/h2o_td.inp"
     input_path = Path(input_file)
     
     if not input_path.exists():
@@ -41,11 +41,6 @@ def main():
     
     print(f"✓ 输入文件: {input_file}")
     print(f"  文件大小: {input_path.stat().st_size} 字节")
-    
-    # 检查文件是否已经在 debug 目录中
-    use_debug_dir = not str(input_path).startswith(str(project_root / "debug"))
-    if not use_debug_dir:
-        print("  注意: 文件已在 debug 目录中，将直接使用")
     print()
     
     # 2. 加载配置
@@ -79,7 +74,7 @@ def main():
     print()
     
     try:
-        result = runner.run(input_file, timeout=3600, use_debug_dir=use_debug_dir)
+        result = runner.run(input_file, timeout=3600, use_debug_dir=True)
         
         print("   计算完成!")
         print(f"   状态: {result['status']}")
@@ -201,7 +196,7 @@ def main():
             output_file=output_file,
             input_file=input_file,
             error_file=error_file,
-            task_type="scf",  # 可能是 SCF 计算，也可能是其他类型
+            task_type="tddft",
             language=language
         )
         print("   ✓ AI 分析完成")
@@ -236,7 +231,7 @@ def main():
         print()
         
         # 保存报告到文件
-        report_file = project_root / "ch2o_analysis_report.md"
+        report_file = project_root / "h2o_td_analysis_report.md"
         report_generator.generate(
             analysis_result=analysis_result,
             parsed_data=parsed_data,
