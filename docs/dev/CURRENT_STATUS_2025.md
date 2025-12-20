@@ -1,6 +1,6 @@
 # BDFEasyInput 当前工作状态总结
 
-**最后更新**: 2025年12月12日
+**最后更新**: 2025年12月17日
 
 ## 📊 项目概览
 
@@ -173,6 +173,110 @@ BDFEasyInput 是一个完整的 BDF 量子化学计算工作流工具，支持�
 - ✅ 将所有测试文件移动到 `tests/`
 - ✅ 保留 `README.md` 在根目录
 
+### 5. 关键词透传机制 ✅ ⭐ NEW (2025年12月)
+
+#### 5.1 核心功能
+- ✅ **通用透传函数** (`passthrough.py`)：
+  - 统一的 `append_passthrough_lines` 函数
+  - 自动处理关键词格式（首字母大写）
+  - 关键词和值分行输出（符合 BDF 格式要求）
+  - 支持多种数据类型（布尔、数值、字符串、列表）
+  - 保护机制防止覆盖系统关键参数
+
+#### 5.2 模块支持
+- ✅ **SCF 模块透传**：
+  - 映射：`settings.scf` → `$SCF` 模块
+  - 自动添加 `molden` 关键词（保存波函数为 molden 格式）
+  - 智能处理 `convergence`：仅当值不等于默认值（1e-8）时添加 `THRENE`
+  - 保护关键词：`charge`, `spin`, `dft functional`, `occupied`, `solvent` 相关, `threne`, `molden`
+  
+- ✅ **TDDFT 模块透传**：
+  - 映射：`settings.tddft` → `$TDDFT` 模块
+  - 保护现有关键词：`isf`, `iroot`, `itda`, `idiag`, `iwindow`, `istore`, `crit_vec`, `crit_e`, `iprt`, `solneqlr`, `soleqlr`
+  
+- ✅ **BDFOPT 模块透传**：
+  - 映射：`settings.geometry_optimization` → `$BDFOPT` 模块
+  - 保护现有关键词：`solver`, `iopt`, `hess`, `tolgrad`, `tolstep`, `tolene`, `trust`, `maxcycle` 等
+  
+- ✅ **RESP 模块透传**：
+  - 映射：`settings.resp` → `$RESP` 模块
+  - 保护现有关键词：`geom`, `norder`, `method`, `nfiles`, `iroot`, `iprt`, `maxmem`, `solneqlr`, `soleqlr`, `solneqss`, `soleqss`
+  
+- ✅ **MP2 模块透传**：
+  - 映射：`settings.mp2` → `$MP2` 模块
+  - 完整的透传支持（无特定保护关键词）
+  
+- ✅ **XUANYUAN 模块透传**：
+  - 映射：`settings.xuanyuan` 和 `settings.atomic_orbital_integral` → `$XUANYUAN` 模块
+  - 保护关键词：`rs`, `heff`, `hso`（由相对论哈密顿控制机制管理）
+  - 正确处理 `grid` 关键词（SCF/TDDFT/RESP 模块处理，XUANYUAN 忽略）
+
+#### 5.3 测试覆盖
+- ✅ `test_converter_passthrough.py`：全面的透传机制测试
+  - 关键词格式测试（首字母大写、分行）
+  - 布尔值处理测试（true → 仅关键词，false → 忽略）
+  - 列表处理测试（自动过滤 false 值）
+  - 保护关键词测试（防止覆盖）
+  - 模块映射测试
+
+### 6. 相对论哈密顿控制 ✅ ⭐ NEW (2025年12月)
+
+#### 6.1 自动检测机制
+- ✅ **重元素检测**：
+  - 自动识别第四周期及以后的元素（K, Ca, ..., Lr）
+  - 从分子坐标中提取元素符号
+  
+- ✅ **相对论基组检测**：
+  - 识别相对论基组关键词：`x2c`, `dkh`, `dk`, `dyall`, `relativistic`, `rcc`
+  
+- ✅ **ECP 检测**：
+  - 识别有效核势（ECP）基组
+
+#### 6.2 标量相对论哈密顿（heff）
+- ✅ **自动启用逻辑**：
+  - 当检测到重元素或相对论基组，且未使用 ECP 时，自动添加 `heff=3`（sf-X2C）
+  
+- ✅ **用户控制**：
+  - `hamiltonian.scalar_Hamiltonian: true` → 自动使用默认值 `heff=3`
+  - `hamiltonian.scalar_Hamiltonian: <数值>` → 使用用户指定的数值（如 `heff=21`, `heff=22`, `heff=23`）
+  - `hamiltonian.scalar_Hamiltonian: false` → 禁用标量相对论
+  
+- ✅ **支持的 heff 值**：
+  - `0`：非相对论
+  - `3`, `4`：sf-X2C（默认使用 `3`）
+  - `21`：sf-X2C（支持解析导数）
+  - `22`：sf-X2C-aXR（原子 X 矩阵近似）
+  - `23`：sf-X2C-aU（原子酉变换近似）
+
+#### 6.3 自旋轨道耦合（hso）
+- ✅ **自动值选择**：
+  - 全电子基组：默认 `hso=2`（so-1e + SOMF-1c，推荐选项）
+  - ECP 基组：默认 `hso=10`（BP 近似下的算符，ECP 唯一接受的值）
+  
+- ✅ **用户控制**：
+  - `hamiltonian.spin-orbit-coupling: true` → 使用自动值（2 或 10）
+  - `hamiltonian.spin-orbit-coupling: <数值>` → 使用用户指定的数值
+  - `hamiltonian.spin-orbit-coupling: false` → 禁用自旋轨道耦合
+  
+- ✅ **支持的 hso 值**（全电子）：
+  - `0`：so-1e（仅单电子 SO 积分）
+  - `1`：so-1e + SOMF（最准确）
+  - `2`：so-1e + SOMF-1c（推荐，适合大分子）
+  - `3-7`：其他变体
+  - 加上 `10`：使用 BP 近似（ECP 基组）
+
+#### 6.4 配置层级
+- ✅ **顶层配置**：
+  - `hamiltonian` 字段位于 YAML 顶层，与 `method`、`settings` 平级
+  - 不再位于 `settings` 下，简化配置结构
+
+#### 6.5 测试覆盖
+- ✅ 重元素自动检测测试（FeO 分子示例）
+- ✅ 相对论基组自动检测测试
+- ✅ ECP 基组处理测试
+- ✅ 用户显式控制测试
+- ✅ YAML 配置层级测试
+
 ## 📁 项目结构
 
 ```
@@ -188,7 +292,9 @@ BDFEasyInput/
 │   │   ├── tddft.py
 │   │   ├── bdfopt.py
 │   │   ├── resp.py
-│   │   └── ...
+│   │   ├── mp2.py
+│   │   ├── xuanyuan.py
+│   │   └── passthrough.py  # 关键词透传机制
 │   ├── execution/             # 执行模块
 │   │   ├── bdf_direct.py
 │   │   └── bdfautotest.py
@@ -230,6 +336,7 @@ BDFEasyInput/
 
 ### 测试文件
 - ✅ `test_converter_snapshots.py` - 转换器快照测试
+- ✅ `test_converter_passthrough.py` - 关键词透传机制测试 ⭐ NEW
 - ✅ `test_execution_runners.py` - 执行器测试
 - ✅ `test_output_parser_*.py` - 解析器测试
 - ✅ 完整工作流测试（从 YAML 到分析报告）
@@ -304,6 +411,67 @@ settings:
       resp_iroot: 1
 ```
 
+### 示例 3：关键词透传机制
+
+```yaml
+task:
+  type: energy
+
+molecule:
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - H  0.0000 0.0000 0.0000
+    - H  0.0000 0.0000 1.0000
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: cc-pvdz
+
+# 使用关键词透传直接指定 BDF 原生关键词
+settings:
+  scf:
+    diis: 0.7              # 数值类型：自动格式化为 "Diis\n 0.7"
+    damp: true             # 布尔 true：仅输出关键词 "Damp"
+    grid: "fine"           # 字符串类型：自动格式化为 "Grid\n fine"
+    convergence: 1e-6      # 不同于默认值，自动添加 THRENE 关键词
+  tddft:
+    crit_e: 1e-6           # TDDFT 收敛阈值
+  geometry_optimization:
+    maxcycle: 200          # 优化最大循环数
+    remove_imaginary_frequencies: true  # 布尔 true：仅输出关键词
+```
+
+### 示例 4：相对论哈密顿控制
+
+```yaml
+task:
+  type: energy
+
+molecule:
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - Fe  0.0000 0.0000 0.0000
+    - O   0.0000 0.0000 1.6150
+
+method:
+  type: dft
+  functional: b3lyp
+  basis: ANO-RCC-VTZP  # 相对论基组
+
+# 相对论哈密顿控制（顶层配置）
+hamiltonian:
+  scalar_Hamiltonian: true      # 自动检测到 Fe，使用默认 heff=3 (sf-X2C)
+  spin-orbit-coupling: true     # 启用自旋轨道耦合，自动选择 hso=2
+
+# 或显式指定数值
+# hamiltonian:
+#   scalar_Hamiltonian: 21      # 使用 sf-X2C (支持解析导数)
+#   spin-orbit-coupling: 2      # 使用 so-1e + SOMF-1c
+```
+
 ## 🎯 下一步计划
 
 ### 短期目标
@@ -312,9 +480,11 @@ settings:
 - [ ] 性能优化
 
 ### 中期目标
-- [ ] 支持更多后 HF 方法（MP2, CCSD 等）
+- [x] MP2 模块支持（已完成基础透传支持）✅
+- [ ] 支持更多后 HF 方法（CCSD, CCSD(T) 等）
 - [ ] 支持更多溶剂模型
 - [ ] 批量计算支持
+- [ ] 更多 BDF 模块的透传支持（LOCALMO, NMR, AUTOFRAG 等）
 
 ### 长期目标
 - [ ] Web 界面
@@ -323,11 +493,12 @@ settings:
 
 ## 📊 统计数据
 
-- **代码文件数**：46+ Python 文件
-- **测试文件数**：15+ 测试文件
+- **代码文件数**：53+ Python 文件
+- **测试文件数**：38+ 测试文件
 - **示例文件数**：24+ 示例
 - **文档文件数**：43+ 文档
 - **支持的计算类型**：5+ 种
+- **支持的 BDF 模块**：COMPASS, SCF, TDDFT, BDFOPT, RESP, MP2, XUANYUAN
 - **支持的 AI 服务商**：9 个
 - **支持的语言**：中文、英文
 

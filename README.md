@@ -15,11 +15,12 @@ BDFEasyInput 旨在让用户通过简洁、直观的配置方式或自然语言�
 - 🚀 **自动执行**：集成 BDFAutotest，自动运行 BDF 计算
 - 🔬 **AI 结果分析**：基于量子化学专家模式，AI 自动分析计算结果
 - 💧 **激发态溶剂效应**：支持 cLR 和 ptSS 非平衡溶剂化校正 ⭐ NEW
+- 🔑 **关键词透传机制**：支持直接使用 BDF 原生关键词，灵活控制各模块参数 ⭐ NEW
+- ⚛️ **相对论哈密顿控制**：自动检测重元素，智能配置标量相对论和自旋轨道耦合 ⭐ NEW
 - 📊 **完整工作流**：从任务规划到结果分析的一站式解决方案
 - 🧪 **多种计算类型**：支持单点能、几何优化、频率计算等
 - 🏠 **本地模型支持**：支持 Ollama 等本地模型，保护数据隐私
 - 🔧 **易于扩展**：模块化设计，方便添加新功能
-- 📊 **完整工作流**：从任务规划到结果分析的一站式解决方案 ⭐ NEW
 
 ## 快速开始
 
@@ -30,8 +31,11 @@ BDFEasyInput 旨在让用户通过简洁、直观的配置方式或自然语言�
 git clone <repository-url>
 cd BDFEasyInput
 
-# 安装依赖
+# 安装依赖（包括共享 schema 包）
 pip install -r requirements.txt
+
+# 如果使用本地开发，需要先安装 bdfeasyinput_schema
+pip install -e ../bdfeasyinput_schema
 
 # 安装包
 pip install -e .
@@ -77,6 +81,47 @@ method:
 ```bash
 # 生成 BDF 输入文件
 python -m bdfeasyinput.cli convert example.yaml -o bdf_input.inp
+```
+
+#### 方式 2.1：使用关键词透传机制
+
+```yaml
+# example_advanced.yaml
+task:
+  type: energy
+
+molecule:
+  charge: 0
+  multiplicity: 1
+  coordinates:
+    - O  0.0000 0.0000 0.0000
+    - H  0.9572 0.0000 0.0000
+    - H -0.2398 0.9266 0.0000
+
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+
+# 使用关键词透传直接指定 BDF 关键词
+settings:
+  scf:
+    diis: 0.7           # 数值类型：自动格式化为 "Diis\n 0.7"
+    damp: true          # 布尔 true：仅输出关键词 "Damp"
+    grid: "fine"        # 字符串类型：自动格式化为 "Grid\n fine"
+  tddft:
+    n_states: 10
+    crit_e: 1e-6
+
+# 相对论哈密顿控制（顶层配置）
+hamiltonian:
+  scalar_Hamiltonian: true      # 自动检测重元素，默认使用 sf-X2C (heff=3)
+  spin-orbit-coupling: true     # 启用自旋轨道耦合（hso=2 全电子，hso=10 ECP）
+```
+
+```bash
+# 生成包含透传关键词的 BDF 输入
+python -m bdfeasyinput.cli convert example_advanced.yaml -o bdf_input.inp
 ```
 
 #### 方式 3：交互式 AI 对话
@@ -153,6 +198,17 @@ python -m bdfeasyinput.cli ai-plan "..." --provider openai --model gpt-4
     - **激发态非平衡溶剂化** ⭐ NEW
       - cLR（线性响应非平衡溶剂化）
       - ptSS（态特定微扰理论非平衡溶剂化）
+  - **关键词透传机制** ⭐ NEW
+    - 支持在 YAML 的 `settings` 中直接使用 BDF 原生关键词
+    - 模块映射：`scf` → SCF 模块，`tddft` → TDDFT 模块，`geometry_optimization` → BDFOPT 模块
+    - 自动处理关键词格式（首字母大写、关键词/值分行）
+    - 支持布尔值、数值、列表等多种类型
+    - 保护机制防止覆盖系统关键参数
+  - **相对论哈密顿控制** ⭐ NEW
+    - 自动检测重元素（第四周期及以后）和相对论基组
+    - 自动配置标量相对论哈密顿（`heff`，默认 sf-X2C）
+    - 支持自旋轨道耦合（`hso`，全电子/ECP 自动选择）
+    - 用户可显式控制或接受自动推荐
 - ✅ **执行模块**：支持直接执行和 BDFAutotest 模式
 - ✅ **分析模块**：完整的输出解析和 AI 分析
   - 能量、几何结构、频率提取
@@ -173,11 +229,12 @@ python -m bdfeasyinput.cli ai-plan "..." --provider openai --model gpt-4
 
 ### 📊 项目统计
 
-- **代码文件**：46+ Python 文件
-- **测试文件**：15+ 测试文件
+- **代码文件**：53+ Python 文件
+- **测试文件**：38+ 测试文件
 - **示例文件**：24+ 示例
 - **支持的计算类型**：5+ 种
 - **支持的 AI 服务商**：9 个
+- **支持的 BDF 模块**：COMPASS, SCF, TDDFT, BDFOPT, RESP, MP2, XUANYUAN
 
 **详细进度**：参见 [docs/dev/CURRENT_STATUS_2025.md](docs/dev/CURRENT_STATUS_2025.md)
 
