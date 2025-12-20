@@ -21,6 +21,9 @@ BDFEasyInput 旨在让用户通过简洁、直观的配置方式或自然语言�
 - 🧪 **多种计算类型**：支持单点能、几何优化、频率计算等
 - 🏠 **本地模型支持**：支持 Ollama 等本地模型，保护数据隐私
 - 🔧 **易于扩展**：模块化设计，方便添加新功能
+- 📝 **YAML 生成**：从模板或 XYZ 文件自动生成 YAML 配置 ⭐ NEW
+- 📊 **结果提取**：从 BDF 输出提取结构化指标 ⭐ NEW
+- 🌐 **远程执行**：支持 SSH 和 Slurm 集群远程计算 ⭐ NEW
 
 ## 快速开始
 
@@ -133,7 +136,30 @@ python -m bdfeasyinput.cli ai-chat
 # AI 会引导您完成计算任务的规划
 ```
 
-#### 方式 4：完整工作流（规划 + 执行 + 分析）⭐ NEW
+#### 方式 4：YAML 生成 ⭐ NEW
+
+```bash
+# 从 XYZ 文件生成 YAML
+python -m bdfeasyinput.cli yaml from-xyz molecule.xyz -o task.yaml
+
+# 生成任务模板
+python -m bdfeasyinput.cli yaml generate energy -o template.yaml
+
+# 然后转换为 BDF 输入
+python -m bdfeasyinput.cli convert task.yaml -o bdf_input.inp
+```
+
+#### 方式 5：结果提取 ⭐ NEW
+
+```bash
+# 从 BDF 输出提取指标
+python -m bdfeasyinput.cli extract output.log -o metrics.json
+
+# 提取并显示
+python -m bdfeasyinput.cli extract output.log --format json
+```
+
+#### 方式 6：完整工作流（规划 + 执行 + 分析）
 
 ```bash
 # 完整工作流：从自然语言到分析报告
@@ -209,8 +235,11 @@ python -m bdfeasyinput.cli ai-plan "..." --provider openai --model gpt-4
     - 自动配置标量相对论哈密顿（`heff`，默认 sf-X2C）
     - 支持自旋轨道耦合（`hso`，全电子/ECP 自动选择）
     - 用户可显式控制或接受自动推荐
-- ✅ **执行模块**：支持直接执行和 BDFAutotest 模式
+- ✅ **执行模块**：支持直接执行、BDFAutotest 模式和远程执行（SSH/Slurm）⭐ NEW
 - ✅ **分析模块**：完整的输出解析和 AI 分析
+- ✅ **YAML 生成模块** ⭐ NEW：从模板或 XYZ 文件自动生成 YAML 配置
+- ✅ **结果提取模块** ⭐ NEW：从 BDF 输出提取结构化指标（JSON 格式）
+- ✅ **转换工具增强** ⭐ NEW：批量转换、预览模式、从 XYZ 直接转换
   - 能量、几何结构、频率提取
   - SCF 收敛分析
   - TDDFT 激发态分析
@@ -229,12 +258,14 @@ python -m bdfeasyinput.cli ai-plan "..." --provider openai --model gpt-4
 
 ### 📊 项目统计
 
-- **代码文件**：53+ Python 文件
-- **测试文件**：38+ 测试文件
-- **示例文件**：24+ 示例
+- **代码文件**：53+ Python 文件（新增 7 个核心模块）
+- **测试文件**：38+ 测试文件（新增 5 个测试文件）
+- **示例文件**：29+ 示例（新增 5 个示例）
+- **文档文件**：50+ 文档文件（新增 12+ 个文档）
 - **支持的计算类型**：5+ 种
 - **支持的 AI 服务商**：9 个
 - **支持的 BDF 模块**：COMPASS, SCF, TDDFT, BDFOPT, RESP, MP2, XUANYUAN
+- **最新代码统计**：+9,678 行新增，-241 行删除（提交 f8315a2）
 
 **详细进度**：参见 [docs/dev/CURRENT_STATUS_2025.md](docs/dev/CURRENT_STATUS_2025.md)
 
