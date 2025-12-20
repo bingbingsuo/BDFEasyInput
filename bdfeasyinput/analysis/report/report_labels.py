@@ -10,7 +10,12 @@ try:
     from typing import Literal
     Language = Literal["zh", "en"]
 except ImportError:
-    Language = str  # Python 3.7 compatibility
+    # Python 3.7 compatibility: use typing_extensions if available
+    try:
+        from typing_extensions import Literal
+        Language = Literal["zh", "en"]
+    except ImportError:
+        Language = str  # Fallback to str if typing_extensions not available
 
 
 REPORT_LABELS: Dict[Language, Dict[str, str]] = {

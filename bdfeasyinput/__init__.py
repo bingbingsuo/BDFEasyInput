@@ -21,6 +21,24 @@ from .xc_functional import (  # noqa: F401
 from .converter import BDFConverter  # noqa: F401
 from .validator import BDFValidator, ValidationError  # noqa: F401
 from .config import load_config, find_config_file, get_execution_config, get_ai_config, get_analysis_config  # noqa: F401
+from .yaml_generator import YAMLGenerator, generate_yaml_from_xyz, generate_yaml_template  # noqa: F401
+from .conversion_tool import ConversionTool, convert_yaml_to_bdf, batch_convert_yaml  # noqa: F401
+
+# Export schema types for convenience
+try:
+    from bdfeasyinput_schema import (  # noqa: F401
+        TaskType,
+        MethodType,
+        CoordinateUnit,
+        EasyInputConfig,
+        EasyInputTask,
+        EasyInputMolecule,
+        EasyInputMethod,
+        EasyInputSettings,
+    )
+except ImportError:
+    # Schema is required, but handle gracefully for type checking
+    pass
 
 # AI module (optional import)
 try:
@@ -51,6 +69,15 @@ try:
         'build_dft_functional_lines',
         'load_xc_database',
         'validate_functional',
+        # Schema types (if available)
+        'TaskType',
+        'MethodType',
+        'CoordinateUnit',
+        'EasyInputConfig',
+        'EasyInputTask',
+        'EasyInputMolecule',
+        'EasyInputMethod',
+        'EasyInputSettings',
     ]
     if AI_AVAILABLE:
         __all__.extend(['TaskPlanner', 'PlanningError', 'OllamaClient', 'OpenAIClient', 'AnthropicClient'])
@@ -70,6 +97,15 @@ except ImportError:
         'build_dft_functional_lines',
         'load_xc_database',
         'validate_functional',
+        # Schema types (if available)
+        'TaskType',
+        'MethodType',
+        'CoordinateUnit',
+        'EasyInputConfig',
+        'EasyInputTask',
+        'EasyInputMolecule',
+        'EasyInputMethod',
+        'EasyInputSettings',
     ]
     if AI_AVAILABLE:
         __all__.extend(['TaskPlanner', 'PlanningError', 'OllamaClient', 'OpenAIClient', 'AnthropicClient'])

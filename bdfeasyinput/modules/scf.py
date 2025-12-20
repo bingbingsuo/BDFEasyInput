@@ -82,9 +82,16 @@ def generate_scf_block(config: Dict[str, Any]) -> List[str]:
             pass
     
     # Solvent settings
+    # Support both settings.scf.solvent and settings.solvent
     solvent_settings = scf_settings.get('solvent', {})
+    if not solvent_settings:
+        # Fallback to settings.solvent if settings.scf.solvent is not present
+        all_settings = config.get('settings', {})
+        solvent_settings = all_settings.get('solvent', {})
+    
     if solvent_settings:
-        solvent_name = solvent_settings.get('name')
+        # Support both 'name' and 'solvent' keys for solvent name
+        solvent_name = solvent_settings.get('name') or solvent_settings.get('solvent')
         if solvent_name:
             lines.append("solvent")
             if solvent_name.lower() == 'user':
@@ -103,8 +110,19 @@ def generate_scf_block(config: Dict[str, Any]) -> List[str]:
         # Solvent model
         model = solvent_settings.get('model')
         if model:
+            # Map common model names to BDF keywords
+            model_mapping = {
+                'pcm': 'iefpcm',  # PCM typically refers to IEFPCM
+                'iefpcm': 'iefpcm',
+                'cosmo': 'cosmo',
+                'cpcm': 'cpcm',
+                'smd': 'smd',
+                'ssvpe': 'ssvpe',
+                'ddcosmo': 'ddcosmo',
+            }
+            bdf_model = model_mapping.get(model.lower(), model.lower())
             lines.append("solmodel")
-            lines.append(f" {model}")
+            lines.append(f" {bdf_model}")
         
         # COSMO/CPCM factor K
         cosmo_factor_k = solvent_settings.get('cosmo_factor_k')

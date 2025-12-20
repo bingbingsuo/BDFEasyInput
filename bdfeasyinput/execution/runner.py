@@ -8,6 +8,8 @@ based on YAML configuration.
 from typing import Dict, Any, Optional, Union
 from .bdfautotest import BDFAutotestRunner
 from .bdf_direct import BDFDirectRunner
+from .remote_ssh import SSHRemoteRunner
+from .remote_slurm import SSHSlurmRunner
 
 
 def create_runner(
@@ -15,7 +17,7 @@ def create_runner(
     bdfautotest_path: Optional[str] = None,
     bdf_home: Optional[str] = None,
     **kwargs
-) -> Union[BDFAutotestRunner, BDFDirectRunner]:
+) -> Union[BDFAutotestRunner, BDFDirectRunner, SSHRemoteRunner, SSHSlurmRunner]:
     """
     创建 BDF 执行器
     
@@ -88,10 +90,42 @@ def create_runner(
                     )
                 config_file = execution_config.get('config_file')
                 return BDFAutotestRunner(bdfautotest_path, config_file=config_file)
+        elif execution_type == 'remote_ssh':
+            # 远程 SSH 直接执行模式
+            ssh_cfg = execution_config.get('remote_ssh', {})
+            host = ssh_cfg.get('host')
+            if not host:
+                raise ValueError("execution.remote_ssh.host is required when execution.type is 'remote_ssh'")
+            return SSHRemoteRunner(
+                host=host,
+                user=ssh_cfg.get('user') or None,
+                workdir=ssh_cfg.get('workdir', '.'),
+                bdf_command=ssh_cfg.get('bdf_command', 'run.x'),
+                env_setup=ssh_cfg.get('env_setup') or [],
+                port=ssh_cfg.get('port'),
+                poll_interval=ssh_cfg.get('poll_interval'),
+                max_wait=ssh_cfg.get('max_wait'),
+                download=ssh_cfg.get('download', True),
+            )
+        elif execution_type == 'remote_slurm':
+            # 远程 Slurm 提交模式
+            slurm_cfg = execution_config.get('remote_slurm', {})
+            host = slurm_cfg.get('host')
+            if not host:
+                raise ValueError("execution.remote_slurm.host is required when execution.type is 'remote_slurm'")
+            return SSHSlurmRunner(
+                host=host,
+                user=slurm_cfg.get('user'),
+                workdir=slurm_cfg.get('workdir', '.'),
+                sbatch_command=slurm_cfg.get('sbatch_command', 'sbatch'),
+                job_script_template=slurm_cfg.get('job_script_template'),
+                env_setup=slurm_cfg.get('env_setup') or [],
+                default_slurm=slurm_cfg.get('default_slurm') or {},
+            )
         else:
             raise ValueError(
                 f"Unknown execution type: {execution_type}. "
-                f"Supported types: 'direct', 'bdfautotest'"
+                f"Supported types: 'direct', 'bdfautotest', 'remote_ssh', 'remote_slurm'"
             )
     
     # 如果没有配置，根据参数决定

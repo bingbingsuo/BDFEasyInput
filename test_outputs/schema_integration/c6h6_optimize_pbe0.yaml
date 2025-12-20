@@ -1,0 +1,33 @@
+task:
+  type: optimize
+  description: Benzene geometry optimization
+  title: C6H6 Optimize PBE0
+molecule:
+  name: Benzene
+  charge: 0
+  multiplicity: 1
+  coordinates:
+  - C  0.0000  1.3970  0.0000
+  - C  1.2112  0.6985  0.0000
+  - C  1.2112 -0.6985  0.0000
+  - C  0.0000 -1.3970  0.0000
+  - C -1.2112 -0.6985  0.0000
+  - C -1.2112  0.6985  0.0000
+  - H  0.0000  2.4810  0.0000
+  - H  2.1500  1.2405  0.0000
+  - H  2.1500 -1.2405  0.0000
+  - H  0.0000 -2.4810  0.0000
+  - H -2.1500 -1.2405  0.0000
+  - H -2.1500  1.2405  0.0000
+  units: angstrom
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+settings:
+  scf:
+    convergence: 1.0e-06
+    max_iterations: 100
+  geometry_optimization:
+    solver: 1
+    max_cycle: 50

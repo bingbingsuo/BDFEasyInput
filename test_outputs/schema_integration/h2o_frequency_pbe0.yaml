@@ -1,0 +1,21 @@
+task:
+  type: frequency
+  description: Water frequency calculation
+  title: H2O Frequency PBE0
+molecule:
+  name: Water
+  charge: 0
+  multiplicity: 1
+  coordinates:
+  - O  0.0000  0.0000  0.1173
+  - H  0.0000  0.7572 -0.4692
+  - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+settings:
+  scf:
+    convergence: 1.0e-06
+    max_iterations: 100

@@ -6,13 +6,17 @@
 # 执行配置 (Execution)
 # ============================================================================
 execution:
-  # 执行类型：'direct' 或 'bdfautotest'
-  type: bdfautotest  # 使用 BDFAutoTest 模式
+  # 执行类型：
+  # - direct       : 本地直接执行 BDF
+  # - bdfautotest  : 通过 BDFAutoTest 执行
+  # - remote_ssh   : 通过 SSH 在远程节点直接运行 BDF（nohup 等）
+  # - remote_slurm : 通过 SSH + Slurm 提交作业
+  type: direct  # 当前默认使用 BDFAutoTest 模式
   
   # 直接执行模式配置（当 type: direct 时）
   direct:
     # BDF 安装目录（必需）
-    bdf_home: "/Users/bsuo/bdf/bdf-pkg-full/build_1/bdf-pkg-full"
+    bdf_home: "/Users/bsuo/bdf/bdf-pkg-full/build/bdf-pkg-full"
     
     # 临时文件目录（可选，默认 "/tmp/$RANDOM"）
     # 支持 $RANDOM 占位符，每次运行生成随机目录名避免冲突
@@ -29,8 +33,39 @@ execution:
     
     # 配置文件路径（可选，默认使用 BDFAutotest 的 config/config.yaml）
     config_file: null
+
+  # 远程 SSH 直接执行模式（当 type: remote_ssh 时）
+  # 注意：SSH 免密登录由用户自行配置
+  remote_ssh:
+    host: "AMD7900"    # 远程登录节点
+    user: "bsuo"                 # 可选，不写则用默认 SSH 用户
+    port: 20214
+    workdir: "/home/bsuo/test/BDFJobs"  # 远程工作根目录
+    bdf_command: "/home/bsuo/work/bin/runbdf.sh"              # 远程 BDF 启动命令
+    env_setup:                        # 远程环境初始化命令（可选）
+      - "source ~/.bashrc"
+      #- "module load bdf/2025"
+
+  # 远程 Slurm 提交模式（当 type: remote_slurm 时）
+  remote_slurm:
+    host: "login1.cluster.example"
+    user: "your_user"
+    workdir: "/path/on/remote/BDFJobs"
+    sbatch_command: "sbatch"
+    # 本地 Slurm 作业脚本模板路径（支持简单占位符，如 {{JOB_NAME}}、{{INPUT_FILE}} 等）
+    job_script_template: "config/slurm_bdf_job.sh.j2"
+    env_setup:
+      - "source ~/.bashrc"
+      - "module load bdf/2025"
+    default_slurm:
+      partition: "compute"
+      ntasks: 1
+      cpus_per_task: 8
+      time: "02:00:00"
+      # 可选：如果模板中需要，可通过 {{BDF_COMMAND}} 使用
+      bdf_command: "run.x"
   
-  # 默认超时时间（秒）
+  # 默认超时时间（秒）（仅适用于本地执行/BDFAutotest）
   timeout: 3600
 
 # ============================================================================
@@ -48,7 +83,7 @@ ai:
     # Ollama 本地模型（推荐用于本地使用）
     ollama:
       enabled: true
-      base_url: "http://192.168.6.230:11434"
+      base_url: "http://192.168.124.148:11434"
       model: "gpt-oss:120b"  # 可用的模型: llama3, llama2, mistral 等
       timeout: 240
     

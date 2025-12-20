@@ -80,10 +80,27 @@ def generate_compass_block(config: Dict[str, Any]) -> List[str]:
         lines.append(f" {basis}")
     
     # Geometry
+    #
+    # 支持两种方式：
+    # 1. 直接在 YAML 中给出坐标 (molecule.coordinates)
+    # 2. 通过外部 XYZ 文件指定 (molecule.xyz_file 或 molecule.geometry_file)
+    #
+    # 对应 BDF 语法：
+    #   Geometry
+    #    file=molecule.xyz
+    #   End geometry
+    #
     coordinates = molecule.get('coordinates', [])
     units = molecule.get('units', 'angstrom')
+    # 新增：外部坐标文件（优先于内联坐标）
+    xyz_file = molecule.get('xyz_file') or molecule.get('geometry_file')
     
-    if coordinates:
+    if xyz_file:
+        # 使用外部 XYZ 文件，不再在输入中展开坐标
+        lines.append("Geometry")
+        lines.append(f" file={xyz_file}")
+        lines.append("End geometry")
+    elif coordinates:
         lines.append("Geometry")
         formatted_coords = format_coordinates(coordinates, units)
         lines.extend(formatted_coords)

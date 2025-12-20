@@ -1,0 +1,40 @@
+{
+  "task_type": "single_point",
+  "geometry": {
+    "max_force": null,
+    "rms_force": null,
+    "final_energy": -76.33883031,
+    "scf_converged": true,
+    "optimization_converged": false,
+    "n_iterations": null,
+    "final_geometry": [
+      {
+        "element": "O",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.221665,
+        "units": "bohr",
+        "index": 1,
+        "charge": 8.0
+      },
+      {
+        "element": "H",
+        "x": -1.430901,
+        "y": 0.0,
+        "z": -0.886659,
+        "units": "bohr",
+        "index": 2,
+        "charge": 1.0
+      },
+      {
+        "element": "H",
+        "x": 1.430901,
+        "y": -0.0,
+        "z": -0.886659,
+        "units": "bohr",
+        "index": 3,
+        "charge": 1.0
+      }
+    ]
+  }
+}

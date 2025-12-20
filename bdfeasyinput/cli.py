@@ -22,6 +22,8 @@ from .ai.client import (
     OpenRouterClient,
     create_openai_compatible_client,
 )
+from .yaml_generator import YAMLGenerator, generate_yaml_from_xyz, generate_yaml_template
+from .conversion_tool import ConversionTool, convert_yaml_to_bdf, batch_convert_yaml
 
 
 def get_ai_client_from_config(config_path: Optional[str] = None) -> AIClient:
@@ -605,6 +607,195 @@ def analyze(
         click.echo(f"Error: {e}", err=True)
         import traceback
         traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command()
+@click.argument("output_file", type=click.Path(exists=True))
+@click.option("-o", "--output", type=click.Path(), help="Output JSON file")
+@click.option("--task-type", help="Task type (auto-detect if not specified): single_point, optimize, frequency, optimize_frequency, excited")
+def extract(output_file: str, output: Optional[str], task_type: Optional[str]):
+    """Extract metrics from BDF output file."""
+    try:
+        from .extraction import BDFResultExtractor
+        
+        extractor = BDFResultExtractor()
+        metrics = extractor.extract_metrics(output_file, task_type)
+        
+        result = metrics.to_dict()
+        
+        if output:
+            import json
+            with open(output, 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2, ensure_ascii=False)
+            click.echo(f"✓ Metrics written to: {output}", err=True)
+        else:
+            import json
+            click.echo(json.dumps(result, indent=2, ensure_ascii=False))
+    except Exception as e:
+        click.echo(f"✗ Error: {e}", err=True)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+@main.group()
+def yaml():
+    """YAML generation and manipulation commands."""
+    pass
+
+
+@yaml.command("generate")
+@click.argument("task_type", type=click.Choice(["energy", "optimize", "frequency", "tddft"]))
+@click.option("-o", "--output", type=click.Path(), help="Output YAML file")
+@click.option("--no-comments", is_flag=True, help="Don't include comments in template")
+def yaml_generate(task_type: str, output: Optional[str], no_comments: bool):
+    """Generate a YAML template for a given task type."""
+    try:
+        template = generate_yaml_template(
+            task_type=task_type,
+            output_path=output,
+            include_comments=not no_comments
+        )
+        
+        if output:
+            click.echo(f"✓ YAML template generated: {output}")
+        else:
+            click.echo(yaml.dump(template, default_flow_style=False, allow_unicode=True))
+            
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@yaml.command("from-xyz")
+@click.argument("xyz_file", type=click.Path(exists=True))
+@click.option("-o", "--output", type=click.Path(), help="Output YAML file")
+@click.option("-t", "--task-type", type=click.Choice(["energy", "optimize", "frequency", "tddft"]), 
+              default="energy", help="Task type")
+@click.option("--charge", type=int, default=0, help="Molecular charge")
+@click.option("--multiplicity", type=int, default=1, help="Spin multiplicity")
+@click.option("--functional", default="pbe0", help="DFT functional")
+@click.option("--basis", default="cc-pvdz", help="Basis set")
+@click.option("--no-validate", is_flag=True, help="Skip validation")
+def yaml_from_xyz(
+    xyz_file: str,
+    output: Optional[str],
+    task_type: str,
+    charge: int,
+    multiplicity: int,
+    functional: str,
+    basis: str,
+    no_validate: bool
+):
+    """Generate YAML configuration from XYZ file."""
+    try:
+        method = {
+            'type': 'dft',
+            'functional': functional,
+            'basis': basis
+        }
+        
+        config = generate_yaml_from_xyz(
+            xyz_path=xyz_file,
+            task_type=task_type,
+            charge=charge,
+            multiplicity=multiplicity,
+            method=method,
+            output_path=output,
+            validate=not no_validate
+        )
+        
+        if output:
+            click.echo(f"✓ YAML file generated: {output}")
+        else:
+            click.echo(yaml.dump(config, default_flow_style=False, allow_unicode=True))
+            
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@main.command("batch-convert")
+@click.argument("yaml_files", nargs=-1, type=click.Path(exists=True))
+@click.option("-d", "--output-dir", type=click.Path(), help="Output directory")
+@click.option("--overwrite", is_flag=True, help="Overwrite existing files")
+@click.option("--no-validate", is_flag=True, help="Skip validation")
+def batch_convert(yaml_files: tuple, output_dir: Optional[str], overwrite: bool, no_validate: bool):
+    """Convert multiple YAML files to BDF input files."""
+    if not yaml_files:
+        click.echo("Error: No YAML files specified", err=True)
+        sys.exit(1)
+    
+    try:
+        tool = ConversionTool(validate_input=not no_validate)
+        results = tool.batch_convert(
+            list(yaml_files),
+            output_dir=output_dir,
+            overwrite=overwrite,
+            continue_on_error=True
+        )
+        
+        success_count = sum(1 for v in results.values() if isinstance(v, Path))
+        error_count = len(results) - success_count
+        
+        click.echo(f"\nConversion complete:")
+        click.echo(f"  ✓ Success: {success_count}")
+        if error_count > 0:
+            click.echo(f"  ✗ Errors: {error_count}")
+            for path, result in results.items():
+                if isinstance(result, Exception):
+                    click.echo(f"    - {path}: {result}", err=True)
+        
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@main.command("preview")
+@click.argument("yaml_file", type=click.Path(exists=True))
+@click.option("--max-lines", type=int, default=50, help="Maximum lines to show")
+def preview(yaml_file: str, max_lines: int):
+    """Preview BDF input without saving to file."""
+    try:
+        tool = ConversionTool(validate_input=True)
+        preview_content, config = tool.preview(yaml_file, max_lines=max_lines)
+        
+        click.echo("YAML Configuration:")
+        click.echo(yaml.dump(config, default_flow_style=False, allow_unicode=True))
+        click.echo("\n" + "="*70)
+        click.echo("BDF Input Preview:")
+        click.echo(preview_content)
+        
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@main.command("validate-yaml")
+@click.argument("yaml_file", type=click.Path(exists=True))
+def validate_yaml(yaml_file: str):
+    """Validate YAML configuration file."""
+    try:
+        tool = ConversionTool(validate_input=True)
+        is_valid, errors, warnings = tool.validate_yaml(yaml_file)
+        
+        if is_valid:
+            click.echo(f"✓ YAML file is valid: {yaml_file}")
+            if warnings:
+                click.echo("\nWarnings:")
+                for warning in warnings:
+                    click.echo(f"  - {warning}")
+        else:
+            click.echo(f"✗ YAML file is invalid: {yaml_file}", err=True)
+            if errors:
+                click.echo("\nErrors:")
+                for error in errors:
+                    click.echo(f"  - {error}", err=True)
+            sys.exit(1)
+            
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 

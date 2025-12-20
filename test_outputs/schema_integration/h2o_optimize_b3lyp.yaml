@@ -1,0 +1,26 @@
+task:
+  type: optimize
+  description: Water geometry optimization
+  title: H2O Optimize B3LYP
+molecule:
+  name: Water
+  charge: 0
+  multiplicity: 1
+  coordinates:
+  - O  0.0000  0.0000  0.1173
+  - H  0.0000  0.7572 -0.4692
+  - H  0.0000 -0.7572 -0.4692
+  units: angstrom
+method:
+  type: dft
+  functional: b3lyp
+  basis: 6-31g*
+settings:
+  scf:
+    convergence: 1.0e-06
+    max_iterations: 100
+  geometry_optimization:
+    solver: 1
+    max_cycle: 50
+    tol_grad: 0.0001
+    tol_ene: 1.0e-06

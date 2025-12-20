@@ -1,0 +1,26 @@
+# 简单的 H2O 分子 DFT 计算示例（使用外部 XYZ 文件）
+# 单点能计算
+
+task:
+  type: energy
+  description: "H2O single point energy calculation (xyz_file)"
+
+molecule:
+  name: "Water"
+  charge: 0
+  multiplicity: 1
+  xyz_file: "simple_h2o.xyz"   # 使用外部 XYZ 文件，而不是内联坐标
+
+method:
+  type: dft
+  functional: pbe0
+  basis: cc-pvdz
+
+settings:
+  scf:
+    convergence: 1e-6
+    max_iterations: 100
+
+output:
+  file: h2o_output_xyz.inp
+  verbose: false
